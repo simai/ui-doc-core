@@ -1,0 +1,32 @@
+.nav {
+    &-menu {
+        strong {
+            font-size: 18px;
+        }
+
+        a {
+            font-size: 14px;
+            color: #000;
+            &.active {
+                color: #d20e21;
+            }
+        }
+        li:has(button) {
+                > ul {
+                    display: none;
+                }
+            &.active {
+                > ul {
+                    display: block;
+                }
+            }
+        }
+    }
+    &-button {
+        font-weight: bold;
+        cursor: pointer;
+        color: #2c2c2c;
+    }
+}
+
+

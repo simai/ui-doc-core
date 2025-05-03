@@ -1,0 +1,41 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # Замените на нужную ветку
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ vars.SSH_SERVER }}
+        username: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ vars.SSH_PORT }}
+        script: |
+          # Переход в директорию проекта
+          cd /var/www/dev/data/git/ui-doc
+          
+          # Обновление кода из ветки main
+          git pull origin main
+          
+          # Установка зависимостей Composer
+          composer install --no-dev --prefer-dist --no-interaction
+          
+          # Установка npm-зависимостей
+          npm install
+          
+          # Сборка ассетов
+          npm run prod
+          
+          # Сборка сайта для production
+          ./vendor/bin/jigsaw build production
+    

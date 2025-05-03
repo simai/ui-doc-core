@@ -1,0 +1,9 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+
+/* Code syntax highlighting, powered by https://highlightjs.org */
+@import 'highlight.js/styles/a11y-light.css';
+@import "base.css";
+@import "menu.scss";
+
+@import 'tailwindcss/utilities';
