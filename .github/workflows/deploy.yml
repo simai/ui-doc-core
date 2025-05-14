@@ -19,7 +19,7 @@ jobs:
         host: ${{ vars.SSH_SERVER }}
         username: ${{ vars.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ vars.SSH_PORT }}
+
         script: |
           # Переход в директорию проекта
           cd /var/www/dev/data/git/ui-doc
