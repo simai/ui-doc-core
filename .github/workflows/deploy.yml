@@ -22,7 +22,7 @@ jobs:
 
         script: |
           # Переход в директорию проекта
-          cd /var/www/dev/data/git/ui-doc
+          cd /var/www/dev/data/git/ui-doc-template
           
           # Обновление кода из ветки main
           git pull origin main
