@@ -1,0 +1,69 @@
+.docsearch-input {
+    background-image: url('/assets/build/img/magnifying-glass.svg');
+    background-position: 0.8em;
+    background-repeat: no-repeat;
+    text-indent: 1.2em;
+    @apply bg-white;
+    @apply w-1/2;
+
+    @screen lg {
+        &:focus {
+            @apply w-full;
+        }
+    }
+
+    @screen xl {
+        &:focus {
+            @apply w-full;
+        }
+    }
+    &__holder {
+        @apply absolute;
+        display: flex;
+        flex-direction: column;
+        top: 100%;
+        background: #ebebeb;
+        min-width: 100%;
+        width: 42rem;
+        right: 0;
+        padding: 1rem;
+
+    }
+&__wrapper {
+    @apply mt-7;
+    @apply left-0;
+    @apply top-0;
+    @apply px-4;
+    @apply w-full;
+    @apply z-10;
+
+    @screen md {
+        @apply mt-0;
+        @apply px-0;
+        @apply relative;
+    }
+}
+
+}
+.search {
+    &--result {
+        text-align: left;
+        &-title {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        &-content {
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+    &--wrap {
+        max-width: 400px;
+        width: 100%;
+        mark {
+            color: #d20e21;
+        }
+    }
+}
+
+

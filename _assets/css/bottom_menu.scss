@@ -1,0 +1,32 @@
+.bottom {
+  &--navigation {
+    margin-top: 2rem;
+    &-items {
+      gap: 20px;
+    }
+    [class^="bottom--navigation-item_"] {
+      flex: 1;
+      border: 1px solid #c5c5c5;
+      background-color: #ebebeb;
+      max-width: calc(50% - 10px);
+      transition: .3s background-color ease;
+      &:hover {
+        background-color: #acacac;
+      }
+      > a {
+        padding: 1em;
+        &:hover {
+          color: inherit;
+        }
+      }
+    }
+    &-item {
+      &_next {
+        margin-left: auto;
+        > a {
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+}

@@ -5,15 +5,13 @@
 @endsection
 
 @section('body')
-<section class="container  mx-auto px-6 md:px-8 py-4">
-    <div class="flex flex-col lg:flex-row">
-        <nav id="js-nav-menu" class="nav-menu hidden lg:block">
-            @include('_core._nav.menu', ['items' => $page->navigation])
-        </nav>
+    <section>
+        <div class="flex flex-col lg:flex-row">
 
-        <div class="DocSearch-content w-full lg:w-3/5 break-words pb-16 lg:pl-4" v-pre>
-            @yield('content')
+            <div class="main--content" v-pre>
+                @yield('content')
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+    @include('_core._nav.bottom-nav')
 @endsection

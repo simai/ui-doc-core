@@ -1,5 +1,5 @@
 @php
-    $items = $sub ?? $page->configurator->getItems();
+    $items = $sub ?? $page->configurator->getItems($page->locale());
     $level = $level ?? 0;
     $isSub = $isSub ?? false;
     $prefix = $prefix ?? '';
@@ -16,7 +16,7 @@
 
 
         <li class="{{$page->isActiveParent($slug) ? 'active' : ''}}">
-            @if ($title)
+            @if ($title && $slug !== $page->locale())
                 <button onclick="toggleNav(this)" class="nav-button" type="button">{{$title}}</button>
             @endif
 
@@ -25,7 +25,7 @@
                     @foreach ($menu as $key => $label)
                         @php
                             $fullPath = ($slug === $key) ? $isSub ? $prefix . '/' . $key : $key : trim($slug . '/' . $key, '/');
-                            $url = '/' . $page->language . '/' . $fullPath;
+                            $url = ($slug === $page->language ? '' : '/' . $page->language ). '/' . $fullPath;
                         @endphp
 
                         <li>

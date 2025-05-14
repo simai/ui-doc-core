@@ -41,12 +41,19 @@
                         ];
                     }
                 }
+                $title = $page->title ?? '';
+                $contentLines = preg_split('/\r\n|\r|\n/', $plain);
+                if ($title !== '' && isset($contentLines[0]) && trim($contentLines[0]) === $title) {
+                    array_shift($contentLines);
+                }
 
-                $index[] = [
-                    'title' => $page->title ?? '',
+
+                $cleanedContent = implode("\n", $contentLines);
+                $index[$page->language][] = [
+                    'title' => $title,
                     'url' => $page->getUrl(),
                     'lang' => $page->language ?? '',
-                    'content' => trim($plain),
+                    'content' => trim($cleanedContent),
                     'headings' => $headings,
                 ];
             }
@@ -57,7 +64,9 @@
         if (!file_exists($dest)) {
             mkdir($dest, 0755, true);
         }
-        file_put_contents($dest . '/search-index.json', json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        foreach ($index as $lang => $page) {
+            file_put_contents($dest . "/search-index_{$lang}.json", json_encode($page, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
 
     });
 

@@ -162,6 +162,10 @@ pre {
     }
 }
 
+.main--content {
+    width: 100%;
+}
+
 ::selection {
     @apply bg-blue-500;
     @apply text-white;

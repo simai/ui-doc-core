@@ -16,6 +16,22 @@
         ],
         'defaultLocale' => 'ru',
         'lang_path' => 'source/lang',
+        'getNavItems' => function ($page) {
+            return $page->configurator->getPrevAndNext($page->getPath(), $page->locale());
+        },
+        'locale' => function ($page) {
+            $path = str_replace('\\', '/', $page->getPath());
+            $locale = explode('/', $path);
+            $current = 'ru';
+            $locales =  array_keys($page->locales->toArray());
+            foreach ($locale as $segment) {
+                if (in_array($segment, $locales)) {
+                    $current = $segment;
+                    break;
+                }
+            }
+            return $current;
+        },
         'collections' => require_once('source/_core/collections.php'),
         'isActive' => function ($page, $path) {
             return Str::endsWith(trimPath($page->getPath()), trimPath($path));
