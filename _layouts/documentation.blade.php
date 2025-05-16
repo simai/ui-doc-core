@@ -6,8 +6,10 @@
 
 @section('body')
     <section>
-        <div class="flex flex-col lg:flex-row">
 
+        @include('_core._nav.breadcrumbs')
+        
+        <div class="flex flex-col lg:flex-row">
             <div class="main--content" v-pre>
                 @yield('content')
             </div>

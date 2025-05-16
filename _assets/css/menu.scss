@@ -5,8 +5,8 @@
         }
 
         a {
-            font-size: 14px;
-            color: #000;
+            font-size: var(--sf-text--size-1);
+            color: var(--sf-on-surface);
             &.active {
                 color: #d20e21;
             }

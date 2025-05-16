@@ -17,7 +17,7 @@
 
         <li class="{{$page->isActiveParent($slug) ? 'active' : ''}}">
             @if ($title && $slug !== $page->locale())
-                <button onclick="toggleNav(this)" class="nav-button" type="button">{{$title}}</button>
+                <button onclick="toggleNav(this)" class="nav-button" type="button">{{$title}} <i class = "sf-icon">keyboard_arrow_down</i></button>
             @endif
 
             @if (!empty($menu))

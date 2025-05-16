@@ -52,9 +52,64 @@
         }
     </script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/css/core.css">
+    <script src="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/js/core.js"></script>
+
+        
+
+        <style>
+            header{
+                border-bottom: 1px solid var(--sf-outline-variant);
+            }
+            aside{
+                border-right: 1px solid var(--sf-outline-variant);
+            }
+            aside ul{
+                list-style-type: none; 
+            }
+            aside ul li a, aside ul button {
+                font-weight: var(--sf-text--font-weight);
+                padding: var(--sf-space-1\/2) var(--sf-space-1); 
+                font-size: var(--sf-text--size-1);
+                color: var(--sf-on-surface);
+                line-height: var(--sf-text--height-1);
+                display: flex;
+            }
+            aside .nav-button{
+                font-weight: inherit; 
+                font-size: inherit;
+                width: 100%;
+                display: inline-flex;
+                justify-content: space-between;
+            }
+
+            aside .nav-button .sf-icon{
+                height: var(--sf-c6); //32px;
+            }
+
+            #docsearch-input{          
+                min-width: var(--sf-f7);
+            }
+            
+            .sf-menu li{
+                display: inline;
+                font-size: var(--sf-text--size-1);
+                padding-left: var(--sf-b2);
+                padding-right: var(--sf-b2);
+            }
+            .sf-menu li a{
+                color: var(--sf-on-surface);
+                font-weight: var(--sf-text--font-weight-5);
+            }
+
+            .sf-button.sf-button--nav-switch{
+                --sf-button--text-size: var(--sf-text--size-3);
+            }
+
+        </style>
 </head>
 
-<body class="flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 leading-normal">
+<body class="theme-light flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 leading-normal">
 <header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
     <div class="container flex items-center  mx-auto px-4 lg:px-8">
         <div class="flex items-center">
@@ -62,15 +117,38 @@
                 <img class="h-8 md:h-10 mr-3" src="{{mix('/img/logo.svg', 'assets/build')}}"
                      alt="{{ $page->siteName }} logo"/>
 
-                <h1 class="text-lg md:text-2xl text-blue-900 font-semibold hover:text-blue-600 my-0 pr-4">{{ $page->siteName }}</h1>
+                <h1 class="text-lg md:text-2xl text-blue-900 font-semibold hover:text-blue-600 my-0 pr-4">Simai<!--{{ $page->siteName }}--></h1>
             </a>
+            <ul class = "sf-menu">
+                    <li>
+                        <a href="#"> Концепция </a>
+                    </li>
+                    <li>
+                        <a href="#"> Ядро </a>
+                    </li>
+                    <li>
+                        <a href="#"> Утилиты </a>
+                    </li>
+                    <li>
+                        <a href="#"> Компоненты </a>
+                    </li>
+                    <li> 
+                        <a href="#"> Смарт-компоненты </a>
+                    </li>
+                </ul>
         </div>
 
         <div class="flex flex-1 justify-end items-center text-right md:pl-10">
             @include('_core._nav.search-input')
         </div>
         <div>
-            <form id="locale-switcher" style="margin-bottom: 1em;">
+            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
+                <i class = "sf-icon">Language</i>
+            </button>
+            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
+                <i class = "sf-icon">Dark_Mode</i>
+            </button>
+            <form id="locale-switcher" style="margin-bottom: 1em; display: none;">
                 <label for="locale">Language: </label>
                 <select name="locale" id="locale">
                     @foreach($localesItems as $code => $label)
@@ -86,7 +164,7 @@
     @yield('nav-toggle')
 </header>
 <div class="w-full flex-auto ">
-    <div class="flex mx-auto px-6 md:px-8 py-4 container">
+    <div class="flex mx-auto px-6 md:px-8 container">
         <aside>
             <nav id="js-nav-menu" class="nav-menu hidden lg:block">
                 @include('_core._nav.menu', ['items' => $page->navigation])
