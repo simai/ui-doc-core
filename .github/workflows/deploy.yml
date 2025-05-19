@@ -35,11 +35,11 @@ jobs:
           composer install --no-dev --prefer-dist --no-interaction
           
           # Установка npm-зависимостей
-          npm install
+          yarn install
           
           # Сборка ассетов
           yarn watch
           
           # Сборка сайта для dev
-          ./vendor/bin/jigsaw build dev
+          ./vendor/bin/jigsaw build local
     
