@@ -3,6 +3,7 @@
     background-position: 0.8em;
     background-repeat: no-repeat;
     text-indent: 1.2em;
+    
     @apply bg-white;
     @apply w-1/2;
 
@@ -20,14 +21,17 @@
     &__holder {
         @apply absolute;
         display: flex;
+        gap: var(--sf-b6);
         flex-direction: column;
         top: 100%;
-        background: #ebebeb;
+        background: var(--sf-surface-0);
         min-width: 100%;
-        width: 42rem;
+        width: 100%;
         right: 0;
         padding: 1rem;
-
+        border-radius: var(--sf-radius-1);
+        border: var(--sf-a1) solid var(--sf-outline-variant);
+        box-shadow: 0px 0px var(--sf-a3) var(--sf-outline-variant);
     }
 &__wrapper {
     @apply mt-7;
@@ -49,11 +53,13 @@
     &--result {
         text-align: left;
         &-title {
-            font-weight: bold;
-            font-size: 20px;
+            font-weight: var(--sf-text--weight-7);
+            font-size: var(--sf-text--size-1);
+            color: var(--sf-on-surface);
+
         }
         &-content {
-            font-size: 16px;
+            font-size: var(--sf-text--size-1);
             margin: 0;
         }
     }

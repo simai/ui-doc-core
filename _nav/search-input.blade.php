@@ -36,6 +36,7 @@
                 <input type="email" required="" class="sf-input-main" placeholder="Search" >
             </label>
         </div>
+        <div id="search_results" class="docsearch-input__holder hidden"></div>
     </div>
 </div>
 
