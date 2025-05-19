@@ -29,9 +29,7 @@ jobs:
           
            # Обновление сабмодулей..."
           git submodule update --init --recursive
-          cd source/_core
-          git checkout main
-          git pull
+          git submodule foreach 'git checkout main && git pull origin main'
           
           # Установка зависимостей Composer
           composer install --no-dev --prefer-dist --no-interaction
