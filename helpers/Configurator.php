@@ -63,7 +63,7 @@
              return $flat;
         }
 
-        public function makeMenu(array $items, array &$flat, string $prefix = '', string $locale): void
+        public function makeMenu(array $items, array &$flat, string $prefix = '', string $locale = 'ru'): void
         {
             foreach ($items as $key => $value) {
                 $hasPages = isset($value['pages']) && is_array($value['pages']);
