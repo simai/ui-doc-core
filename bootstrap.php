@@ -20,6 +20,24 @@
         $locales = $jigsaw->getConfig('locales');
         $configurator = new \App\Helpers\Configurator($locales);
         $jigsaw->setConfig('configurator', $configurator);
+
+        // Получаем токен последнего коммита
+        $url = "https://api.github.com/repos/simai/ui/commits/main";
+        $context = stream_context_create([
+            'http' => [
+                'header' => [
+                    'User-Agent: Jigsaw',
+                    'Accept: application/vnd.github.v3+json',
+                ],
+                'timeout' => 3,
+            ]
+        ]);
+        $json = @file_get_contents($url, false, $context);
+        if (!$json) {
+            return null;
+        }
+        $data = json_decode($json, true);
+        $jigsaw->setConfig('sha', $data['sha'] ?? null);
     });
 
     $events->afterBuild(function ($jigsaw) {
