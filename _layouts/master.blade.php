@@ -37,11 +37,8 @@
     @if ($page->production)
         <!-- Insert analytics code here -->
     @endif
-    <script>
-        window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/';
-    </script>
-    <script src="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/js/core.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/css/core.css"/>
+
+    @include('_core._layouts.core')
 
     <link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}">
     <script>
@@ -52,10 +49,8 @@
         }
     </script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/css/core.css">
-    <script src="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/js/core.js"></script>
 
-        
+
 
         <style>
             header{
@@ -65,18 +60,18 @@
                 border-right: 1px solid var(--sf-outline-variant);
             }
             aside ul{
-                list-style-type: none; 
+                list-style-type: none;
             }
             aside ul li a, aside ul button {
                 font-weight: var(--sf-text--font-weight);
-                padding: var(--sf-space-1\/2) var(--sf-space-1); 
+                padding: var(--sf-space-1\/2) var(--sf-space-1);
                 font-size: var(--sf-text--size-1);
                 color: var(--sf-on-surface);
                 line-height: var(--sf-text--height-1);
                 display: flex;
             }
             aside .nav-button{
-                font-weight: inherit; 
+                font-weight: inherit;
                 font-size: inherit;
                 width: 100%;
                 display: inline-flex;
@@ -87,10 +82,10 @@
                 height: var(--sf-c6); //32px;
             }
 
-            #docsearch-input{          
+            #docsearch-input{
                 min-width: var(--sf-f7);
             }
-            
+
             .sf-menu li{
                 display: inline;
                 font-size: var(--sf-text--size-1);
@@ -238,7 +233,7 @@
                     <li>
                         <a href="#"> Компоненты </a>
                     </li>
-                    <li> 
+                    <li>
                         <a href="#"> Смарт-компоненты </a>
                     </li>
                 </ul>

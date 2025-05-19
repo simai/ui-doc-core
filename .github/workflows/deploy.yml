@@ -27,15 +27,19 @@ jobs:
           # Обновление кода из ветки main
           git pull origin main
           
+           # Обновление сабмодулей..."
+          git submodule update --init --recursive
+          git submodule foreach 'git checkout main && git pull origin main'
+          
           # Установка зависимостей Composer
           composer install --no-dev --prefer-dist --no-interaction
           
           # Установка npm-зависимостей
-          npm install
+          yarn install
           
           # Сборка ассетов
-          npm run prod
+          yarn watch
           
-          # Сборка сайта для production
-          ./vendor/bin/jigsaw build production
+          # Сборка сайта для dev
+          ./vendor/bin/jigsaw build local
     
