@@ -71,7 +71,7 @@
 
     });
 
-    function generateBreadcrumbs($page) {
+    /*function generateBreadcrumbs($page) {
                     $crumbs = [];
                     $currentPath = '';
                     
@@ -110,6 +110,6 @@
                     }
                     
                     return $crumbs;
-                    }
+    }*/
 
 

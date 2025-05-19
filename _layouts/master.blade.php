@@ -106,10 +106,116 @@
                 --sf-button--text-size: var(--sf-text--size-3);
             }
 
+
+            /*dropdown delete later*/
+            .sf-dropdown {
+            position: relative;
+            display: inline-block;
+            //width: 200px; /* Ширина dropdown */
+            --sf-dropdown--font-size: var(--sf-text--size-1);
+            --sf-dropdown--color: var(--sf-on-surface);
+
+            font-size: var(--sf-dropdown--font-size);
+            
+            &--1\/3{
+                --sf-dropdown--font-size: var(--sf-text--size-1\/3);
+            }
+            &--1\/2{
+                --sf-dropdown--font-size: var(--sf-text--size-1\/2);
+            }
+            &--2{
+                --sf-dropdown--font-size: var(--sf-text--size-2);
+            }
+            &--3{
+                --sf-dropdown--font-size: var(--sf-text--size-3);
+            }
+        }
+        
+        /* Стили для input */
+        /*.sf-dropdown-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }*/
+        
+        /* Стили для выпадающего меню */
+        .sf-dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            top: 80%; /* Размещаем меню вплотную под .sf-input */
+            left: 0;
+            width: 100%;
+            max-height: 150px; /* Максимальная высота меню */
+            overflow-y: auto; /* Добавляем прокрутку, если элементов много */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border: 1px solid #ccc;
+            border-top: none;
+
+            .sf-icon{
+                display: none;
+                color: var(--sf-primary);
+            }
+
+            input[type="checkbox"]{
+                display:none;
+            }
+
+            input[type="checkbox"]:checked + .sf-icon{
+                display: flex;
+            }
+            .sf-dropdown-menu-item--active{
+                background-color: var(--sf-primary-transparent-active);
+            }
+            
+        }
+
+        
+        /* Стили для элементов меню */
+        .sf-dropdown-menu-item {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            color: var(--sf-dropdown--color);
+            border-bottom: var(--sf-a1) solid var(--sf-surface-container-active);
+        }
+        
+        /* Изменение цвета при наведении на элемент меню */
+        .sf-dropdown-menu-item:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Класс для отображения меню */
+        .sf-dropdown-menu.show {
+            display: block;
+        }
         </style>
+
+        <script>
+                document.addEventListener('DOMContentLoaded', function() {
+
+        // Проверяем сохранённую тему или системные настройки
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Определяем тему
+        const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+        console.log(document.body);
+        // Применяем класс сразу
+             document.body.classList.add('theme-' + theme);
+        });
+    </script>
 </head>
 
-<body class="theme-light flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 leading-normal">
+<body class="theme-light flex flex-col justify-between min-h-screen leading-normal">
 <header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
     <div class="container flex items-center  mx-auto px-4 lg:px-8">
         <div class="flex items-center">
@@ -142,10 +248,36 @@
             @include('_core._nav.search-input')
         </div>
         <div>
-            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
+            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "lang_switch">
                 <i class = "sf-icon">Language</i>
             </button>
-            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
+            <div class="sf-dropdown">
+                <div class="sf-input-container">
+                        <span class="sf-input--top-label">Label</span>
+                        <div class="flex items-cross-center sf-input sf-input--1/3 sf-input-email" sf-code="sf-input-body" id="input_email">
+                        <div class="flex">
+                            <i class="sf-icon">mail</i>
+                        </div>
+                        <label class="sf-input-inner-label">
+                            <input type="email" required="" class="sf-input-main sf-dropdown-input" placeholder="">
+                            <span>Введите почту</span>
+                        </label>
+                        <div class="sf-input-body--right flex flex-center items-cross-center">
+                            
+                            <i class="sf-icon">keyboard_arrow_down</i>
+                        </div>
+                        </div>
+            
+                        <ul class="sf-dropdown-menu show">
+                        <label><li class="sf-dropdown-menu-item"><span>Option 1</span> <input type="checkbox" name="test" value="value1"> <i class="sf-icon sf-icon-light">check</i></li></label>
+                        <label><li class="sf-dropdown-menu-item"><span>Option 2</span> <input type="checkbox" name="test" value="value2"> <i class="sf-icon sf-icon-light">check</i></li></label>
+                        <label><li class="sf-dropdown-menu-item"><span>Option 3</span> <input type="checkbox" name="test" value="value3"> <i class="sf-icon sf-icon-light">check</i></li></label>
+                        <label><li class="sf-dropdown-menu-item"><span>Option 4</span> <input type="checkbox" name="test" value="value4"> <i class="sf-icon sf-icon-light">check</i></li></label>
+                        </ul>
+                        <span class="sf-input--bottom-label">This is a hint text to help user.</span>
+                </div>
+            </div>
+            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
                 <i class = "sf-icon">Dark_Mode</i>
             </button>
             <form id="locale-switcher" style="margin-bottom: 1em; display: none;">
@@ -177,6 +309,21 @@
 </div>
 <script src="{{ mix('js/main.js', 'assets/build') }}"></script>
 <script>
+    document.getElementById('lang_switch').addEventListener('click', function(){
+        console.log('{{ $locale }}');
+        const loc_switch = '{{ $locale }}';
+        console.log(document.getElementById('locale').value);
+        if(loc_switch == 'ru')
+            document.getElementById('locale').value='en';
+        else 
+            document.getElementById('locale').value='ru';
+        document.getElementById('locale').dispatchEvent(new Event("change", { bubbles: true }));
+
+        //this.get('')
+        //const currentPath = window.location.pathname.split('/');
+        
+    });
+
     document.getElementById('locale').addEventListener('change', function () {
         const newLocale = this.value;
         document.cookie = `locale=${newLocale}; path=/; max-age=31536000`; // 1 year
@@ -186,6 +333,22 @@
             segment === currentLocale ? newLocale : segment
         ).join('/');
     });
+
+    
+
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const html = document.body;
+        const isDark = html.classList.contains('theme-dark');
+        
+        // Переключаем тему
+        html.classList.remove(isDark ? 'theme-dark' : 'theme-light');
+        html.classList.add(isDark ? 'theme-light' : 'theme-dark');
+        
+        // Сохраняем в localStorage
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+
 </script>
 @stack('scripts')
 
