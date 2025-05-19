@@ -37,11 +37,8 @@
     @if ($page->production)
         <!-- Insert analytics code here -->
     @endif
-    <script>
-        window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/';
-    </script>
-    <script src="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/js/core.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/css/core.css"/>
+
+    @include('_core._layouts.core')
 
     <link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}">
     <script>
@@ -52,8 +49,6 @@
         }
     </script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/css/core.css">
-    <script src="https://cdn.jsdelivr.net/gh/simai/ui@main/distr/core/js/core.js"></script>
 
 
 
