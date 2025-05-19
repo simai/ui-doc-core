@@ -111,7 +111,7 @@
             --sf-dropdown--color: var(--sf-on-surface);
 
             font-size: var(--sf-dropdown--font-size);
-            
+
             &--1\/3{
                 --sf-dropdown--font-size: var(--sf-text--size-1\/3);
             }
@@ -125,7 +125,7 @@
                 --sf-dropdown--font-size: var(--sf-text--size-3);
             }
         }
-        
+
         /* Стили для input */
         /*.sf-dropdown-input {
             width: 100%;
@@ -134,7 +134,7 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }*/
-        
+
         /* Стили для выпадающего меню */
         .sf-dropdown-menu {
             display: none;
@@ -168,10 +168,10 @@
             .sf-dropdown-menu-item--active{
                 background-color: var(--sf-primary-transparent-active);
             }
-            
+
         }
 
-        
+
         /* Стили для элементов меню */
         .sf-dropdown-menu-item {
             padding: 10px;
@@ -182,12 +182,12 @@
             color: var(--sf-dropdown--color);
             border-bottom: var(--sf-a1) solid var(--sf-surface-container-active);
         }
-        
+
         /* Изменение цвета при наведении на элемент меню */
         .sf-dropdown-menu-item:hover {
             background-color: #f1f1f1;
         }
-        
+
         /* Класс для отображения меню */
         .sf-dropdown-menu.show {
             display: block;
@@ -258,11 +258,11 @@
                             <span>Введите почту</span>
                         </label>
                         <div class="sf-input-body--right flex flex-center items-cross-center">
-                            
+
                             <i class="sf-icon">keyboard_arrow_down</i>
                         </div>
                         </div>
-            
+
                         <ul class="sf-dropdown-menu show">
                         <label><li class="sf-dropdown-menu-item"><span>Option 1</span> <input type="checkbox" name="test" value="value1"> <i class="sf-icon sf-icon-light">check</i></li></label>
                         <label><li class="sf-dropdown-menu-item"><span>Option 2</span> <input type="checkbox" name="test" value="value2"> <i class="sf-icon sf-icon-light">check</i></li></label>
@@ -272,7 +272,7 @@
                         <span class="sf-input--bottom-label">This is a hint text to help user.</span>
                 </div>
             </div>-->
-            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
+            <button class = "sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
                 <i class = "sf-icon">Dark_Mode</i>
             </button>
             <form id="locale-switcher" style="margin-bottom: 1em; display: none;">
@@ -310,13 +310,13 @@
         console.log(document.getElementById('locale').value);
         if(loc_switch == 'ru')
             document.getElementById('locale').value='en';
-        else 
+        else
             document.getElementById('locale').value='ru';
         document.getElementById('locale').dispatchEvent(new Event("change", { bubbles: true }));
 
         //this.get('')
         //const currentPath = window.location.pathname.split('/');
-        
+
     });
 
     document.getElementById('locale').addEventListener('change', function () {
@@ -335,11 +335,11 @@
     document.getElementById('theme-toggle').addEventListener('click', () => {
         const html = document.body;
         const isDark = html.classList.contains('theme-dark');
-        
+
         // Переключаем тему
         html.classList.remove(isDark ? 'theme-dark' : 'theme-light');
         html.classList.add(isDark ? 'theme-light' : 'theme-dark');
-        
+
         // Сохраняем в localStorage
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
     });

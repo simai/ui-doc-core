@@ -71,45 +71,5 @@
 
     });
 
-    /*function generateBreadcrumbs($page) {
-                    $crumbs = [];
-                    $currentPath = '';
-                    
-                    // Добавляем домашнюю страницу
-                    $crumbs[] = [
-                        'title' => 'Главная',
-                        'url' => '/'
-                    ];
-                    
-                    // Разбиваем путь на части
-                    $pathParts = explode('/', trim($page->getPath(), '/'));
-                    
-                    // Строим хлебные крошки
-                    foreach ($pathParts as $i => $part) {
-                        if (empty($part)) continue;
-                        
-                        $currentPath .= '/' . $part;
-                        $isLast = $i === count($pathParts) - 1;
-                        
-                        // Получаем метаданные страницы из front matter или используем часть пути
-                        $pageTitle = $page->title ?? str_replace('-', ' ', ucfirst($part));
-                        
-                        if (!$isLast) {
-                            // Для неактивных элементов используем реальные страницы или генерируем
-                            $crumbs[] = [
-                                'title' => $pageTitle,
-                                'url' => $currentPath
-                            ];
-                        } else {
-                            // Активная страница (последний элемент)
-                            $crumbs[] = [
-                                'title' => $page->title ?? $pageTitle,
-                                'url' => ''
-                            ];
-                        }
-                    }
-                    
-                    return $crumbs;
-    }*/
 
 
