@@ -1,6 +1,5 @@
 @php
     /*$navigation = $page->getNavItems();*/
-    $breadcrumbs_array = explode("/", $page->getPath());
     //print_r($page->getBreadcrumbsItems());
 @endphp
 
