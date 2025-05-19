@@ -111,7 +111,6 @@
 
 <body class="theme-light flex flex-col justify-between min-h-screen bg-gray-100 text-gray-800 leading-normal">
 <header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
-    <div style="display: none">test123</div>
     <div class="container flex items-center  mx-auto px-4 lg:px-8">
         <div class="flex items-center">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
