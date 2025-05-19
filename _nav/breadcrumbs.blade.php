@@ -6,10 +6,10 @@
 
 <section>
     @php 
-    echo "<pre>";
+    //echo "<pre>";
          $breadcrumbs_array = generateBreadcrumbs($page);
          //print_r($breadcrumbs_array);
-    echo "</pre>";
+    //echo "</pre>";
     @endphp
     <ul class="sf-breadcrumb">
           <li class="sf-breadcrumb-item">
