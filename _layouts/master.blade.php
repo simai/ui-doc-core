@@ -140,7 +140,7 @@
             <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
                 <i class = "sf-icon">Language</i>
             </button>
-            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
+            <button class = "sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
                 <i class = "sf-icon">Dark_Mode</i>
             </button>
             <form id="locale-switcher" style="margin-bottom: 1em; display: none;">
