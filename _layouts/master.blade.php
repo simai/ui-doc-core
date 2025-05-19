@@ -246,7 +246,7 @@
             <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "lang_switch">
                 <i class = "sf-icon">Language</i>
             </button>
-            <div class="sf-dropdown">
+            <!--<div class="sf-dropdown">
                 <div class="sf-input-container">
                         <span class="sf-input--top-label">Label</span>
                         <div class="flex items-cross-center sf-input sf-input--1/3 sf-input-email" sf-code="sf-input-body" id="input_email">
@@ -271,7 +271,7 @@
                         </ul>
                         <span class="sf-input--bottom-label">This is a hint text to help user.</span>
                 </div>
-            </div>
+            </div>-->
             <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
                 <i class = "sf-icon">Dark_Mode</i>
             </button>
@@ -329,7 +329,7 @@
         ).join('/');
     });
 
-    
+
 
 
     document.getElementById('theme-toggle').addEventListener('click', () => {
