@@ -61,7 +61,7 @@
         searchDocumentClick(){
             if (!this.search.contains(event.target)) {
                 console.log(event.target);
-                // The click was OUTSIDE the specifiedElement, do something
+                /// The click was OUTSIDE the specifiedElement, do something
                 console.log("You clicked outside of search!");
             }
         }
@@ -76,7 +76,7 @@
             
             if (!isClickInside) {
                 searchObject.menuGetter().style.display = "inline-flex";
-                this.search.parentElement.classList.remove('flex-grow'); 
+                searchObject.search.parentElement.classList.remove('flex-grow'); 
             }
         });
 </script>
