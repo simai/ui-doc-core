@@ -6,5 +6,6 @@
 @import "base.css";
 @import "menu.scss";
 @import "bottom_menu.scss";
+@import "breadcrumbs.scss";
 
 @import 'tailwindcss/utilities';

@@ -82,12 +82,20 @@
                 height: var(--sf-c6); //32px;
             }
 
+            main{
+                padding: var(--sf-space-4);
+            }
+
             #docsearch-input{
                 min-width: var(--sf-f7);
             }
 
+            .sf-menu{
+                display: inline-flex;
+            }
+
             .sf-menu li{
-                display: inline;
+                display: inline-flex;
                 font-size: var(--sf-text--size-1);
                 padding-left: var(--sf-b2);
                 padding-right: var(--sf-b2);
@@ -99,78 +107,8 @@
 
             .sf-button.sf-button--nav-switch{
                 --sf-button--text-size: var(--sf-text--size-3);
+                
             }
-
-
-            /*dropdown delete later*/
-            .sf-dropdown {
-            position: relative;
-            display: inline-block;
-            //width: 200px; /* Ширина dropdown */
-            --sf-dropdown--font-size: var(--sf-text--size-1);
-            --sf-dropdown--color: var(--sf-on-surface);
-
-            font-size: var(--sf-dropdown--font-size);
-
-            &--1\/3{
-                --sf-dropdown--font-size: var(--sf-text--size-1\/3);
-            }
-            &--1\/2{
-                --sf-dropdown--font-size: var(--sf-text--size-1\/2);
-            }
-            &--2{
-                --sf-dropdown--font-size: var(--sf-text--size-2);
-            }
-            &--3{
-                --sf-dropdown--font-size: var(--sf-text--size-3);
-            }
-        }
-
-        /* Стили для input */
-        /*.sf-dropdown-input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }*/
-
-        /* Стили для выпадающего меню */
-        .sf-dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            top: 80%; /* Размещаем меню вплотную под .sf-input */
-            left: 0;
-            width: 100%;
-            max-height: 150px; /* Максимальная высота меню */
-            overflow-y: auto; /* Добавляем прокрутку, если элементов много */
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            border: 1px solid #ccc;
-            border-top: none;
-
-            .sf-icon{
-                display: none;
-                color: var(--sf-primary);
-            }
-
-            input[type="checkbox"]{
-                display:none;
-            }
-
-            input[type="checkbox"]:checked + .sf-icon{
-                display: flex;
-            }
-            .sf-dropdown-menu-item--active{
-                background-color: var(--sf-primary-transparent-active);
-            }
-
-        }
-
 
         /* Стили для элементов меню */
         .sf-dropdown-menu-item {
@@ -192,22 +130,49 @@
         .sf-dropdown-menu.show {
             display: block;
         }
+
+
+
+        /*переключение языков */
+        .sf-language-switch--language-item input[type='radio']{
+            display: none; 
+        }
+        .sf-language-switch--language-item
+        {
+            padding: var(--sf-space-1\/3) var(--sf-space-1);
+            line-height: var(--sf-text--height-1);
+        }
+
+        .sf-language-switch--language-panel{
+            --sf-language-switch--language-panel-display: none; 
+            position: absolute;
+            background-color: var(--sf-surface-2);
+            top: 150%;
+            left: 0;
+            width: 100%;
+            overflow-y: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: var(--sf-radius-1);
+            display: var(--sf-language-switch--language-panel-display); 
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border-top: none;
+            max-width: max-content;
+            min-width: max-content;
+        }
+
+        .sf-language-switch--language-panel.sf-language-switch--language-panel-show{
+            --sf-language-switch--language-panel-display: flex;
+        }
+
+        .sf-language-switch--language-item .sf-language-switch--check
+        {
+            display: none;
+        }
         </style>
-
-        <script>
-                document.addEventListener('DOMContentLoaded', function() {
-
-        // Проверяем сохранённую тему или системные настройки
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        // Определяем тему
-        const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-        console.log(document.body);
-        // Применяем класс сразу
-             document.body.classList.add('theme-' + theme);
-        });
-    </script>
 </head>
 
 <body class="theme-light flex flex-col justify-between min-h-screen leading-normal">
@@ -215,10 +180,10 @@
     <div class="container flex items-center  mx-auto px-4 lg:px-8">
         <div class="flex items-center">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
-                <img class="h-8 md:h-10 mr-3" src="{{mix('/img/logo.svg', 'assets/build')}}"
+                <img class="mr-3" src="{{mix('/img/icon_and_text_logo.svg', 'assets/build')}}"
                      alt="{{ $page->siteName }} logo"/>
 
-                <h1 class="text-lg md:text-2xl text-blue-900 font-semibold hover:text-blue-600 my-0 pr-4">Simai<!--{{ $page->siteName }}--></h1>
+                <!--<h1 class="text-lg md:text-2xl text-blue-900 font-semibold hover:text-blue-600 my-0 pr-4">{{ $page->siteName }}</h1>-->
             </a>
             <ul class = "sf-menu">
                     <li>
@@ -243,35 +208,24 @@
             @include('_core._nav.search-input')
         </div>
         <div>
-            <button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "lang_switch">
+            <!--<button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "lang_switch">
                 <i class = "sf-icon">Language</i>
-            </button>
-            <!--<div class="sf-dropdown">
-                <div class="sf-input-container">
-                        <span class="sf-input--top-label">Label</span>
-                        <div class="flex items-cross-center sf-input sf-input--1/3 sf-input-email" sf-code="sf-input-body" id="input_email">
-                        <div class="flex">
-                            <i class="sf-icon">mail</i>
-                        </div>
-                        <label class="sf-input-inner-label">
-                            <input type="email" required="" class="sf-input-main sf-dropdown-input" placeholder="">
-                            <span>Введите почту</span>
-                        </label>
-                        <div class="sf-input-body--right flex flex-center items-cross-center">
-
-                            <i class="sf-icon">keyboard_arrow_down</i>
-                        </div>
-                        </div>
-
-                        <ul class="sf-dropdown-menu show">
-                        <label><li class="sf-dropdown-menu-item"><span>Option 1</span> <input type="checkbox" name="test" value="value1"> <i class="sf-icon sf-icon-light">check</i></li></label>
-                        <label><li class="sf-dropdown-menu-item"><span>Option 2</span> <input type="checkbox" name="test" value="value2"> <i class="sf-icon sf-icon-light">check</i></li></label>
-                        <label><li class="sf-dropdown-menu-item"><span>Option 3</span> <input type="checkbox" name="test" value="value3"> <i class="sf-icon sf-icon-light">check</i></li></label>
-                        <label><li class="sf-dropdown-menu-item"><span>Option 4</span> <input type="checkbox" name="test" value="value4"> <i class="sf-icon sf-icon-light">check</i></li></label>
-                        </ul>
-                        <span class="sf-input--bottom-label">This is a hint text to help user.</span>
+            </button>-->
+            <div class = "sf-language-switch sf-language-switch--container"style="position: relative; max-width: 56px; display: inline-flex">
+                <button class="sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch sf-language-switch--button" id="lang_switch">
+                    <i class="sf-icon">Language</i>
+                </button>
+                <div class="sf-language-switch--language-panel" id="language_panel">
+                    <ul class="sf-language-switch--language-list">
+                        <label><li class="sf-language-switch--language-item"><span>English</span> <input type="radio" name="laguage_switch_radio" value="en"> <i class="sf-icon sf-icon-light sf-language-switch--check">check</i></li></label>
+                        <label><li class="sf-language-switch--language-item"><span>Русский</span> <input type="radio" name="laguage_switch_radio" value="ru"> <i class="sf-icon sf-icon-light sf-language-switch--check">check</i></li></label>
+                        <label><li class="sf-language-switch--language-item"><span>Deutsch</span> <input type="radio" name="laguage_switch_radio" value="de"> <i class="sf-icon sf-icon-light sf-language-switch--check">check</i></li></label>
+                        <label><li class="sf-language-switch--language-item"><span>Español</span> <input type="radio" name="laguage_switch_radio" value="es"> <i class="sf-icon sf-icon-light sf-language-switch--check">check</i></li></label>
+                    </ul>
                 </div>
-            </div>-->
+                
+            </div>
+
             <button class = "sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
                 <i class = "sf-icon">Dark_Mode</i>
             </button>
@@ -304,20 +258,39 @@
 </div>
 <script src="{{ mix('js/main.js', 'assets/build') }}"></script>
 <script>
+    //event on click on language switch element
     document.getElementById('lang_switch').addEventListener('click', function(){
-        console.log('{{ $locale }}');
+
         const loc_switch = '{{ $locale }}';
-        console.log(document.getElementById('locale').value);
-        if(loc_switch == 'ru')
-            document.getElementById('locale').value='en';
+
+        const language_switch_panel = this.parentElement.querySelector('.sf-language-switch--language-panel');
+        if(language_switch_panel.classList.contains("sf-language-switch--language-panel-show"))
+            language_switch_panel.classList.remove("sf-language-switch--language-panel-show");
         else
-            document.getElementById('locale').value='ru';
-        document.getElementById('locale').dispatchEvent(new Event("change", { bubbles: true }));
-
-        //this.get('')
-        //const currentPath = window.location.pathname.split('/');
-
+            language_switch_panel.classList.add("sf-language-switch--language-panel-show");
     });
+
+    const language_item = document.querySelectorAll('.sf-language-switch--language-item');
+    console.log(language_item);
+    
+    [...language_item].forEach(element => {
+        element.querySelector("input[type='radio']").addEventListener('change', function(e){
+            if(e.currentTarget.checked){
+                //e.currentTarget.parentElement.querySelector('.sf-language-switch--check').classList.remove("sf-language-switch--check");
+                let optionExists = Array.from(document.getElementById('locale').options).some(option => option.value === e.currentTarget.value);
+                if(optionExists){
+                    document.getElementById('locale').value = e.currentTarget.value;
+                    document.getElementById('locale').dispatchEvent(new Event("change", { bubbles: true }));
+                }
+                
+            }
+        });
+        if(element.querySelector("input[type='radio']").value == '{{$locale}}'){
+            console.log(element.querySelector(".sf-language-switch--check").classList.remove('sf-language-switch--check'));
+        }
+                
+    });
+
 
     document.getElementById('locale').addEventListener('change', function () {
         const newLocale = this.value;
@@ -329,10 +302,20 @@
         ).join('/');
     });
 
+    window.addEventListener('click', function(e){   
+        console.log(e.target);
+    if (!e.target.querySelector('.sf-language-switch--language-panel') && !e.target.closest('button.sf-language-switch--button')){
+        document.querySelector('.sf-language-switch--language-panel').classList.remove("sf-language-switch--language-panel-show");
+        // Clicked in box
+    } else{
+        // Clicked outside the box
+        console.log('Clicked outside the box');
+    }   
+    });
 
 
 
-    document.getElementById('theme-toggle').addEventListener('click', () => {
+    /*document.getElementById('theme-toggle').addEventListener('click', () => {
         const html = document.body;
         const isDark = html.classList.contains('theme-dark');
 
@@ -342,7 +325,7 @@
 
         // Сохраняем в localStorage
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    });
+    });*/
 
 </script>
 @stack('scripts')
