@@ -176,6 +176,10 @@ pre {
     justify-content: normal;
 }
 
+.sf-container-header{
+    padding: var(--sf-space-2) 0; 
+}
+
 .sf-nav-menu{
     width: var(--sf-g3);
 }

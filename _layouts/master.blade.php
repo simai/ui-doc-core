@@ -55,8 +55,10 @@
         <style>
             header{
                 border-bottom: 1px solid var(--sf-outline-variant);
+                box-sizing: border-box;
+                max-height: var(--sf-e0);
             }
-            aside{
+            .sf-nav-menu--right{
                 border-right: 1px solid var(--sf-outline-variant);
             }
             aside ul{
@@ -89,25 +91,34 @@
             #docsearch-input{
                 min-width: var(--sf-f7);
             }
+            .sf-menu-container{
+                place-items: center;
+                display: flex;
+                gap: var(--sf-d7);
+            }
 
             .sf-menu{
                 display: inline-flex;
+                gap: var(--sf-c2);
             }
 
-            .sf-menu li{
+            .sf-menu .sf-menu-item{
                 display: inline-flex;
                 font-size: var(--sf-text--size-1);
-                padding-left: var(--sf-b2);
-                padding-right: var(--sf-b2);
+                line-height: var(--sf-text--height-1);
+                //padding-left: var(--sf-b2);
+                //padding-right: var(--sf-b2);
+
             }
-            .sf-menu li a{
+            .sf-menu .sf-menu-item a{
                 color: var(--sf-on-surface);
                 font-weight: var(--sf-text--font-weight-5);
             }
 
             .sf-button.sf-button--nav-switch{
                 --sf-button--text-size: var(--sf-text--size-3);
-                
+                max-width: var(--sf-d0);
+                justify-content: center;
             }
 
         /* Стили для элементов меню */
@@ -172,36 +183,40 @@
         {
             display: none;
         }
+
+        .sf-breadcrumb{
+            padding-bottom: var(--sf-space-3);
+        }
         </style>
 </head>
 
 <body class="theme-light flex flex-col justify-between min-h-screen leading-normal">
 <header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
-    <div class="container flex items-center  mx-auto px-4 lg:px-8 sf-container">
-        <div class="flex items-center">
+    <div class="container flex items-center  mx-auto px-4 lg:px-8 sf-container sf-container-header">
+        <div class="sf-menu-container">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
-                <img class="mr-3" src="{{mix('/img/icon_and_text_logo.svg', 'assets/build')}}"
+                <img src="{{mix('/img/icon_and_text_logo.svg', 'assets/build')}}"
                      alt="{{ $page->siteName }} logo"/>
 
                 <!--<h1 class="text-lg md:text-2xl text-blue-900 font-semibold hover:text-blue-600 my-0 pr-4">{{ $page->siteName }}</h1>-->
             </a>
-            <ul class = "sf-menu">
-                    <li>
+                <div class = "sf-menu">
+                    <div class = "sf-menu-item">
                         <a href="#"> Концепция </a>
-                    </li>
-                    <li>
+                    </div>
+                    <div class = "sf-menu-item">
                         <a href="#"> Ядро </a>
-                    </li>
-                    <li>
+                    </div>
+                    <div class = "sf-menu-item">
                         <a href="#"> Утилиты </a>
-                    </li>
-                    <li>
+                    </div>
+                    <div class = "sf-menu-item">
                         <a href="#"> Компоненты </a>
-                    </li>
-                    <li>
+                    </div>
+                    <div class = "sf-menu-item">
                         <a href="#"> Смарт-компоненты </a>
-                    </li>
-                </ul>
+                    </div>
+                </div>
         </div>
 
         <div class="flex flex-1 justify-end items-center text-right md:pl-10">
@@ -246,7 +261,7 @@
 </header>
 <div class="w-full flex-auto ">
     <div class="flex container sf-container">
-        <aside class = "sf-nav-menu">
+        <aside class = "sf-nav-menu sf-nav-menu--right">
             <nav id="js-nav-menu" class="nav-menu hidden lg:block">
                 @include('_core._nav.menu', ['items' => $page->navigation])
             </nav>

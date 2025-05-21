@@ -12,14 +12,14 @@
     @endphp
     <ul class="sf-breadcrumb">
           <li class="sf-breadcrumb-item">
-            <a href="#" class="text-1/2">
+            <a href="#" >
               <i class="color-primary sf-icon sf-icon-light">home</i>
             </a>
           </li>
 
     @foreach($breadcrumbs_array as $key => $item)
         <li class="sf-breadcrumb-item text-1/2 ">
-          <a href="{{$item['url']}}" class="text-1/2">{{$item['title']}}</a>
+          <a href="{{$item['url']}}">{{$item['title']}}</a>
             <i class="sf-icon sf-icon-light">chevron_right</i>
           </li>
     @endforeach
