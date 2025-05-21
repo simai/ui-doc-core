@@ -177,7 +177,7 @@
 
 <body class="theme-light flex flex-col justify-between min-h-screen leading-normal">
 <header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
-    <div class="container flex items-center  mx-auto px-4 lg:px-8">
+    <div class="container flex items-center  mx-auto px-4 lg:px-8 sf-container">
         <div class="flex items-center">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
                 <img class="mr-3" src="{{mix('/img/icon_and_text_logo.svg', 'assets/build')}}"
@@ -245,8 +245,8 @@
     @yield('nav-toggle')
 </header>
 <div class="w-full flex-auto ">
-    <div class="flex mx-auto px-6 md:px-8 container">
-        <aside>
+    <div class="flex container sf-container">
+        <aside class = "sf-nav-menu">
             <nav id="js-nav-menu" class="nav-menu hidden lg:block">
                 @include('_core._nav.menu', ['items' => $page->navigation])
             </nav>
@@ -254,6 +254,11 @@
         <main role="main" class="w-full lg:w-3/5 break-words pb-16 lg:pl-4">
             @yield('body')
         </main>
+        <aside class = "sf-nav-menu side-menu">
+            <nav id="js-nav-menu" class="nav-menu hidden lg:block">
+                @include('_core._nav.side-menu', ['items' => $page->navigation])
+            </nav>
+        </aside>
     </div>
 </div>
 <script src="{{ mix('js/main.js', 'assets/build') }}"></script>

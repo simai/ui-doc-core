@@ -170,3 +170,12 @@ pre {
     @apply bg-blue-500;
     @apply text-white;
 }
+
+.sf-container{
+    width: var(--sf-i2) !important;
+    justify-content: normal;
+}
+
+.sf-nav-menu{
+    width: var(--sf-g3);
+}

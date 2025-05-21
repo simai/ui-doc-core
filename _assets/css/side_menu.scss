@@ -1,0 +1,28 @@
+.side-menu{
+    padding-top: var(--sf-space-3);
+    border-left: var(--sf-a1) solid var(--sf-outline-variant);
+    padding-left: var(--sf-space-3);
+    .side-menu-button-pannel{
+        .sf-button.side-menu-instrument{
+            width: var(--sf-d0);
+            justify-content: center;
+        }
+    }
+
+    h5.side-menu-header{
+        font-weight: var(--sf-text--font-weight-7);
+        margin: unset;
+        padding-top: var(--sf-space-1\/3);
+    }
+        
+    .side-menu-list{
+        padding-top: var(--sf-space-1);
+        li{
+            line-height: var(--sf-text-height-1);
+        }
+        a{
+            padding: unset;
+            padding-bottom: var(--sf-b2);
+        }
+    }
+}
