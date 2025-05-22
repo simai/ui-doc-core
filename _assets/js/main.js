@@ -16,6 +16,10 @@ hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
 
 window.toggleNav = (btn) => {
     btn.parentNode.classList.toggle('active');
+    if(btn.querySelector('.sf-icon').innerText === "keyboard_arrow_down")
+        btn.querySelector('.sf-icon').innerText = "keyboard_arrow_up";
+    else
+        btn.querySelector('.sf-icon').innerText = "keyboard_arrow_down";
 }
 
 

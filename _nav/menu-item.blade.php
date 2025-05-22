@@ -17,7 +17,10 @@
 
         <li class="{{$page->isActiveParent($slug) ? 'active' : ''}}">
             @if ($title && $slug !== $page->locale())
-                <button onclick="toggleNav(this)" class="nav-button" type="button">{{$title}} <i class = "sf-icon">keyboard_arrow_down</i></button>
+                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">{{$title}} <i class = "sf-icon">keyboard_arrow_down</i></button>
+            @endif
+             @if ($slug == $page->locale())
+                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">Основы <i class = "sf-icon">keyboard_arrow_down</i></button>
             @endif
 
             @if (!empty($menu))
@@ -30,7 +33,7 @@
 
                         <li>
                             <a href="{{ $page->url($url) }}"
-                               class="lvl{{ $level }} {{ $page->isActive($url) ? 'active text-blue-500' : '' }}">
+                               class="sf-nav-menu--lvl{{ $level }} {{ $page->isActive($url) ? 'active text-blue-500' : '' }}">
                                 {{ $label }}
                             </a>
                         </li>

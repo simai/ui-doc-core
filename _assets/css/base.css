@@ -154,16 +154,19 @@ pre {
     @apply rounded;
     @apply shadow;
     @apply text-base;
-
+    background-color: var(--sf-surface-3);
     code {
         @apply bg-transparent;
         @apply block;
         @apply p-0;
+        
     }
 }
 
 .main--content {
     width: 100%;
+    /*border-right: 1px solid var(--sf-outline-variant);
+    border-left: 1px solid var(--sf-outline-variant);*/
 }
 
 ::selection {
@@ -172,8 +175,8 @@ pre {
 }
 
 .sf-container{
-    width: var(--sf-i2) !important;
-    justify-content: normal;
+    max-width: var(--sf-i2); /*!important;
+    /*justify-content: center;*/
 }
 
 .sf-container-header{
@@ -182,4 +185,7 @@ pre {
 
 .sf-nav-menu{
     width: var(--sf-g3);
+    position: sticky;
+    top: 0;
+    align-self: baseline;
 }

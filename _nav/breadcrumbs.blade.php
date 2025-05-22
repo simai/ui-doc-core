@@ -11,17 +11,25 @@
     //echo "</pre>";
     @endphp
     <ul class="sf-breadcrumb">
-          <li class="sf-breadcrumb-item">
+          
+
+    @foreach($breadcrumbs_array as $key => $item)
+      @if($item['title'] === 'Главная')
+        <li class="sf-breadcrumb-item">
             <a href="#" >
               <i class="color-primary sf-icon sf-icon-light">home</i>
             </a>
-          </li>
-
-    @foreach($breadcrumbs_array as $key => $item)
-        <li class="sf-breadcrumb-item text-1/2 ">
-          <a href="{{$item['url']}}">{{$item['title']}}</a>
             <i class="sf-icon sf-icon-light">chevron_right</i>
           </li>
+      @else
+        <li class="sf-breadcrumb-item text-1/2 ">
+          <a href="{{$item['url']}}">{{$item['title']}}</a>
+            @if(!$loop->last)
+              <i class="sf-icon sf-icon-light">chevron_right</i>
+            @endif
+        </li>
+      @endif
+        
     @endforeach
     </ul>
 </section>

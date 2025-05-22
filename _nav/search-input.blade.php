@@ -35,6 +35,9 @@
             <label class="sf-input-inner-label">
                 <input type="email" required="" class="sf-input-main" placeholder="Search" >
             </label>
+            <div class="sf-input-body--right flex flex-center items-cross-center">
+                <button class="sf-input-close" style = "display: none;">✕</button>
+            </div>
         </div>
         <div id="search_results" class="docsearch-input__holder hidden"></div>
     </div>
@@ -71,6 +74,20 @@
     searchObject.searchGetter().addEventListener("click", function(){
         searchObject.toggleSearch();
     }); 
+
+    searchObject.searchGetter().querySelector('input').addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            searchObject.searchGetter().querySelector('.sf-input-close').style.display = 'flex';
+        } else {
+            searchObject.searchGetter().querySelector('.sf-input-close').style.display = 'none';
+        }
+    });
+
+    searchObject.searchGetter().querySelector('.sf-input-close').addEventListener('click', function() {
+        searchObject.searchGetter().querySelector('input').value = '';
+        searchObject.searchGetter().querySelector('input').dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
     document.addEventListener('click', event => {
             const isClickInside = searchObject.searchGetter().contains(event.target);
             
@@ -79,5 +96,7 @@
                 searchObject.search.parentElement.classList.remove('flex-grow'); 
             }
         });
+    
+    
 </script>
 
