@@ -17,7 +17,7 @@
 
         <li class="sf-nav-menu-element {{$page->isActiveParent($slug) ? 'active' : ''}}">
             @if ($title && $slug !== $page->locale())
-                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">{{$title}} 
+                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">
                     <i class = "sf-icon">
                         @php
                             if($page->isActiveParent($slug))
@@ -25,11 +25,12 @@
                             else
                                 echo "keyboard_arrow_down";
                         @endphp
-                    </i>
+                    </i>    
+                    {{$title}}  
                 </button>
             @endif
              @if ($slug == $page->locale())
-                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">Основы 
+                <button onclick="toggleNav(this)" class="sf-nav-button" type="button">
                     <i class = "sf-icon">
                         @php
                             if($page->isActiveParent($slug))
@@ -38,6 +39,7 @@
                                 echo "keyboard_arrow_down";
                         @endphp
                     </i>
+                    Основы 
                 </button>
             @endif
 

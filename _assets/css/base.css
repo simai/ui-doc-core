@@ -188,7 +188,6 @@ pre {
 }
 
 .sf-nav-menu{
-    width: var(--sf-g3);
     position: sticky;
     top: 0;
     align-self: baseline;

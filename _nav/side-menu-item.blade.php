@@ -16,7 +16,7 @@
         <i class="sf-icon">Bug_Report</i>
     </button>
 </div>
-<h5 class = "sf-side-menu-header">Название</h5>
+<h5 class = "sf-side-menu-header">Навигация</h5>
 <ul class = "sf-side-menu-list">
     <li class = "sf-side-menu-list-item sf-side-menu-list-item--active">
         <a href="#">Классы</a>

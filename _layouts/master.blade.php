@@ -80,11 +80,12 @@
                 font-size: inherit;
                 width: 100%;
                 display: inline-flex;
-                justify-content: space-between;
+                /*justify-content: space-between;*/
             }
 
             aside .sf-nav-button .sf-icon{
-                height: var(--sf-c6); //32px;
+                font-size: var(--sf-text--height-1);
+                height: var(--sf-с0);
             }
 
             .sf-nav-menu--lvl0, .menu-level-1 > li > .sf-nav-button{

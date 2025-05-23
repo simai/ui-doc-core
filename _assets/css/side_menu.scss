@@ -5,7 +5,7 @@
     .sf-side-menu-button-pannel{
         padding-left: var(--sf-space-3);
         .sf-button.side-menu-instrument{
-            width: var(--sf-d0);
+            width: var(--sf-c6);
             justify-content: center;
         }
     }
@@ -35,7 +35,10 @@
                     background: var(--sf-on-surface);
                     border-radius: 4px;
                     clip-path: polygon(0 0%, 100% 10%, 100% 90%, 0 100%);
-                }
+                } 
+            }
+            a{
+                font-size: var(--sf-text--size-1\/2);
             }
         }
         a{
