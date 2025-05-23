@@ -1,4 +1,4 @@
-.nav {
+.sf-nav {
     &-menu {
         strong {
             font-size: var(--sf-text--size-1);
@@ -7,12 +7,14 @@
         a {
             font-size: var(--sf-text--size-1);
             color: var(--sf-on-surface);
+            flex-grow: 1;
             &.active {
                 background-color: var(--sf-surface-3);
                 border-radius: var(--sf-radius-1);
             }
         }
         li:has(button) {
+
                 > ul {
                     display: none;
                 }
@@ -21,6 +23,7 @@
                     display: block;
                 }
             }
+            //display: flex;
         }
     }
     &-button {

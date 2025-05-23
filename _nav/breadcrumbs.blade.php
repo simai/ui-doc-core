@@ -17,7 +17,7 @@
       @if($item['title'] === 'Главная')
         <li class="sf-breadcrumb-item">
             <a href="#" >
-              <i class="color-primary sf-icon sf-icon-light">home</i>
+              <i class="color-on-surface sf-icon sf-icon-medium">home</i>
             </a>
             <i class="sf-icon sf-icon-light">chevron_right</i>
           </li>

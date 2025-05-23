@@ -177,6 +177,9 @@ pre {
 .sf-container{
     max-width: var(--sf-i2); /*!important;
     /*justify-content: center;*/
+    &-main{
+        height: fit-content;
+    }
 }
 
 .sf-container-header{

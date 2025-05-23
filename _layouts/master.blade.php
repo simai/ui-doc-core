@@ -315,7 +315,7 @@
     @yield('nav-toggle')
 </header>
 <div class="w-full flex-auto ">
-    <div class="flex container sf-container">
+    <div class="flex container sf-container sf-container-main">
         <aside class = "sf-nav-menu sf-nav-menu--right">
             <nav id="js-nav-menu" class="nav-menu hidden lg:block">
                 @include('_core._nav.menu', ['items' => $page->navigation])
