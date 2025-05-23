@@ -155,11 +155,12 @@ pre {
     @apply shadow;
     @apply text-base;
     background-color: var(--sf-surface-3);
+    
     code {
         @apply bg-transparent;
         @apply block;
         @apply p-0;
-        
+        color: var(--sf-on-surface);
     }
 }
 
@@ -191,4 +192,14 @@ pre {
     position: sticky;
     top: 0;
     align-self: baseline;
+}
+
+code.hljs{
+    color: var(--sf-on-surface);
+}
+code.hljs .hljs-comment{
+    color: var(--sf-on-surface-variant);
+}
+code.hljs .hljs-keyword, code.hljs .hljs-meta{
+    color: var(--sf-on-surface) !important;
 }
