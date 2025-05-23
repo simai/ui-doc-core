@@ -20,6 +20,9 @@
         }
       }
     }
+    button{
+      --sf-icon-font-size: var(--sf-text--height-2);
+    }
     &-item {
       &_next {
         margin-left: auto;
