@@ -20,7 +20,7 @@
 </div>
 <h5 class = "sf-side-menu-header">Навигация</h5>
 <ul class = "sf-side-menu-list">
-    <li class = "sf-side-menu-list-item sf-side-menu-list-item--active">
+    <!--<li class = "sf-side-menu-list-item sf-side-menu-list-item--active">
         <a href="#">Классы</a>
     </li>
     <li class = "sf-side-menu-list-item">
@@ -31,60 +31,41 @@
     </li>
     <li class = "sf-side-menu-list-item">
         <a href="#">shrink-none</a>
-    </li>
+    </li>-->
 </ul>
 
+<div class="table-of-contents">
+
+    </div>
+
 <script>
-    /*document.addEventListener('DOMContentLoaded', function() {
-    const resizeButton = document.querySelector('.sf-size-switcher');
-    const contentContainer = document.querySelector('body');
-    
-    // Проверяем сохраненное состояние при загрузке
-    const isExpanded = localStorage.getItem('containerExpanded') === 'true';
+    document.addEventListener('DOMContentLoaded', function() {
+    const headings = document.querySelector('main').querySelectorAll('h1, h2, h3, h4, h5, h6');
+    //const tocContainer = document.querySelector('.sf-side-menu-button-pannel');
+    //tocContainer.innerHTML = '<h3>Содержание</h3><ul></ul>';
+    const tocList = document.querySelector('.sf-side-menu-list');
 
-    var number;
-    if (isExpanded) {
-        const containerClasses = [...contentContainer.classList].filter(className => 
-            className.startsWith('max-container')
-        );
-
-        // Получить полное название класса
-        if (containerClasses.length > 0) {
-            const fullClassName = containerClasses[0];            
-            // Можно извлечь число из класса
-            const match = fullClassName.match(/max-container-(\d+)/);
-            if (match) {
-                number = match[1] + 2;
-                contentContainer.classList.remove(containerClasses[0]);
-                contentContainer.classList.add('max-container-'+number);
-                console.log(`Номер контейнера: ${number}`);
-                console.log(localStorage.getItem('containerExpanded'));
-            }
+    headings.forEach(heading => {
+        if (!heading.id) {
+            heading.id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
         }
-    }
-    
-    let changeNumber; 
-    // Обработчик клика на кнопку
-    resizeButton.addEventListener('click', function() {
-        // Получаем текущее состояние из LocalStorage
-        const currentState = localStorage.getItem('containerExpanded');
-        
-        // Устанавливаем противоположное значение
-        const newState = !currentState;
-        localStorage.setItem('containerExpanded', newState.toString());
-        
-        // Применяем изменения к DOM
-        if (newState) {
-            contentContainer.classList.remove('container-default');
-            contentContainer.classList.add('container-expanded');
-        } else {
-            contentContainer.classList.remove('container-expanded');
-            contentContainer.classList.add('container-default');
-        }
-        
-        console.log("New state:", newState);
+        const listItem = document.createElement('li');
+        listItem.className = `sf-side-menu-list-item`;
+        listItem.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
+        tocList.appendChild(listItem);
     });
-});*/
+
+    /*if (headings.length > 0) {
+        document.body.prepend(tocContainer);
+    }*/
+
+    [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(element => {
+        element.addEventListener('click', function() {
+            [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(li => li.classList.remove('sf-side-menu-list-item--active'));
+            element.classList.add('sf-side-menu-list-item--active');
+        });
+    });
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     const resizeButton = document.querySelector('.sf-size-switcher');
