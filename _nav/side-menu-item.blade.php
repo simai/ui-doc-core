@@ -41,8 +41,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
     const headings = document.querySelector('main').querySelectorAll('h1, h2, h3, h4, h5, h6');
-    //const tocContainer = document.querySelector('.sf-side-menu-button-pannel');
-    //tocContainer.innerHTML = '<h3>Содержание</h3><ul></ul>';
     const tocList = document.querySelector('.sf-side-menu-list');
 
     headings.forEach(heading => {
@@ -54,10 +52,6 @@
         listItem.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
         tocList.appendChild(listItem);
     });
-
-    /*if (headings.length > 0) {
-        document.body.prepend(tocContainer);
-    }*/
 
     [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(element => {
         element.addEventListener('click', function() {
