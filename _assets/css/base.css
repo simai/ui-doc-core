@@ -48,6 +48,7 @@ code {
     @apply py-px;
     @apply rounded;
     @apply text-sm;
+    background-color: var(--sf-surface-3);
 }
 
 code.hljs {
@@ -161,6 +162,7 @@ pre {
         @apply block;
         @apply p-0;
         color: var(--sf-on-surface);
+        
     }
 }
 

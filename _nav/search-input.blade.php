@@ -1,4 +1,4 @@
-<div class="search--wrap flex justify-end items-center ml-auto mr-4  text-right md:pl-10">
+<div class="search--wrap flex justify-end items-center ml-auto  text-right ">
     <!--<button
             title="Start searching"
             type="button"
@@ -27,7 +27,7 @@
         </button>
     </div> -->
 
-    <div class="sf-input-container sf-input-container--1">
+    <div class="sf-input-container sf-input-container--1 sf-input-search-container">
         <div class="sf-input sf-input--1" id="input_search">
             <div class="flex">
                 <i class="sf-icon">search</i>

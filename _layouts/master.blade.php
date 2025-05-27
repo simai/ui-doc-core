@@ -100,8 +100,9 @@
                 padding: var(--sf-space-4);
                 border-right: 1px solid var(--sf-outline-variant);
                 border-left: 1px solid var(--sf-outline-variant);
-                flex: 0 0 40vw;
-                max-width: 40vw;
+                //flex: 0 0 40vw;
+                //max-width: calc(var(--sf-container-8--size-max) / 2);
+                max-width: 50%;
             }
 
             #docsearch-input{
@@ -218,6 +219,10 @@
             border: none;
             background: transparent;
         }
+
+        .sf-input-search-container{
+            width: var(--sf-f7) !important;
+        }
         /*.sf-input-close:before, .sf-input-close:after {
             position: absolute;
             left: 50%;
@@ -236,9 +241,9 @@
         </style>
 </head>
 
-<body class="theme-light flex flex-col justify-between min-h-screen leading-normal">
-<header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 " role="banner">
-    <div class="container flex items-center  mx-auto px-4 lg:px-8 sf-container sf-container-header">
+<body class="theme-light flex flex-col justify-between min-h-screen leading-normal max-container-6">
+<header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 container p-left-0 p-right-0" role="banner">
+    <!--<div class="flex items-center">--> <!--sf-container sf-container-header mx-auto px-4 lg:px-8-->
         <div class="sf-menu-container">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
                 <svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -275,10 +280,9 @@
                 </div>
         </div>
 
-        <div class="flex flex-1 justify-end items-center text-right md:pl-10">
+        <div class="flex flex-1 justify-end items-center text-right md:pl-10 gap-x-1">
             @include('_core._nav.search-input')
-        </div>
-        <div>
+
             <!--<button class = "sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "lang_switch">
                 <i class = "sf-icon">Language</i>
             </button>-->
@@ -310,13 +314,16 @@
                     @endforeach
                 </select>
             </form>
+
         </div>
-    </div>
+        
+        
+    <!--</div>-->
 
     @yield('nav-toggle')
 </header>
-<div class="w-full flex-auto ">
-    <div class="flex container sf-container sf-container-main">
+<div class="w-full flex flex-auto justify-center container p-left-0 p-right-0">
+     <!--sf-container sf-container-main-->
         <aside class = "sf-nav-menu sf-nav-menu--right">
             <nav id="js-nav-menu" class="nav-menu hidden lg:block">
                 @include('_core._nav.menu', ['items' => $page->navigation])
@@ -330,7 +337,6 @@
                 @include('_core._nav.side-menu', ['items' => $page->navigation])
             </nav>
         </aside>
-    </div>
 </div>
 <script src="{{ mix('js/main.js', 'assets/build') }}"></script>
 <script>
