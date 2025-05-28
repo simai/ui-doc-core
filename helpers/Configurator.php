@@ -34,6 +34,40 @@
             $current['current'] = $value;
         }
 
+        public function generateBreadCrumbs($locale, $segments )
+        {
+            $items = [];
+            foreach ($segments as $segment) {
+                $inFlat = false;
+                foreach ($this->flattenMenu[$locale] as $value) {
+                    if($value['key'] === $segment) {
+                        $inFlat = true;
+                        $items[] = $value;
+                    }
+                }
+                if(!$inFlat) {
+                    $parent = $this->eachArray($this->settings[$locale], $segment);
+                    if(isset($parent)) {
+                        $items[] = [
+                            'label' => $parent['current']['title']
+                        ];
+                    }
+                }
+            }
+            return $items;
+        }
+        private function eachArray($item, $segment)
+        {
+            if(is_array($item)) {
+                foreach ($item as $key => $value) {
+                    if($key === $segment) {
+                        return $value;
+                    }
+                    $this->eachArray($value, $segment);
+                }
+            }
+        }
+
         public function makeSettings(): void
         {
             foreach ($this->locales as $locale) {
@@ -58,9 +92,9 @@
             $flat = [
                 ['key' => $locale, 'path' => '/' . $locale, 'label' => $items[$locale]['current']['title']],
             ];
-             $this->makeMenu($items, $flat, '', $locale);
+            $this->makeMenu($items, $flat, '', $locale);
 
-             return $flat;
+            return $flat;
         }
 
         public function makeMenu(array $items, array &$flat, string $prefix = '', string $locale = 'ru'): void
@@ -92,11 +126,11 @@
         public function flattenNav(array $items, array &$flat): array {
 
             foreach ($items as $key => $value) {
-                   if(is_array($value) && $key === 'menu') {
-                        $flat = array_merge($flat, $value);
-                   } else if(is_array($value)) {
-                       $this->flattenNav($value, $flat);
-                   }
+                if(is_array($value) && $key === 'menu') {
+                    $flat = array_merge($flat, $value);
+                } else if(is_array($value)) {
+                    $this->flattenNav($value, $flat);
+                }
             }
 
             return $flat;
@@ -120,7 +154,7 @@
             } else {
                 $returnArr['prev'] = $flattenNav[$needly - 1];
                 if(isset($flattenNav[$needly + 1])) {
-                $returnArr['next'] = $flattenNav[$needly + 1];
+                    $returnArr['next'] = $flattenNav[$needly + 1];
                 }
             }
             return $returnArr;

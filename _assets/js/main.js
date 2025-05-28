@@ -124,7 +124,7 @@ function renderResults(results, containerId = 'search_results') {
         container.classList.remove('hidden');
     });
 }
-const docInput = document.getElementById('input_search');//document.getElementById('docsearch-input');
+const docInput = document.getElementById('input_search');
 
 
 if(docInput) {
