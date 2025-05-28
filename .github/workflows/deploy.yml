@@ -38,8 +38,9 @@ jobs:
           yarn install
           
           # Сборка ассетов
-          yarn watch
+          yarn prod
           
           # Сборка сайта для dev
           ./vendor/bin/jigsaw build local
+          ./vendor/bin/jigsaw build production
     
