@@ -4,15 +4,20 @@
     $isSub = $isSub ?? false;
     $prefix = $prefix ?? '';
 @endphp
-
+<style>
+h2:hover:before{
+    content: "&";
+    color: blue;
+}
+</style>
 <div class="sf-side-menu-button-pannel" style = "display: inline-flex; color: var(--sf-on-surface);">
     <button class="sf-button sf-button--1/2 sf-button--on-surface-transparent sf-button--borderless side-menu-instrument">
         <i class="sf-icon">Fullscreen</i>
     </button>
     <button class="sf-button sf-button--1/2 sf-button--on-surface-transparent sf-button--borderless side-menu-instrument sf-size-switcher">
-        <!--<i class="sf-icon">Arrow_Range</i>-->
-        <i class="sf-icon">Chevron_Right</i>
-        <i class="sf-icon">Chevron_Left</i>
+        <i class="sf-icon sf-size-switcher--default">Arrow_Range</i>
+        <i class="sf-icon sf-size-switcher--expanded">Chevron_Right</i>
+        <i class="sf-icon sf-size-switcher--expanded">Chevron_Left</i>
     </button>
     <button class="sf-button sf-button--1/2 sf-button--on-surface-transparent sf-button--borderless side-menu-instrument">
         <i class="sf-icon">Bug_Report</i>
@@ -92,9 +97,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         contentContainer.classList.add('max-container-'+number);
                     }
                 }
+            [...resizeButton.querySelectorAll('.sf-size-switcher--expanded')].forEach(element => {
+                element.style.display = "flex";
+            });
+            resizeButton.querySelector('.sf-size-switcher--default').style.display = "none";
         } else {
-            
-
             const containerClasses = [...contentContainer.classList].filter(className => 
                 className.startsWith('max-container')
             );
@@ -111,7 +118,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
-                
+            [...resizeButton.querySelectorAll('.sf-size-switcher--expanded')].forEach(element => {
+                element.style.display = "none";
+            });
+            resizeButton.querySelector('.sf-size-switcher--default').style.display = "flex";    
             contentContainer.classList.remove('container-expanded');
             contentContainer.classList.add('container-default');    
         }
