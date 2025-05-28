@@ -4,12 +4,7 @@
     $isSub = $isSub ?? false;
     $prefix = $prefix ?? '';
 @endphp
-<style>
-h2:hover:before{
-    content: "&";
-    color: blue;
-}
-</style>
+
 <div class="sf-side-menu-button-pannel" style = "display: inline-flex; color: var(--sf-on-surface);">
     <button class="sf-button sf-button--1/2 sf-button--on-surface-transparent sf-button--borderless side-menu-instrument">
         <i class="sf-icon">Fullscreen</i>
@@ -64,6 +59,16 @@ h2:hover:before{
             element.classList.add('sf-side-menu-list-item--active');
         });
     });
+
+    [...document.querySelectorAll('main h1, main h2, main h3, main h4, main h5')].forEach(element => {
+        element.addEventListener('click', function() {
+            if (navigator.clipboard) {
+                if(element.id)
+                    navigator.clipboard.writeText(window.location.origin + window.location.pathname + "#" + element.id);
+            }
+        });
+    });   
+
 });
 
 document.addEventListener('DOMContentLoaded', function() {

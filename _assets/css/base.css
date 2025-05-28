@@ -204,3 +204,29 @@ code.hljs .hljs-comment{
 code.hljs .hljs-keyword, code.hljs .hljs-meta{
     color: var(--sf-on-surface) !important;
 }
+
+
+/*header styles*/
+main h1,
+main h2,
+main h3,
+main h4,
+main h5
+{
+    position: relative;
+    cursor: pointer;
+}
+
+main h1:hover:before,
+main h2:hover:before,
+main h3:hover:before,
+main h4:hover:before,
+main h5:hover:before
+{
+    content: "#";
+    position: absolute;
+    left: -20px;
+    color: var(--sf-primary);
+}
+
+        
