@@ -223,28 +223,12 @@
         .sf-input-search-container{
             width: var(--sf-f7) !important;
         }
-        /*.sf-input-close:before, .sf-input-close:after {
-            position: absolute;
-            left: 50%;
-            content: " ";
-            height: 100%;
-            width: 2px;
-            top: 0;
-            background-color: var(--sf-outline);
-        }
-        .sf-input-close:before {
-            transform: rotate(45deg);
-        }
-        .sf-input-close:after {
-            transform: rotate(-45deg);
-        }*/
-
         </style>
 </head>
 
 <body class="theme-light flex flex-col justify-between min-h-screen leading-normal max-container-6">
-<header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1 container p-left-0 p-right-0" role="banner">
-    <!--<div class="flex items-center">--> <!--sf-container sf-container-header mx-auto px-4 lg:px-8-->
+<header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1  p-left-0 p-right-0" role="banner">
+   <div class="flex items-center container p-0"> <!--sf-container sf-container-header mx-auto px-4 lg:px-8-->
         <div class="sf-menu-container">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
                 <svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -319,7 +303,7 @@
         </div>
         
         
-    <!--</div>-->
+    </div>
 
     @yield('nav-toggle')
 </header>
