@@ -12,9 +12,7 @@
         </a>
         <div class="bottom--navigation-items flex justify-between">
             @foreach($navigation as $key => $item)
-                <!--<div class="bottom--navigation-item_{{$key}}">
-                    <a class="flex" href="{{$item['path']}}">{{$item['label']}}</a>
-                </div>-->
+
                 <a class="flex" href="{{$item['path']}}">
                     <button class = "sf-button sf-button--on-surface-transparent sf-button--borderless bottom--navigation-item_{{$key}}">
                         @if($key == "prev")

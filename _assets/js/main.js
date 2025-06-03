@@ -16,11 +16,126 @@ hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
 
 window.toggleNav = (btn) => {
     btn.parentNode.classList.toggle('active');
-    if(btn.querySelector('.sf-icon').innerText === "keyboard_arrow_down")
-        btn.querySelector('.sf-icon').innerText = "keyboard_arrow_up";
-    else
-        btn.querySelector('.sf-icon').innerText = "keyboard_arrow_down";
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // const headings = document.querySelector('main').querySelectorAll('h1, h2, h3, h4, h5, h6');
+    // const tocList = document.querySelector('.sf-side-menu-list');
+    //
+    // headings.forEach(heading => {
+    //     if (!heading.id) {
+    //         heading.id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
+    //     }
+    //     const listItem = document.createElement('li');
+    //     listItem.className = `sf-side-menu-list-item`;
+    //     listItem.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
+    //     tocList.appendChild(listItem);
+    // });
+    //
+    // [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(element => {
+    //     element.addEventListener('click', function() {
+    //         [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(li => li.classList.remove('sf-side-menu-list-item--active'));
+    //         element.classList.add('sf-side-menu-list-item--active');
+    //     });
+    // });
+    //
+    // [...document.querySelectorAll('main h1, main h2, main h3, main h4, main h5')].forEach(element => {
+    //     element.addEventListener('click', function() {
+    //         if (navigator.clipboard) {
+    //             if(element.id)
+    //                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "#" + element.id);
+    //         }
+    //     });
+    // });
+
+});
+
+// Инициализация состояния
+function getInitialState() {
+    // Проверяем наличие значения и приводим к boolean
+    const savedState = localStorage.getItem('containerExpanded');
+    return savedState ? savedState === 'true' : false;
+}
+
+// Применяем сохраненное состояние
+function applyState(isExpanded, resizeButton, contentContainer) {
+    let number = 0;
+    if (isExpanded) {
+        contentContainer.classList.add('container-expanded');
+        contentContainer.classList.remove('container-default');
+
+        const containerClasses = [...contentContainer.classList].filter(className =>
+            className.startsWith('max-container')
+        );
+        // Получить полное название класса
+        if (containerClasses.length > 0) {
+            const fullClassName = containerClasses[0];
+            // Можно извлечь число из класса
+            const match = fullClassName.match(/max-container-(\d+)/);
+            if (match) {
+                number = Number(match[1]) + 2;
+                contentContainer.classList.remove(containerClasses[0]);
+                contentContainer.classList.add('max-container-'+number);
+            }
+        }
+        [...resizeButton.querySelectorAll('.sf-size-switcher--expanded')].forEach(element => {
+            element.style.display = "flex";
+        });
+        resizeButton.querySelector('.sf-size-switcher--default').style.display = "none";
+    } else {
+        const containerClasses = [...contentContainer.classList].filter(className =>
+            className.startsWith('max-container')
+        );
+        if(contentContainer.classList.contains('container-expanded')){
+            // Получить полное название класса
+            if (containerClasses.length > 0) {
+                const fullClassName = containerClasses[0];
+                // Можно извлечь число из класса
+                const match = fullClassName.match(/max-container-(\d+)/);
+                if (match) {
+                    number = Number(match[1]) - 2;
+                    contentContainer.classList.remove(containerClasses[0]);
+                    contentContainer.classList.add('max-container-'+number);
+                }
+            }
+        }
+        [...resizeButton.querySelectorAll('.sf-size-switcher--expanded')].forEach(element => {
+            element.style.display = "none";
+        });
+        resizeButton.querySelector('.sf-size-switcher--default').style.display = "flex";
+        contentContainer.classList.remove('container-expanded');
+        contentContainer.classList.add('container-default');
+    }
+}
+
+
+function initResize() {
+    const resizeButton = document.querySelector('.sf-size-switcher');
+    const contentContainer = document.querySelector('body');
+
+
+    // Инициализация при загрузке
+    let isExpanded = getInitialState();
+    applyState(isExpanded, resizeButton, contentContainer);
+
+    // Обработчик клика
+    resizeButton.addEventListener('click', function() {
+        // Инвертируем текущее состояние
+        isExpanded = !isExpanded;
+
+        // Сохраняем новое состояние
+        localStorage.setItem('containerExpanded', isExpanded.toString());
+
+        // Применяем изменения
+        applyState(isExpanded, resizeButton, contentContainer);
+
+        console.log('State updated to:', isExpanded);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initResize()
+});
 
 
 let fuse = null;

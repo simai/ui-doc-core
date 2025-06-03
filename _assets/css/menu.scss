@@ -1,5 +1,19 @@
 .sf-nav {
     &-menu {
+        &-element {
+            .sf {
+                &-icon {
+                    transition: .3s transform ease;
+                }
+            }
+            &.active {
+                > button {
+                    i {
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+        }
         strong {
             font-size: var(--sf-text--size-1);
         }

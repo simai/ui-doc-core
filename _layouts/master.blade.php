@@ -51,184 +51,11 @@
 
 
 
-
-        <style>
-            header{
-                border-bottom: 1px solid var(--sf-outline-variant);
-                box-sizing: border-box;
-                max-height: var(--sf-e0);
-            }
-            /*.sf-nav-menu--right{
-                border-right: 1px solid var(--sf-outline-variant);
-            }*/
-            .sf-nav-menu{
-                flex: 0 0 20vw;
-            }
-            aside ul{
-                list-style-type: none;
-            }
-            aside ul li a, aside ul button {
-                font-weight: var(--sf-text--font-weight);
-                padding: var(--sf-space-1\/2) var(--sf-space-1);
-                font-size: var(--sf-text--size-1);
-                color: var(--sf-on-surface);
-                line-height: var(--sf-text--height-1);
-                display: flex;
-            }
-            aside .sf-nav-button{
-                font-weight: inherit;
-                font-size: inherit;
-                width: 100%;
-                display: inline-flex;
-                /*justify-content: space-between;*/
-            }
-
-            aside .sf-nav-button .sf-icon{
-                font-size: var(--sf-text--height-1);
-                height: var(--sf-с0);
-            }
-
-            .sf-nav-menu--lvl0, .menu-level-1 > li > .sf-nav-button{
-                padding-left: var(--sf-space-3);
-            }
-
-            .sf-nav-menu--lvl1{
-                padding-left: var(--sf-space-4);
-            }
-
-            main{
-                padding: var(--sf-space-4);
-                border-right: 1px solid var(--sf-outline-variant);
-                border-left: 1px solid var(--sf-outline-variant);
-                //flex: 0 0 40vw;
-                //max-width: calc(var(--sf-container-8--size-max) / 2);
-                max-width: 50%;
-            }
-
-            #docsearch-input{
-                min-width: var(--sf-f7);
-            }
-            .sf-menu-container{
-                place-items: center;
-                display: flex;
-                gap: var(--sf-d7);
-            }
-
-            .sf-menu{
-                display: inline-flex;
-                gap: var(--sf-c2);
-            }
-
-            .sf-menu .sf-menu-item{
-                display: inline-flex;
-                font-size: var(--sf-text--size-1);
-                line-height: var(--sf-text--height-1);
-                //padding-left: var(--sf-b2);
-                //padding-right: var(--sf-b2);
-
-            }
-            .sf-menu .sf-menu-item a{
-                color: var(--sf-on-surface);
-                font-weight: var(--sf-text--font-weight-5);
-            }
-
-            .sf-button.sf-button--nav-switch{
-                --sf-button--text-size: var(--sf-text--size-3);
-                max-width: var(--sf-d0);
-                justify-content: center;
-            }
-
-        /* Стили для элементов меню */
-        .sf-dropdown-menu-item {
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            color: var(--sf-dropdown--color);
-            border-bottom: var(--sf-a1) solid var(--sf-surface-container-active);
-        }
-
-        /* Изменение цвета при наведении на элемент меню */
-        .sf-dropdown-menu-item:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Класс для отображения меню */
-        .sf-dropdown-menu.show {
-            display: block;
-        }
-
-
-
-        /*переключение языков */
-        .sf-language-switch--language-item input[type='radio']{
-            display: none; 
-        }
-        .sf-language-switch--language-item
-        {
-            padding: var(--sf-space-1\/3) var(--sf-space-1);
-            line-height: var(--sf-text--height-1);
-        }
-
-        .sf-language-switch--language-panel{
-            --sf-language-switch--language-panel-display: none; 
-            position: absolute;
-            background-color: var(--sf-surface-2);
-            top: 150%;
-            left: 0;
-            width: 100%;
-            overflow-y: auto;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: var(--sf-radius-1);
-            display: var(--sf-language-switch--language-panel-display); 
-            z-index: 1;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            border-top: none;
-            max-width: max-content;
-            min-width: max-content;
-        }
-
-        .sf-language-switch--language-panel.sf-language-switch--language-panel-show{
-            --sf-language-switch--language-panel-display: flex;
-        }
-
-        .sf-language-switch--language-item .sf-language-switch--check
-        {
-            display: none;
-        }
-
-        .sf-breadcrumb{
-            padding-bottom: var(--sf-space-3);
-        }
-
-        .sf-input-close {
-        --sf-close--diameter: var(--sf-text--height-1);
-            /* position: absolute; */
-            display: flex;
-            justify-content: center;
-            align-items: anchor-center;
-            width: var(--sf-close--diameter);
-            height: var(--sf-close--diameter);
-            font-size: var(--sf-text--height-1);
-            color: var(--sf-outline);
-            cursor: pointer;
-            border: none;
-            background: transparent;
-        }
-
-        .sf-input-search-container{
-            width: var(--sf-f7) !important;
-        }
-        </style>
 </head>
 
 <body class="theme-light flex flex-col justify-between min-h-screen leading-normal max-container-6">
-<header class="w-full flex p-top-1 p-bottom-1 md:p-top-1 md:p-bottom-1  p-left-0 p-right-0" role="banner">
-   <div class="flex items-center container p-0"> <!--sf-container sf-container-header mx-auto px-4 lg:px-8-->
+<header class="w-full flex p-top-2 p-bottom-2 md:p-top-2 md:p-bottom-2 container p-left-0 p-right-0" role="banner">
+    <!--<div class="flex items-center">--> <!--sf-container sf-container-header mx-auto px-4 lg:px-8-->
         <div class="sf-menu-container">
             <a href="/" title="{{ $page->siteName }} home" class="inline-flex items-center">
                 <svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -283,7 +110,7 @@
                         <label><li class="sf-language-switch--language-item"><span>Español</span> <input type="radio" name="laguage_switch_radio" value="es"> <i class="sf-icon sf-icon-light sf-language-switch--check">check</i></li></label>
                     </ul>
                 </div>
-                
+
             </div>
 
             <button class = "sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch" id = "theme-toggle">
@@ -301,9 +128,9 @@
             </form>
 
         </div>
-        
-        
-    </div>
+
+
+    <!--</div>-->
 
     @yield('nav-toggle')
 </header>
@@ -314,7 +141,7 @@
                 @include('_core._nav.menu', ['items' => $page->navigation])
             </nav>
         </aside>
-        <main role="main" class="w-full break-words ">
+        <main role="main" class="container--main w-full break-words ">
             @yield('body')
         </main>
         <aside class = "sf-nav-menu side-menu">
@@ -339,7 +166,7 @@
 
     const language_item = document.querySelectorAll('.sf-language-switch--language-item');
     console.log(language_item);
-    
+
     [...language_item].forEach(element => {
         element.querySelector("input[type='radio']").addEventListener('change', function(e){
             if(e.currentTarget.checked){
@@ -349,13 +176,13 @@
                     document.getElementById('locale').value = e.currentTarget.value;
                     document.getElementById('locale').dispatchEvent(new Event("change", { bubbles: true }));
                 }
-                
+
             }
         });
         if(element.querySelector("input[type='radio']").value == '{{$locale}}'){
             console.log(element.querySelector(".sf-language-switch--check").classList.remove('sf-language-switch--check'));
         }
-                
+
     });
 
 
@@ -369,7 +196,7 @@
         ).join('/');
     });
 
-    window.addEventListener('click', function(e){   
+    window.addEventListener('click', function(e){
         console.log(e.target);
     if (!e.target.querySelector('.sf-language-switch--language-panel') && !e.target.closest('button.sf-language-switch--button')){
         document.querySelector('.sf-language-switch--language-panel').classList.remove("sf-language-switch--language-panel-show");
@@ -377,22 +204,8 @@
     } else{
         // Clicked outside the box
         console.log('Clicked outside the box');
-    }   
+    }
     });
-
-
-
-    /*document.getElementById('theme-toggle').addEventListener('click', () => {
-        const html = document.body;
-        const isDark = html.classList.contains('theme-dark');
-
-        // Переключаем тему
-        html.classList.remove(isDark ? 'theme-dark' : 'theme-light');
-        html.classList.add(isDark ? 'theme-light' : 'theme-dark');
-
-        // Сохраняем в localStorage
-        localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    });*/
 
 </script>
 @stack('scripts')

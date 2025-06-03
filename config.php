@@ -43,15 +43,18 @@
             $current = trim($page->getPath(), '/');
             return $current === $page->locale();
         },
+        'getHeadings' => function ($page) {
+            return $page->HEADINGS;
+        },
         'collections' => require_once('source/_core/collections.php'),
         'isActive' => function ($page, $path) {
+
             return Str::endsWith(trimPath($page->getPath()), trimPath($path));
         },
         'isActiveParent' => function ($page, $slug) {
             $path = trim(trimPath($page->getPath()), '/');
 
             $segments = explode('/', $path);
-            array_shift($segments);
 
 
             return in_array($slug, $segments);
