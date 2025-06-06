@@ -42,14 +42,16 @@
 
     $events->afterCollections(function ($jigsaw)  {
         $index = [];
+        $configurator = $jigsaw->getConfig('configurator');
+        $paths = [];
         foreach ($jigsaw->getConfig('collections') as $collectionName => $config) {
             $collection = $jigsaw->getCollection($collectionName);
             foreach ($collection as $page) {
+                $paths[] = $page->getPath();
                 $html = $page->getContent();
                 $plain = strip_tags($html);
                 $headings = [];
                 $rightMenuHeadings = [];
-
                 if (preg_match_all('/<h2.*?id="(.*?)".*?>(.*?)<\/h2>/si', $html, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $match) {
                         $headings[] = [
@@ -59,14 +61,21 @@
                     }
                 }
                 if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
-                    foreach ($matches as $match) {
+                    foreach ($matches as $key => $match) {
+                        $text = trim(strip_tags($match[3]));
+                        $id = $configurator->makeUniqueHeadingId($page->getPath(),$match[1], $key);
                         $rightMenuHeadings[] = [
                             'level' => $match[1],
+                            'id' => $id,
+                            'type' => preg_replace('/h/', '', $match[1]),
                             'anchor' => $match[2],
-                            'text' => trim(strip_tags($match[3])),
+                            'text' => $text,
                         ];
                     }
                 }
+
+                $configurator->setHeading($page->getPath(), $rightMenuHeadings);
+
                 $page->set('headings', $rightMenuHeadings);
                 $title = $page->title ?? '';
                 $contentLines = preg_split('/\r\n|\r|\n/', $plain);
@@ -86,11 +95,43 @@
 
             }
         }
-        $jigsaw->setConfig('HEADINGS', $rightMenuHeadings);
+        $configurator->setPaths($paths);
         $jigsaw->setConfig('INDEXES', $index);
     });
 
     $events->afterBuild(function ($jigsaw) {
+        $configurator = $jigsaw->getConfig('configurator');
+        $outputPath = $jigsaw->getDestinationPath();
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($outputPath)
+        );
+
+
+        foreach ($iterator as $file) {
+            if ($file->isFile() && substr($file->getFilename(), -5) === '.html') {
+                $relativePath = str_replace($outputPath, '', preg_replace('#[\\/\\\\]index\.html$#i', '', $file->getPathname()));
+                $relativePath = str_replace('\\', '/', $relativePath);
+                $html = file_get_contents($file->getPathname());
+                $count = 0;
+                $html = preg_replace('/<!--.*?-->/s', '', $html);
+                $html = preg_replace_callback(
+                    '/<(h[1-4])( [^>]*)?>(.*?)<\/\1>/si',
+                    function($match) use (&$count, $relativePath,$html, $configurator) {
+                        $tag = $match[1];
+                        $attrs = $match[2] ?? '';
+                        if (preg_match('/id=/', $attrs)) {
+                            return $match[0];
+                        }
+                        $id = $configurator->makeUniqueHeadingId($relativePath,$tag, $count);
+                        $count++;
+
+                        return "<$tag$attrs id=\"$id\">{$match[3]}</$tag>";
+                    },
+                    $html
+                );
+                file_put_contents($file->getPathname(), $html);
+            }
+        }
         $index = $jigsaw->getConfig('INDEXES');
         $dest = $jigsaw->getDestinationPath();
 

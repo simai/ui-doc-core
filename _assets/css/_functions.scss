@@ -1,0 +1,11 @@
+@function grid-width($columns, $total-columns: 12, $gutter: 0) {
+  @if $gutter == 0 {
+    @return ($columns / $total-columns) * 100%;
+  } @else {
+    @return calc(
+            (
+            (100% - (#{$gutter} * (#{$total-columns} - 1))) / #{$total-columns} * #{$columns}
+            ) + (#{$gutter} * (#{$columns} - 1))
+    );
+  }
+}

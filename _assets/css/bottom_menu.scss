@@ -1,6 +1,7 @@
 .bottom {
   &--navigation {
     margin-top: 2rem;
+    gap: var(--sf-text--size-1);
     &-items {
       gap: 20px;
     }
@@ -21,7 +22,10 @@
       }
     }
     button{
-      --sf-icon-font-size: var(--sf-text--height-2);
+      font-size: var(--sf-text--size-1);
+      .sf-icon {
+        font-size: var(--sf-c2);
+      }
     }
     &-item {
       &_next {

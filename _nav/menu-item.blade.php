@@ -1,53 +1,48 @@
 @php
-    $items = $sub ?? $page->configurator->getItems($page->locale());
+    $locale = $page->locale();
     $level = $level ?? 0;
-    $isSub = $isSub ?? false;
-    $prefix = $prefix ?? '';
+    $menuTree = $menuTree ?? $page->configurator->getMenu($locale);
+    $paths = $page->configurator->paths;
 @endphp
 
-<ul class="sf-nav-menu menu-level-{{ $level }}">
-    @foreach ($items as $slug => $item)
+
+<ul class="sf-nav-menu-wrap menu-level-{{ $level }}">
+    @foreach ($menuTree as $path => $node)
         @php
-            $title = $item['current']['title'] ?? null;
-            $menu = $item['current']['menu'] ?? [];
-            $hasSub = !empty($item['pages']);
-            $isLocaleRoot = ($slug == $page->locale());
-            $buttonTitle = $isLocaleRoot ? 'Основы' : $title;
-            $isActive = $page->isActiveParent(trim($slug)) && count($items) > 1;
+            $hasPage = in_array($path, $paths);
+            $activeParent = $page->isActiveParent($node);
+            $activeItem = $page->getPath() === $path;
         @endphp
-
-        <li class="sf-nav-menu-element {{ $isActive ? 'active' : '' }}">
-            @if ($buttonTitle)
-                <button onclick="toggleNav(this)" class="sf-nav-button flex content-main-between" type="button">
-                    <span>{{ $buttonTitle }}</span>
-                    <i class="sf-icon">keyboard_arrow_down</i>
-                </button>
+        <li class="sf-nav-menu-element {{$activeParent && !$activeItem ? 'active' : ''}}">
+            @if (!empty($node['children']))
+                @if($hasPage)
+                    <div class="sf-nav-item flex {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
+                        <a href="{{$path}}" class="sf-nav-button flex content-main-between" type="button">
+                            <span class="sf-nav-title">{{ $node['title'] }}</span>
+                        </a>
+                        <button class="sf-nav-toggle_button flex items-center" onclick="toggleNav(this)" type="button">
+                            <i class="sf-icon">keyboard_arrow_down</i>
+                        </button>
+                    </div>
+                @else
+                    <button onclick="toggleNav(this)"
+                            class="sf-nav-button sf-nav-item flex content-main-between items-center" type="button">
+                        <span class="sf-nav-title">{{ $node['title'] }}</span>
+                        <span class="sf-nav-toggle_button flex items-center">
+                                            <i class="sf-icon">keyboard_arrow_down</i>
+                                        </span>
+                    </button>
+                @endif
+            @else
+                <a href="{{ $path }}"
+                   class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }}">
+                    <span class="sf-nav-title">{{ $node['title'] }}</span>
+                </a>
             @endif
-            @if (!empty($menu))
-                <ul>
-                    @foreach ($menu as $key => $label)
-                        @php
-                            $fullPath = ($slug === $key) ? ($isSub ? $prefix . '/' . $key : $key) : trim($slug . '/' . $key, '/');
-                            $url = ($slug === $page->language ? '' : '/' . $page->language) . '/' . $fullPath;
-                        @endphp
-                        <li class="sf-nav-menu-element">
-                            <a href="{{ $page->url($url) }}"
-                               class="sf-nav-menu-element--link sf-nav-menu--lvl{{ $level }} {{ $page->isActive($url) ? 'active text-blue-500' : '' }}">
-                                <span>{{ $label }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-
-            @if ($hasSub)
-                @include('_core._nav.menu', [
-                    'sub' => $item['pages'],
-                    'level' => $level + 1,
-                    'isSub' => true,
-                    'prefix' => $slug
-                ])
+            @if (!empty($node['children']))
+                @include('_core._nav.menu', ['menuTree' => $node['children'], 'level' => $level + 1,])
             @endif
         </li>
     @endforeach
 </ul>
+

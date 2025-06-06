@@ -1,58 +1,144 @@
-import hljs from 'highlight.js/lib/core';
+// import hljs from 'highlight.js/lib/core';
 
 import Fuse from 'fuse.js'
+import {SearchClass} from "./helpers/Search.js";
 
+const locale = getCookie('locale') ?? 'ru';
 
-hljs.registerLanguage('bash', require('highlight.js/lib/languages/bash'));
-hljs.registerLanguage('css', require('highlight.js/lib/languages/css'));
-hljs.registerLanguage('html', require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
-hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
-hljs.registerLanguage('markdown', require('highlight.js/lib/languages/markdown'));
-hljs.registerLanguage('php', require('highlight.js/lib/languages/php'));
-hljs.registerLanguage('scss', require('highlight.js/lib/languages/scss'));
-hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
+// hljs.registerLanguage('bash', require('highlight.js/lib/languages/bash'));
+// hljs.registerLanguage('css', require('highlight.js/lib/languages/css'));
+// hljs.registerLanguage('html', require('highlight.js/lib/languages/xml'));
+// hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
+// hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
+// hljs.registerLanguage('markdown', require('highlight.js/lib/languages/markdown'));
+// hljs.registerLanguage('php', require('highlight.js/lib/languages/php'));
+// hljs.registerLanguage('scss', require('highlight.js/lib/languages/scss'));
+// hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
 
 
 window.toggleNav = (btn) => {
-    btn.parentNode.classList.toggle('active');
+    btn.closest('.sf-nav-menu-element').classList.toggle('active');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // const headings = document.querySelector('main').querySelectorAll('h1, h2, h3, h4, h5, h6');
-    // const tocList = document.querySelector('.sf-side-menu-list');
-    //
-    // headings.forEach(heading => {
-    //     if (!heading.id) {
-    //         heading.id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
-    //     }
-    //     const listItem = document.createElement('li');
-    //     listItem.className = `sf-side-menu-list-item`;
-    //     listItem.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
-    //     tocList.appendChild(listItem);
-    // });
-    //
-    // [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(element => {
-    //     element.addEventListener('click', function() {
-    //         [...document.querySelectorAll('.sf-side-menu-list-item')].forEach(li => li.classList.remove('sf-side-menu-list-item--active'));
-    //         element.classList.add('sf-side-menu-list-item--active');
-    //     });
-    // });
-    //
-    // [...document.querySelectorAll('main h1, main h2, main h3, main h4, main h5')].forEach(element => {
-    //     element.addEventListener('click', function() {
-    //         if (navigator.clipboard) {
-    //             if(element.id)
-    //                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "#" + element.id);
-    //         }
-    //     });
-    // });
+let fuse = null;
 
-});
 
-// Инициализация состояния
+async function initSearch() {
+    fuse = await initFuse();
+    const Search = new SearchClass({
+        fuse: fuse
+    });
+    // const {input, menu} = Search;
+    //
+    //
+    //
+    // input.querySelector('.sf-input-close').addEventListener('click', function() {
+    //     input.querySelector('input').value = '';
+    //     input.querySelector('input').dispatchEvent(new Event("input", { bubbles: true }));
+    // });
+}
+
+async function initFuse() {
+    return await fetch(`/search-index_${locale}.json`)
+        .then(response => response.json())
+        .then(data => {
+
+            const options = {
+                keys: [
+                    "title",
+                    "content",
+                    "headings.text"
+                ],
+                threshold: 0.0,
+                ignoreLocation: true,
+                distance: 0,
+                minMatchCharLength: 3,
+                includeScore: true,
+                findAllMatches: true,
+                includeMatches: true
+            };
+            return new Fuse(data, options);
+        });
+}
+
+
+function initClicks(navLinks, header) {
+    navLinks.forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                const headerHeight = header ? header.offsetHeight : 0;
+                const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+                const offsetPosition = elementPosition - headerHeight;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    })
+}
+
+function initNavLinks() {
+    const headers = document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]");
+    const navLinks = document.querySelectorAll(".sf-side-menu-list-item a");
+    const header = document.querySelector("header");
+    const visibleIds = new Set();
+    const headerHeight = header ? header.offsetHeight : 0;
+    initClicks(navLinks, header)
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute("id");
+                const link = document.querySelector(`.sf-side-menu-list-item a[href="#${id}"]`);
+
+                if (!link) return;
+
+                if (entry.isIntersecting) {
+                    visibleIds.add(id);
+                } else {
+                    visibleIds.delete(id);
+                }
+            });
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute("href") || "";
+                const id = href.startsWith("#") ? href.slice(1) : null;
+                if (id && visibleIds.has(id)) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        },
+        {
+            rootMargin: `-${headerHeight}px 0px 0px 0px`,
+            threshold: 0
+        }
+    );
+
+    headers.forEach(header => observer.observe(header));
+}
+
+
+function init() {
+    initNavLinks();
+    initResize();
+    initSearch();
+}
+
+if (typeof Turbo !== undefined) {
+    document.addEventListener('turbo:load', init);
+} else {
+    document.addEventListener("DOMContentLoaded", init);
+}
+
 function getInitialState() {
-    // Проверяем наличие значения и приводим к boolean
     const savedState = localStorage.getItem('containerExpanded');
     return savedState ? savedState === 'true' : false;
 }
@@ -75,7 +161,7 @@ function applyState(isExpanded, resizeButton, contentContainer) {
             if (match) {
                 number = Number(match[1]) + 2;
                 contentContainer.classList.remove(containerClasses[0]);
-                contentContainer.classList.add('max-container-'+number);
+                contentContainer.classList.add('max-container-' + number);
             }
         }
         [...resizeButton.querySelectorAll('.sf-size-switcher--expanded')].forEach(element => {
@@ -86,7 +172,7 @@ function applyState(isExpanded, resizeButton, contentContainer) {
         const containerClasses = [...contentContainer.classList].filter(className =>
             className.startsWith('max-container')
         );
-        if(contentContainer.classList.contains('container-expanded')){
+        if (contentContainer.classList.contains('container-expanded')) {
             // Получить полное название класса
             if (containerClasses.length > 0) {
                 const fullClassName = containerClasses[0];
@@ -95,7 +181,7 @@ function applyState(isExpanded, resizeButton, contentContainer) {
                 if (match) {
                     number = Number(match[1]) - 2;
                     contentContainer.classList.remove(containerClasses[0]);
-                    contentContainer.classList.add('max-container-'+number);
+                    contentContainer.classList.add('max-container-' + number);
                 }
             }
         }
@@ -114,156 +200,74 @@ function initResize() {
     const contentContainer = document.querySelector('body');
 
 
-    // Инициализация при загрузке
     let isExpanded = getInitialState();
     applyState(isExpanded, resizeButton, contentContainer);
 
-    // Обработчик клика
-    resizeButton.addEventListener('click', function() {
-        // Инвертируем текущее состояние
-        isExpanded = !isExpanded;
-
-        // Сохраняем новое состояние
-        localStorage.setItem('containerExpanded', isExpanded.toString());
-
-        // Применяем изменения
-        applyState(isExpanded, resizeButton, contentContainer);
-
-        console.log('State updated to:', isExpanded);
-    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    initResize()
-});
+window.toggleResize = function (button) {
+    const isExpanded = !getInitialState(),
+        contentContainer = document.querySelector('body');
+    localStorage.setItem('containerExpanded', isExpanded.toString());
+
+    applyState(isExpanded, button, contentContainer);
+}
 
 
-let fuse = null;
-const locale = getCookie('locale') ?? 'ru';
-
-fetch(`/search-index_${locale}.json`)
-    .then(response => response.json())
-    .then(data => {
-
-        const options = {
-            keys: [
-                "title",
-                "content",
-                "headings.text"
-            ],
-            threshold: 0.0,
-            ignoreLocation: true,
-            distance: 0,
-            minMatchCharLength: 3,
-            includeScore: true,
-            findAllMatches: true,
-            includeMatches: true
-        };
-        fuse = new Fuse(data, options);
+window.readMode = function () {
+    const header = document.querySelector('header');
+    const navMenu = document.querySelector('.sf-nav-menu--right');
+    const sideMenu = document.querySelector('.side-menu');
+    const mainContainer = document.querySelector('.container--main');
+    const sideMenuNavigation = document.querySelector('.side-menu-navigation');
+    [header, navMenu, sideMenuNavigation].forEach(item => {
+        if (item) {
+            item.classList.toggle('hidden');
+        }
     });
 
-function highlightMatch(text, indices) {
-    if (!indices || !indices.length) return text;
-
-    let result = '';
-    let lastIndex = 0;
-
-    for (const [start, end] of indices) {
-        result += text.slice(lastIndex, start);
-        result += '<mark>' + text.slice(start, end + 1) + '</mark>';
-        lastIndex = end + 1;
-    }
-
-    result += text.slice(lastIndex);
-    return result;
-}
-
-function getExcerptWithHighlightSmart(text, indices, context = 60) {
-    if (!indices?.length) return text;
-    indices.sort((a,b) => (a[1] - a[0]) - (b[1] - b[0]))
-    const [start, end] = indices[indices.length - 1];
-
-    const firstNewlineIndex = text.indexOf('\n');
-    const isInFirstLine = firstNewlineIndex === -1 || start < firstNewlineIndex;
-
-
-    if (isInFirstLine && (firstNewlineIndex === -1 || firstNewlineIndex <= context * 2)) {
-        const lineEnd = firstNewlineIndex === -1 ? text.length : firstNewlineIndex;
-        const before = text.slice(0, start);
-        const match = text.slice(start, end + 1);
-        const after = text.slice(end + 1, lineEnd);
-        return `${before}<mark>${match}</mark>${after}`;
-    }
-
-    const excerptStart = Math.max(start - context, 0);
-    const excerptEnd = Math.min(end + context + 1, text.length);
-    const before = text.slice(excerptStart, start);
-    const match = text.slice(start, end + 1);
-    const after = text.slice(end + 1, excerptEnd);
-
-    return `${excerptStart > 0 ? '…' : ''}${before}<mark>${match}</mark>${after}${excerptEnd < text.length ? '…' : ''}`;
-}
-
-
-function renderResults(results, containerId = 'search_results') {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-
-    if (!results.length) {
-        container.innerHTML = '<p>Ничего не найдено</p>';
-        return;
-    }
-    results.forEach(result => {
-        const { item, matches } = result;
-
-        let highlightedTitle = item.title;
-        let highlightedContent = item.content?.slice(0, 200) || '';
-        matches.forEach(match => {
-            if (match.key === 'title') {
-                highlightedTitle = highlightMatch(match.value, match.indices);
-            } else if (match.key === 'content') {
-                highlightedContent = getExcerptWithHighlightSmart(item.content, match.indices);
-            }
-        });
-
-        const block = document.createElement('div');
-        block.className = 'search--result';
-        block.innerHTML = `
-      <a href="${item.url}">
-        <div class="search--result-title">${highlightedTitle}</div>
-      </a>
-      <p class="search--result-content">${highlightedContent}</p>
-    `;
-
-        container.appendChild(block);
-        container.classList.remove('hidden');
-    });
-}
-const docInput = document.getElementById('input_search');
-
-
-if(docInput) {
-    ['input','focus'].forEach(event => {
-        docInput.addEventListener(event, function (e) {
-            const value = e.target.value;
-            if (value.length > 2) {
-                const results = fuse.search(e.target.value.trim());
-                renderResults(results)
-            }
-        });
-    })
-
-    document.addEventListener('click', (event) => {
-        const container  = document.getElementById('search_results');
-        const wrap = document.getElementById('js-search-input');
-        if(container && wrap) {
-            if (event.target !== wrap && !wrap.contains(event.target)) {
-                container.classList.add('hidden');
-            }
+    [mainContainer, sideMenu].forEach(item => {
+        if (item) {
+            item.classList.toggle('read');
         }
     })
+
 }
 
-document.querySelectorAll('pre code').forEach((block) => {
-    hljs.highlightBlock(block);
+window.langOpen = function (item) {
+
+    const language_switch_panel = item.parentElement.querySelector('.sf-language-switch--language-panel');
+    if (language_switch_panel.classList.contains("sf-language-switch--language-panel-show"))
+        language_switch_panel.classList.remove("sf-language-switch--language-panel-show");
+    else
+        language_switch_panel.classList.add("sf-language-switch--language-panel-show");
+
+}
+
+window.langSwitch = function (button) {
+    const newLocale = button.dataset.locale;
+    if (newLocale !== locale) {
+        document.cookie = `locale=${newLocale}; path=/; max-age=31536000`; // 1 year
+        const currentPath = window.location.pathname.split('/');
+        const currentLocale = locale;
+        window.location.href = currentPath.map((segment, index) =>
+            segment === currentLocale ? newLocale : segment
+        ).join('/');
+    }
+}
+
+window.addEventListener('click', function (e) {
+    const container = document.querySelector('.sf-language-switch--container');
+    const menu = container.querySelector('.sf-language-switch--language-panel-show');
+    if (!menu) {
+        return false;
+    }
+    if (e.target !== container && !container.contains(e.target)) {
+        document.querySelector('.sf-language-switch--language-panel').classList.remove("sf-language-switch--language-panel-show");
+    }
 });
+
+
+// document.querySelectorAll('pre code').forEach((block) => {
+//     hljs.highlightBlock(block);
+// });
