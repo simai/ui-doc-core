@@ -132,11 +132,7 @@ function init() {
     initSearch();
 }
 
-if (typeof Turbo !== undefined) {
-    document.addEventListener('turbo:load', init);
-} else {
-    document.addEventListener("DOMContentLoaded", init);
-}
+document.addEventListener("DOMContentLoaded", init);
 
 function getInitialState() {
     const savedState = localStorage.getItem('containerExpanded');
