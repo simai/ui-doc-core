@@ -47,6 +47,15 @@
         }
     }
     &--wrap {
+        .sf {
+            &-input {
+                transition: .3s border-color ease;
+                border-color: var(--sf-outline-variant);
+                &:hover {
+                    border-color: var(--sf-primary-hover)
+                }
+            }
+        }
         //max-width: 400px;
         &.open {
             .sf {
@@ -70,17 +79,6 @@
                         right: var(--sf-space-1);
                         top: 50%;
                         transform: translate(0, -50%);
-                    }
-                }
-                &-container {
-                    .sf {
-                        &-input {
-                            transition: .3s border-color ease;
-                            border-color: var(--sf-outline-variant);
-                            &:hover {
-                                border-color: var(--sf-primary-hover)
-                            }
-                        }
                     }
                 }
                 &-close {

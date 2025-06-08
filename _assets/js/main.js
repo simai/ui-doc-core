@@ -105,16 +105,22 @@ function initNavLinks() {
                     visibleIds.delete(id);
                 }
             });
-
-            navLinks.forEach(link => {
+            let hasActive = false;
+            navLinks.forEach((link, index) => {
                 const href = link.getAttribute("href") || "";
                 const id = href.startsWith("#") ? href.slice(1) : null;
+
                 if (id && visibleIds.has(id)) {
+                    hasActive = true;
                     link.classList.add("active");
                 } else {
                     link.classList.remove("active");
                 }
             });
+            if(!hasActive) {
+                const last = navLinks[navLinks.length - 1];
+                last.classList.add("active");
+            }
         },
         {
             rootMargin: `-${headerHeight}px 0px 0px 0px`,
@@ -132,7 +138,11 @@ function init() {
     initSearch();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+if (typeof Turbo !== 'undefined') {
+    document.addEventListener('turbo:load', init);
+} else {
+    document.addEventListener("DOMContentLoaded", init);
+}
 
 function getInitialState() {
     const savedState = localStorage.getItem('containerExpanded');
