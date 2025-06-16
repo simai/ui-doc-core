@@ -1,9 +1,15 @@
 .sf-nav {
+  &-wrap {
+    @include breakpoint(tablet) {
+      width: 100%;
+      overflow: auto;
+    }
+  }
+
   &-item {
 
     font-weight: var(--sf-text--font-weight);
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
-    font-size: var(--sf-text--size-1);
+    padding: var(--sf-a8) var(--sf-b6);
     color: var(--sf-on-surface);
     line-height: var(--sf-text--height-1);
     transition: .3s background-color ease;
@@ -38,7 +44,8 @@
   }
 
   &-menu {
-    padding-top: var(--sf-space-3);
+    padding-top: var(--sf-c2);
+
     &-wrap {
       ul {
         padding-left: var(--sf-a8);
@@ -47,11 +54,11 @@
 
     &-element {
       &--link {
-        font-size: var(--sf-text--size-1);
         color: var(--sf-on-surface);
         flex-grow: 1;
         transition: .3s background-color ease;
         border-radius: var(--sf-radius-1);
+
         &:not(.active) {
           &:hover {
             color: var(--sf-on-surface);
@@ -72,7 +79,7 @@
     }
 
     strong {
-      font-size: var(--sf-text--size-1);
+
     }
 
     li:has(button) {
@@ -112,6 +119,21 @@
 
     &:hover {
       color: var(--sf-on-surface);
+    }
+  }
+}
+
+.nav {
+  &-menu {
+    @include breakpoint(tablet) {
+    &-left {
+
+        padding-right: var(--sf-b6);
+      }
+      &-right {
+        width: 100%;
+        overflow: auto;
+      }
     }
   }
 }

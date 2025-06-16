@@ -1,31 +1,34 @@
-
-
-export class SearchClass{
-    constructor({fuse}){
+export class SearchClass {
+    constructor({fuse}) {
         this.value = '';
-        this.fuse = fuse
+        this.fuse = fuse;
         this.init();
     }
 
     init() {
         this.wrap = document.getElementById('search_doc');
+        this.searchButton = document.querySelector('.sf-button-search');
         this.inputContainer = this.wrap.querySelector('.sf-input-search-container');
-        this.menu = document.getElementById("top_menu");
+        this.menu = document.querySelector(".sf-menu-container");
         this.input = document.getElementById('input_search').querySelector('input');
         this.resultsWrap = document.getElementById('search_results');
         this.resultsContainer = this.resultsWrap.querySelector('.docsearch-input__main');
+        this.logo = document.querySelector('a.logo');
+        this.headerRight = document.querySelector('.header--right');
         this.close = this.wrap.querySelector('.sf-input-close');
-        this.input.addEventListener('click', () => {
-            this.openSearch();
-        })
+        [this.searchButton, this.input].forEach((item) => {
+            item.addEventListener('click', () => {
+                this.openSearch();
+            });
+        });
         this.close.addEventListener('click', () => {
             this.value = '';
             this.input.value = '';
-            this.clearResults()
-            this.closeState(this.value !== '')
+            this.clearResults();
+            this.closeState(this.value !== '');
 
-        })
-        this.initDoc()
+        });
+        this.initDoc();
 
     }
 
@@ -34,41 +37,41 @@ export class SearchClass{
         this.resultsWrap.classList.add('hidden');
     }
 
-     initDoc() {
+    initDoc() {
         if (this.input) {
             ['input', 'focus'].forEach(event => {
-                this.input.addEventListener(event,  (e) => {
+                this.input.addEventListener(event, (e) => {
                     const value = e.target.value.trim();
-                    if(this.value === value) {
-                        return
+                    if (this.value === value) {
+                        return;
                     }
                     if (value.length > 2) {
                         const results = this.fuse.search(e.target.value.trim());
-                        if(event === 'focus') {
-                            setTimeout( () => {
-                                this.renderResults(results)
-                            }, 400)
+                        if (event === 'focus') {
+                            setTimeout(() => {
+                                this.renderResults(results);
+                            }, 400);
                         } else {
                             this.value = e.target.value;
-                            this.renderResults(results)
-                            this.closeState(this.value !== '')
+                            this.renderResults(results);
+                            this.closeState(this.value !== '');
                         }
                     }
-                    if(!value.length) {
+                    if (!value.length) {
                         this.resultsWrap.classList.add('hidden');
                     }
                 });
-            })
+            });
 
             document.addEventListener('click', (event) => {
-                if (event.target !== this.wrap && !this.wrap.contains(event.target)) {
-                    this.closeSearch()
+                if (event.target !== this.wrap && event.target !== this.searchButton && !this.searchButton.contains(event.target) && !this.wrap.contains(event.target)) {
+                    this.closeSearch();
                 }
-            })
+            });
         }
     }
 
-     highlightMatch(text, indices) {
+    highlightMatch(text, indices) {
         if (!indices || !indices.length) return text;
 
         let result = '';
@@ -84,9 +87,9 @@ export class SearchClass{
         return result;
     }
 
-     getExcerptWithHighlightSmart(text, indices, context = 60) {
+    getExcerptWithHighlightSmart(text, indices, context = 60) {
         if (!indices?.length) return text;
-        indices.sort((a, b) => (a[1] - a[0]) - (b[1] - b[0]))
+        indices.sort((a, b) => (a[1] - a[0]) - (b[1] - b[0]));
         const [start, end] = indices[indices.length - 1];
 
         const firstNewlineIndex = text.indexOf('\n');
@@ -114,7 +117,7 @@ export class SearchClass{
         this.resultsContainer.innerHTML = '';
 
         if (!results.length) {
-            const text = window.sfSearchNotFound !== 'undefined' ? window.sfSearchNotFound : 'Ничего не найдено'
+            const text = window.sfSearchNotFound !== 'undefined' ? window.sfSearchNotFound : 'Ничего не найдено';
             this.resultsContainer.innerHTML = `<p class="search--result-content text-left">${text}</p>`;
             this.resultsWrap.classList.remove('hidden');
             return;
@@ -147,33 +150,54 @@ export class SearchClass{
     }
 
     closeState(state) {
-        if(!state) {
-            this.close.parentNode.classList.add('hidden')
+        if (!state) {
+            this.close.parentNode.classList.add('hidden');
         } else {
-            this.close.parentNode.classList.remove('hidden')
+            this.close.parentNode.classList.remove('hidden');
         }
     }
-    searchGetter(){
+
+    searchGetter() {
         return this.input;
     }
-    menuGetter(){
+
+    menuGetter() {
         return this.menu;
     }
+
     closeSearch() {
         this.resultsWrap.classList.add('hidden');
-        this.menu.classList.remove('hidden');
         this.inputContainer.classList.add('grow-none');
         this.inputContainer.classList.remove('grow');
-        this.wrap.classList.remove('open')
+        this.wrap.classList.remove('open');
+        if (window.innerWidth < 520) {
+            this.wrap.classList.remove('visible');
+        }
+        if (window.innerWidth < 768) {
+            this.logo.classList.remove('hidden');
+            this.headerRight.classList.remove('hidden');
+        } else {
+            this.menu.classList.remove('hidden');
+        }
+
     }
-    openSearch(){
-        //const menu = document.querySelector(".sf-menu");
-        this.menu.classList.add('hidden')
+
+    openSearch() {
         this.inputContainer.classList.remove('grow-none');
         this.inputContainer.classList.add('grow');
-        this.wrap.classList.add('open')
+        this.wrap.classList.add('open');
+        if (window.innerWidth < 520) {
+            this.wrap.classList.add('visible');
+        }
+        if (window.innerWidth < 768) {
+            this.logo.classList.add('hidden');
+            this.headerRight.classList.add('hidden');
+        } else {
+            this.menu.classList.add('hidden');
+        }
     }
-    searchDocumentClick(){
+
+    searchDocumentClick() {
         if (!this.input.contains(event.target)) {
         }
     }

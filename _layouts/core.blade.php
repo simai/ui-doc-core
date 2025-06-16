@@ -1,6 +1,7 @@
 @php
 $hasSha = $page->sha ?? 'latest';
 @endphp
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script>
     window.sfPath = `https://cdn.jsdelivr.net/gh/simai/ui@${@json($hasSha)}/distr/`;
 </script>

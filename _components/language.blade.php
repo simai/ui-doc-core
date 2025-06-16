@@ -6,7 +6,7 @@
 <div class="sf-language-switch sf-language-switch--container flex">
     <button  onclick="langOpen(this)" class="sf-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch sf-language-switch--button"
             id="lang_switch">
-        <i class="sf-icon">Language</i>
+        <i class="sf-icon">language</i>
     </button>
     <div class="sf-language-switch--language-panel" id="language_panel">
         <ul class="sf-language-switch--language-list flex flex-col w-full">
