@@ -179,7 +179,7 @@ if (typeof Turbo !== 'undefined') {
 } else {
     document.addEventListener("DOMContentLoaded", init);
 }
-alert('Поправить Анимацию сжимания и разжимания контейнера для турбо');
+// alert('Поправить Анимацию сжимания и разжимания контейнера для турбо');
 function getInitialState() {
     const savedState = localStorage.getItem('expanded');
     return savedState ? savedState === 'true' : false;

@@ -126,7 +126,7 @@ body .container {
     margin-right: auto;
     margin-left: auto;
     padding: 0 var(--sf-b6);
-    transition: .3s max-width ease;
+    //transition: .3s max-width ease;
 }
 
 .header {
@@ -413,7 +413,7 @@ button, a {
 .container--main {
     flex: 0 0 grid-width(6);
     min-width: 0;
-    transition: .3s flex ease;
+    //transition: .3s flex ease;
     &.read {
         flex: 0 0 grid-width(9);
     }
