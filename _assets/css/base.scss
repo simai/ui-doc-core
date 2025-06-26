@@ -171,13 +171,23 @@ body .container {
   }
 
   &--left {
-    padding-right: var(--sf-c2);
+    padding-right: calc(var(--sf-c2) / 2);
     flex: 0 0 22%;
     border-right: 1px solid var(--sf-outline-variant);
+    .aside-wrap {
+      height: calc(100vh - var(--sf-header-height) - calc(var(--sf-c2) * 2));
+      overflow: auto;
+      padding-right: calc(var(--sf-c2) / 2);
+    }
     @include breakpoint(midTablet) {
       flex: 0 0 30%;
     }
     @include breakpoint(tablet) {
+      .aside-wrap {
+        padding-right: 0;
+        height: auto;
+
+      }
       padding: var(--sf-b2);
       transition: .3s left ease;
       display: flex;
