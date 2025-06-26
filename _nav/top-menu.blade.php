@@ -1,4 +1,4 @@
-<div class="sf-menu-container items-cross-center flex relative">
+<div class="sf-menu-container items-cross-center flex relative overflow-hidden">
     <button onclick="menuScroll(this, false)" class="sf-menu-scroll left absolute hidden" type="button">
         <i class="sf-icon">chevron_left</i>
     </button>

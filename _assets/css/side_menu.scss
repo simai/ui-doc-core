@@ -3,7 +3,7 @@
   padding-left: var(--sf-c2);
   min-width: 200px;
 
-  @include breakpoint(tablet) {
+  @include breakpoint(midTablet) {
     position: fixed;
     display: flex;
     left: -100%;
@@ -14,6 +14,7 @@
     transition: .3s all ease;
     z-index: 2;
     padding: var(--sf-b2);
+    border: 0;
     &.active {
       left: 0;
     }
@@ -39,29 +40,29 @@
   .sf-side-menu-list {
     //gap: var(--sf-b2);
     position: relative;
-    padding-left: var(--sf-b2);
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 3px;
-      background: var(--sf-surface-4);
-      top: 0;
-      bottom: 0;
-    }
+    //&:before {
+    //  content: '';
+    //  position: absolute;
+    //  left: calc(-1 * calc(var(--sf-c2) + 2px));
+    //  width: 3px;
+    //  background: var(--sf-surface-4);
+    //  top: 0;
+    //  bottom: 0;
+    //}
     .sf-side-menu-list-item {
       line-height: var(--sf-text-height-1);
       position: relative;
       padding-top: calc(var(--sf-b2) / 2);
       padding-bottom: calc(var(--sf-b2) / 2);
+
       &:has(.active) {
         &:before {
           top: 0;
           bottom: 0;
           content: '';
           position: absolute;
-          left: calc(-1 * var(--sf-b2));
-          width: 3px;
+          left: calc(-1 * calc(var(--sf-c2) + 1px));
+          width: 1px;
           background: var(--sf-on-surface);
         }
       }
@@ -71,6 +72,7 @@
         font-size: var(--sf-b4);
         color: var(--sf-on-surface);
         transition: font-weight 0.2s;
+
         &.active {
           font-weight: 700;
         }
@@ -85,28 +87,30 @@
 
 .sf {
   &-button {
+    &-readMode,
     &-bug {
-      @include breakpoint(tablet) {
+      @include breakpoint(midTablet) {
         position: fixed;
         right: var(--sf-space-2);
-        top: 64px;
+        top: calc(var(--sf-header-height) + var(--sf-a8));
         &.sf-button--on-surface-transparent {
-          background-color:
-                  color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 30%);
+          background-color: color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 30%);
         }
       }
     }
   }
+
   &-side {
     &-menu {
       &-button {
         &-pannel {
-          @include breakpoint(tablet) {
+          @include breakpoint(midTablet) {
             display: none;
           }
         }
       }
     }
+
     &_item {
       &:hover {
         color: initial;
@@ -114,11 +118,32 @@
 
       }
     }
+
     &-menu {
       &-list {
         &_wrap {
           padding-top: var(--sf-b6);
         }
+      }
+    }
+  }
+}
+
+body {
+  .sf-button {
+    &-bug, &-readMode {
+      @include breakpoint(midTablet) {
+        font-size: var(--sf-c0);
+        line-height: var(--sf-c0);
+      }
+
+    }
+    &-readMode {
+      @include breakpoint(midTablet) {
+        top: calc(var(--sf-header-height) + var(--sf-a8) + (var(--sf-d0) * 2));
+      }
+      @include breakpoint(tablet) {
+        display: none;
       }
     }
   }

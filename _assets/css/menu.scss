@@ -14,6 +14,9 @@
     line-height: var(--sf-text--height-1);
     transition: .3s background-color ease;
     border-radius: var(--sf-radius-1);
+    gap: var(--sf-b6);
+    position: relative;
+
 
     &.visited {
       background-color: var(--sf-surface-3);
@@ -34,8 +37,15 @@
   &-toggle {
     &_button {
       padding: var(--sf-a6);
-
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      + span, + a {
+        padding-left: var(--sf-b6);
+      }
       i {
+        transform: rotate(-90deg);
         font-size: var(--sf-c0);
         line-height: var(--sf-c0);
         color: inherit;
@@ -48,7 +58,7 @@
 
     &-wrap {
       ul {
-        padding-left: var(--sf-a8);
+        //padding-left: var(--sf-a8);
       }
     }
 
@@ -98,7 +108,7 @@
         > .sf-nav-item {
           .sf-nav-toggle_button {
             i {
-              transform: rotate(180deg);
+              transform: rotate(0deg);
             }
           }
         }

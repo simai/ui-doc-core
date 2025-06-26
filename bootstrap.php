@@ -125,7 +125,7 @@
                         $id = $configurator->makeUniqueHeadingId($relativePath,$tag, $count);
                         $count++;
 
-                        return "<$tag$attrs id=\"$id\">{$match[3]}</$tag>";
+                        return "<$tag$attrs id=\"$id\"><a href='#{$id}' aria-disabled='false' class='header-anchor'>#</a><span>{$match[3]}</span></$tag>";
                     },
                     $html
                 );

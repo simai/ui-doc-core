@@ -8,10 +8,12 @@
                 <i class="sf-icon">search</i>
             </div>
             <label class="sf-input-inner-label">
-                <input name="search" type="text" class="sf-input-main" placeholder="{{$page->translate('search')}}" >
+                <input name="search" type="text" class="sf-input-main" placeholder="{{$page->translate('search')}}">
             </label>
             <div class="sf-input-body--right flex flex-center items-cross-center absolute right-0 hidden">
-                <button class="sf-input-close">✕</button>
+                <button class="sf-input-close">
+                    <i class="sf-icon">close</i>
+                </button>
             </div>
         </div>
         <div id="search_results" class="docsearch-input__holder hidden">

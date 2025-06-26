@@ -17,20 +17,20 @@
             @if (!empty($node['children']))
                 @if($hasPage)
                     <div class="sf-nav-item flex {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
-                        <a href="{{$path}}" class="sf-nav-button flex content-main-between" type="button">
-                            <span class="sf-nav-title">{{ $node['title'] }}</span>
-                        </a>
                         <button class="sf-nav-toggle_button flex items-center" onclick="toggleNav(this)" type="button">
                             <i class="sf-icon">keyboard_arrow_down</i>
                         </button>
+                        <a href="{{$path}}" class="sf-nav-button flex" type="button">
+                            <span class="sf-nav-title">{{ $node['title'] }}</span>
+                        </a>
                     </div>
                 @else
                     <button onclick="toggleNav(this)"
-                            class="sf-nav-button sf-nav-item flex content-main-between items-center" type="button">
-                        <span class="sf-nav-title">{{ $node['title'] }}</span>
-                        <span class="sf-nav-toggle_button flex items-center">
+                            class="sf-nav-button sf-nav-item flex items-center" type="button">
+                              <span class="sf-nav-toggle_button flex items-center">
                                             <i class="sf-icon">keyboard_arrow_down</i>
                                         </span>
+                        <span class="sf-nav-title">{{ $node['title'] }}</span>
                     </button>
                 @endif
             @else

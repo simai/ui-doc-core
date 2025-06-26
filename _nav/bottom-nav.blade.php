@@ -3,30 +3,22 @@
 @endphp
 
 <section>
-    <div class="bottom--navigation flex content-main-between">
-        <a class="flex" href="#">
-            <button class = "sf-button sf-button--on-surface-transparent sf-button--borderless">
-                <i class = "sf-icon">edit</i>
-                 Изменить страницу
-            </button>
-        </a>
-        <div class="bottom--navigation-items flex content-main-between">
+    <div class="bottom--navigation flex">
+        <div class="bottom--navigation-items w-full flex">
             @foreach($navigation as $key => $item)
-
-                <a class="flex" href="{{$item['path']}}">
-                    <button class = "sf-button sf-button--on-surface-transparent sf-button--borderless bottom--navigation-item_{{$key}}">
-                        @if($key == "prev")
-                        <i class = "sf-icon">chevron_left</i>
-                        @endif
-                            @if($key == "prev")
-                                Предыдущая
-                            @else
-                                Следующая
-                            @endif
-                        @if($key == "next")
-                        <i class = "sf-icon">chevron_right</i>
-                        @endif
-                    </button>
+                @php
+                    $prev = $key == "prev";
+                    $text = $prev ? 'Предыдущая' : 'Следующая';
+                @endphp
+                <a class="flex sf-button sf-button--on-surface-transparent sf-button--borderless bottom--navigation-item_{{$key}}"
+                   href="{{$item['path']}}">
+                    @if($prev)
+                        <i class="sf-icon">chevron_left</i>
+                    @endif
+                    {{$text}}
+                    @if($key == "next")
+                        <i class="sf-icon">chevron_right</i>
+                    @endif
                 </a>
             @endforeach
         </div>

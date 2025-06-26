@@ -17,7 +17,8 @@
 
                 <button class="sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch"
                         id="theme-toggle">
-                    <i class="sf-icon">dark_mode</i>
+                    <i class="sf-icon icon-dark">dark_mode</i>
+                    <i class="sf-icon icon-light">light_mode</i>
                 </button>
 
                 <button onclick="toggleMobileMenu(this)" class="sf-button sf-button-nav sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">

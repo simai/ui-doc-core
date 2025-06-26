@@ -1,20 +1,10 @@
-// import hljs from 'highlight.js/lib/core';
-
 import Fuse from 'fuse.js';
 import {SearchClass} from "./helpers/Search.js";
 import {SizeObserver} from "./helpers/ResizeObserver";
+import setReadModePosition from "./helpers/functions";
 
 const locale = getCookie('locale') ?? 'ru';
 
-// hljs.registerLanguage('bash', require('highlight.js/lib/languages/bash'));
-// hljs.registerLanguage('css', require('highlight.js/lib/languages/css'));
-// hljs.registerLanguage('html', require('highlight.js/lib/languages/xml'));
-// hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
-// hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
-// hljs.registerLanguage('markdown', require('highlight.js/lib/languages/markdown'));
-// hljs.registerLanguage('php', require('highlight.js/lib/languages/php'));
-// hljs.registerLanguage('scss', require('highlight.js/lib/languages/scss'));
-// hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
 
 
 window.toggleNav = (btn) => {
@@ -117,6 +107,8 @@ window.setIssue = function () {
 
 function initNavLinks() {
     console.warn('Доработать якоря, если у них уже есть id ');
+    console.warn('Проработать систему размещения кнопки выхода из полного режима при ресайзе + убирать этот режим, если значение меньше 768.');
+    console.warn('Проработать поведение состояния this.setReadInside в зависимости от места на экране');
     const headers = document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]");
     const navLinks = document.querySelectorAll(".sf-side-menu-list-item a");
     const header = document.querySelector("header");
@@ -139,6 +131,7 @@ function initNavLinks() {
             });
             let hasActive = false;
             navLinks.forEach((link) => {
+                navClick(link,headerHeight);
                 const href = link.getAttribute("href") || "";
                 const id = href.startsWith("#") ? href.slice(1) : null;
 
@@ -160,11 +153,36 @@ function initNavLinks() {
         }
     );
 
-    headers.forEach(header => observer.observe(header));
+    headers.forEach(h => {
+        const link = h.querySelector('a');
+        if(link) {
+            navClick(link,headerHeight, h);
+        }
+        observer.observe(h);
+    });
+}
+
+function navClick(link, headerHeight, head = null) {
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const href = link.getAttribute('href');
+        if(!head) {
+            head = document.getElementById(`${href.replace('#', '')}`);
+        }
+        const elementPosition = head.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - headerHeight;
+        history.pushState(null, '', href);
+        window.scrollTo({
+            top: offsetPosition - 20,
+            behavior: 'smooth'
+        });
+    });
 }
 
 
 function init() {
+
+    initReadMode();
     initNavLinks();
     initResize();
     initSearch().then(() => {
@@ -172,27 +190,39 @@ function init() {
     });
     const resizeObserver = new SizeObserver();
     resizeObserver.init();
+    console.timeEnd('load');
 }
-
+    console.time('load');
 if (typeof Turbo !== 'undefined') {
     document.addEventListener('turbo:load', init);
 } else {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener('DOMContentLoaded', init);
 }
 // alert('Поправить Анимацию сжимания и разжимания контейнера для турбо');
-function getInitialState() {
-    const savedState = localStorage.getItem('expanded');
+function getInitialState(name) {
+    const savedState = localStorage.getItem(name);
     return savedState ? savedState === 'true' : false;
 }
+
+function initReadMode() {
+    const state = getInitialState('readMode');
+    if(state) {
+        const button = document.getElementById('read_mode');
+        if(button) {
+            readMode(button);
+        }
+    }
+}
+
 
 
 function initResize() {
     const resizeButton = document.querySelector('.sf-size-switcher');
     const body = document.querySelector('body');
 
-
-    const isExpanded = getInitialState();
-    if (isExpanded) {
+    const readState = getInitialState('readMode');
+    const isExpanded = getInitialState('expanded');
+    if (isExpanded && !readState) {
         setResize(resizeButton, body, isExpanded);
     }
 
@@ -269,11 +299,11 @@ function setResize(button, container, isExpanded) {
     button.classList.toggle('active');
     const icon = button.querySelector('.sf-icon');
     if (button.classList.contains('active')) {
-        icon.textContent = 'close_fullscreen';
+        icon.textContent = 'width_normal';
         container.classList.add('max-container-8');
         container.classList.remove('max-container-6');
     } else {
-        icon.textContent = 'open_in_full';
+        icon.textContent = 'width_wide';
         container.classList.add('max-container-6');
         container.classList.remove('max-container-8');
     }
@@ -281,7 +311,7 @@ function setResize(button, container, isExpanded) {
 }
 
 window.toggleResize = function (button) {
-    const isExpanded = !getInitialState(),
+    const isExpanded = !getInitialState('expanded'),
         body = document.querySelector('body');
     setResize(button, body, isExpanded);
 };
@@ -290,8 +320,9 @@ window.toggleResize = function (button) {
 window.readMode = function (button) {
     const icon = button.children[0];
     const header = document.querySelector('header');
-    const navMenu = document.querySelector('.sf-nav-menu--right');
-    const sideMenu = document.querySelector('.side-menu');
+    const  body = document.body;
+    const navMenu = document.querySelector('.sf-nav-menu--left');
+    const sideMenu = document.getElementById('side_menu');
     const mainContainer = document.querySelector('.container--main');
     const sideMenuNavigation = document.querySelector('.side-menu-navigation');
     [header, navMenu, sideMenuNavigation].forEach(item => {
@@ -305,15 +336,25 @@ window.readMode = function (button) {
             item.classList.toggle('read');
         }
     });
+
     if (icon) {
         if (mainContainer.classList.contains('read')) {
             icon.textContent = 'fullscreen_exit';
+            body.classList.remove('max-container-8', 'max-container-6');
+            body.classList.add('max-container-1','read');
+            setReadModePosition(mainContainer,sideMenu);
         } else {
             icon.textContent = 'fullscreen';
+            body.classList.remove('max-container-1','read');
+            const isExpanded = getInitialState('expanded');
+            body.classList.add(`max-container-${isExpanded ? '8' : '6'}`);
+            sideMenu.removeAttribute('style');
         }
     }
+    localStorage.setItem('readMode', String(mainContainer.classList.contains('read')));
 
 };
+
 
 window.navOpen = function () {
     const nav = document.getElementById('side_menu');
@@ -361,6 +402,3 @@ window.addEventListener('click', function (e) {
 });
 
 
-// document.querySelectorAll('pre code').forEach((block) => {
-//     hljs.highlightBlock(block);
-// });

@@ -16,6 +16,7 @@
         "highlight.js": "^10.5.0",
         "laravel-mix": "^6.0.39",
         "laravel-mix-jigsaw": "^2.0.0",
+        "markdown-it-attrs": "^4.3.1",
         "normalize-scss": "^8.0.0",
         "postcss": "^8.4.40",
         "postcss-import": "^14.0.2",
