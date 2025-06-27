@@ -37,6 +37,15 @@
                 }
                 $current = &$current['pages'][$normalizeSegment];
             }
+            $dir = 'source/_docs-' . $locale;
+            if(is_dir($dir . '/' . $path)) {
+                var_dump($path);
+                if(is_file($dir . '/' . $path .'/index.md') || is_file($dir . '/' . $path . '/' . $path. '.md')) {
+                    $value['has_index'] = true;
+                } else {
+                    $value['has_index'] = false;
+                }
+            };
             $current['current'] = $value;
         }
 
@@ -101,8 +110,14 @@
                             $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
                             $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
                         }
+//                        var_dump($file->getFilename());
                     }
                     $this->settings[$locale] = $settings['pages'] ?? [];
+//                    if($locale === 'en') {
+//                        echo '<pre>';
+//                        var_dump($settings['pages']);
+//                        echo '</pre>';
+//                    }
                     $this->flattenMenu[$locale] = $this->makeFlatten($settings['pages'], $locale);
                     $this->menu[$locale] = $this->buildMenuTree($settings['pages'] ?? [], '' , $locale);
                 }
@@ -112,10 +127,14 @@
         public function makeFlatten(array $items, string $locale): array
         {
             $flat = [
-                ['key' => $locale, 'path' => '/' . $locale, 'label' => $items[$locale]['current']['title']],
+
             ];
             $this->makeMenu($items, $flat, '', $locale);
-
+            if($locale === 'en') {
+                echo '<pre>';
+                var_dump($flat);
+                echo '</pre>';
+            }
             return $flat;
         }
 
@@ -171,7 +190,16 @@
             foreach ($items as $key => $value) {
                 $hasPages = isset($value['pages']) && is_array($value['pages']);
                 $path = trim($prefix . '/' . $key, '/');
-
+                if(isset($value['current']) && $value['current']['has_index']) {
+                    $fullPath = trim($path, '/');
+                    $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
+                    $menuPath = ($path === $locale ? '' : '/' . $locale) . '/' . $finalPath;
+                    $flat[] = [
+                        'key' => $path,
+                        'path' => $menuPath,
+                        'label' => $value['current']['title'],
+                    ];
+                }
                 if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
                     foreach ($value['current']['menu'] as $menuKey => $menuLabel) {
                         $fullPath = trim($path, '/');
@@ -191,47 +219,6 @@
             }
         }
 
-        public  function makeMenuNested(array $items, string $prefix = '', string $locale = 'ru'): array
-    {
-        $result = [];
-
-        foreach ($items as $key => $value) {
-            $hasPages = isset($value['pages']) && is_array($value['pages']);
-            $path = trim($prefix . '/' . $key, '/');
-
-            $children = [];
-
-            if ($hasPages) {
-                $children = $this->makeMenuNested($value['pages'], $path, $locale);
-            }
-
-            if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
-                foreach ($value['current']['menu'] as $menuKey => $menuLabel) {
-                    $fullPath = trim($path, '/');
-                    $finalPath = str_ends_with($fullPath, $menuKey)
-                        ? $fullPath
-                        : trim($fullPath . '/' . $menuKey, '/');
-                    $menuPath = ($path === $locale ? '' : '/' . $locale) . '/' . $finalPath;
-
-                    $result[] = [
-                        'label' => $menuLabel,
-                        'path' => $menuPath,
-                        'children' => $children,
-                    ];
-                }
-            } elseif ($hasPages) {
-                // Если нет меню, но есть подстраницы — добавим узел без label
-                $menuPath = '/' . $locale . '/' . $path;
-                $result[] = [
-                    'label' => $key,
-                    'path' => $menuPath,
-                    'children' => $children,
-                ];
-            }
-        }
-
-        return $result;
-    }
 
         public function makeUniqueHeadingId($relativePath, $level, $index): string
         {
