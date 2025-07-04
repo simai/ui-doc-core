@@ -39,7 +39,6 @@
             }
             $dir = 'source/_docs-' . $locale;
             if(is_dir($dir . '/' . $path)) {
-                var_dump($path);
                 if(is_file($dir . '/' . $path .'/index.md') || is_file($dir . '/' . $path . '/' . $path. '.md')) {
                     $value['has_index'] = true;
                 } else {
@@ -110,14 +109,8 @@
                             $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
                             $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
                         }
-//                        var_dump($file->getFilename());
                     }
                     $this->settings[$locale] = $settings['pages'] ?? [];
-//                    if($locale === 'en') {
-//                        echo '<pre>';
-//                        var_dump($settings['pages']);
-//                        echo '</pre>';
-//                    }
                     $this->flattenMenu[$locale] = $this->makeFlatten($settings['pages'], $locale);
                     $this->menu[$locale] = $this->buildMenuTree($settings['pages'] ?? [], '' , $locale);
                 }
@@ -130,11 +123,6 @@
 
             ];
             $this->makeMenu($items, $flat, '', $locale);
-            if($locale === 'en') {
-                echo '<pre>';
-                var_dump($flat);
-                echo '</pre>';
-            }
             return $flat;
         }
 

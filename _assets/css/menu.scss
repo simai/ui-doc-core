@@ -115,6 +115,7 @@
 
         > ul {
           display: block;
+          padding-left: var(--sf-b6);
         }
       }
 
@@ -137,7 +138,6 @@
   &-menu {
     @include breakpoint(tablet) {
     &-left {
-
         padding-right: var(--sf-b6);
       }
       &-right {
