@@ -4,8 +4,6 @@
 @endphp
 @if(!$home)
     <div class="sf-breadcrumb truncate">
-
-
         @foreach($breadcrumbs_array as $key => $item)
             @if($key === 0)
                 <div class="sf-breadcrumb-item inline-flex">

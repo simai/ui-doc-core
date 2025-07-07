@@ -3,7 +3,7 @@
         window.sfSearchNotFound = '{{$page->translate('notFound')}}'
     </script>
     <div class="sf-input-container sf-input-container--1 sf-input-search-container grow-none">
-        <div class="sf-input sf-input--1 radius-0" id="input_search">
+        <div class="sf-input sf-input--1" id="input_search">
             <div class="flex">
                 <i class="sf-icon">search</i>
             </div>

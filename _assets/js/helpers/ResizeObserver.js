@@ -12,7 +12,6 @@ export class SizeObserver {
         this.headerWrap = document.querySelector('.header--wrap');
         this.body = document.querySelector('body');
         this.main = document.querySelector('main');
-        this.bug = document.getElementById('sf_bug');
         this.editButton = document.querySelector('.sf-button-edit');
         this.sidePanel = document.getElementById('side_panel');
         this.readMode = document.getElementById('read_mode');
@@ -45,7 +44,6 @@ export class SizeObserver {
                 if(width < 980 && width > 768) {
                     if (!this.setTabletBug) {
                         this.setTabletBug = true;
-                        this.body.append(this.bug);
                         this.body.append(this.readMode);
                     }
                     if (this.setTopMenu) {
@@ -58,7 +56,6 @@ export class SizeObserver {
                     }
                     if (!this.setTabletBug) {
                         this.setTabletBug = true;
-                        this.body.append(this.bug);
                     }
                     if (!this.setTopMenu) {
                         this.setTopMenu = true;
@@ -79,7 +76,6 @@ export class SizeObserver {
                     if (this.setTabletBug) {
                         this.sidePanel.prepend(this.readMode);
                         this.setTabletBug = false;
-                        this.sidePanel.insertBefore(this.bug, this.editButton);
                     }
                     if (this.setTopMenu) {
                         this.setTopMenu = false;

@@ -12,7 +12,7 @@
     height: calc(100% - var(--sf-header-height));
     width: 100%;
     transition: .3s all ease;
-    z-index: 2;
+    z-index: 200;
     padding: var(--sf-b2);
     border: 0;
     &.active {
@@ -20,6 +20,9 @@
     }
     &-navigation {
       position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
   }
 
@@ -123,6 +126,10 @@
       &-list {
         &_wrap {
           padding-top: var(--sf-b6);
+          @include breakpoint(midTablet) {
+            height: auto;
+            overflow: auto;
+          }
         }
       }
     }
@@ -140,7 +147,7 @@ body {
     }
     &-readMode {
       @include breakpoint(midTablet) {
-        top: calc(var(--sf-header-height) + var(--sf-a8) + (var(--sf-d0) * 2));
+        top: calc(var(--sf-header-height) + var(--sf-a8) + var(--sf-d0));
       }
       @include breakpoint(tablet) {
         display: none;

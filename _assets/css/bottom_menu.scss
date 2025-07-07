@@ -5,6 +5,14 @@
     @include breakpoint(mobile) {
       flex-direction: column;
     }
+    &_text {
+      > div {
+        &:first-child {
+          color: var(--sf-secondary);
+          font-size: var(--sf-b4);
+        }
+      }
+    }
     &-items {
       gap: 20px;
     }
@@ -36,9 +44,7 @@
     &-item {
       &_next {
         margin-left: auto;
-        > a {
-          justify-content: flex-end;
-        }
+        text-align: end;
       }
     }
   }

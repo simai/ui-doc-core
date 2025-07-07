@@ -6,7 +6,6 @@ import setReadModePosition from "./helpers/functions";
 const locale = getCookie('locale') ?? 'ru';
 
 
-
 window.toggleNav = (btn) => {
     btn.closest('.sf-nav-menu-element').classList.toggle('active');
 };
@@ -15,7 +14,7 @@ let fuse = null;
 
 
 async function initSearch() {
-    if(!fuse) {
+    if (!fuse) {
         fuse = await initFuse();
     }
     const Search = new SearchClass({
@@ -45,6 +44,10 @@ async function initFuse() {
             return new Fuse(data, options);
         });
 }
+
+window.copyAnchor = function (link) {
+    navigator.clipboard.writeText(link.href);
+};
 
 
 function initClicks(navLinks, header) {
@@ -92,23 +95,52 @@ window.toggleMobileMenu = function (button) {
 
 };
 
+window.toggleActions = function (button) {
+    const wrap = button.parentNode;
+    wrap.classList.toggle('active');
+};
 
-window.setIssue = function () {
-        const selection = window.getSelection();
-        const text = selection ? selection.toString() : '';
-        if (text.length > 0) {
-            const issueUrl = 'https://github.com/simai/ui-doc-template/issues/new?'
-                + 'title=' + encodeURIComponent('Issue: ' + text.slice(0, 60))
-                + '&body=' + encodeURIComponent('**Выделено:**\n\n' + text);
-            window.open(issueUrl, '_blank');
+
+window.toggleSettings = function (button) {
+    const wrap = button.parentNode;
+    wrap.classList.toggle('active');
+};
+
+
+window.addEventListener('Switch:render', (event) => {
+    const {detail} = event;
+    if (detail) {
+        const input = detail.querySelector('input');
+        switch (detail.id) {
+            case 'theme_switch':
+                input.checked = SF.Loader.theme === 'dark';
+                input.addEventListener('change', event => {
+                    SF.Loader.changeTheme();
+                });
+                break;
+            case 'widescreen_switch':
+                input.checked = getInitialState('expanded');
+                input.addEventListener('change', () => {
+                    toggleResize();
+                });
+                break;
         }
+    }
+});
+
+window.setIssue = function (githubUrl) {
+    const selection = window.getSelection();
+    const text = selection ? selection.toString() : '';
+    if (text.length > 0) {
+        const issueUrl = `${githubUrl}issues/new?`
+            + 'title=' + encodeURIComponent('Issue: ' + text.slice(0, 60))
+            + '&body=' + encodeURIComponent('**Выделено:**\n\n' + text);
+        window.open(issueUrl, '_blank');
+    }
 };
 
 
 function initNavLinks() {
-    console.warn('Доработать якоря, если у них уже есть id ');
-    console.warn('Проработать систему размещения кнопки выхода из полного режима при ресайзе + убирать этот режим, если значение меньше 768.');
-    console.warn('Проработать поведение состояния this.setReadInside в зависимости от места на экране');
     const headers = document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]");
     const navLinks = document.querySelectorAll(".sf-side-menu-list-item a");
     const header = document.querySelector("header");
@@ -131,7 +163,7 @@ function initNavLinks() {
             });
             let hasActive = false;
             navLinks.forEach((link) => {
-                navClick(link,headerHeight);
+                navClick(link, headerHeight);
                 const href = link.getAttribute("href") || "";
                 const id = href.startsWith("#") ? href.slice(1) : null;
 
@@ -155,8 +187,8 @@ function initNavLinks() {
 
     headers.forEach(h => {
         const link = h.querySelector('a');
-        if(link) {
-            navClick(link,headerHeight, h);
+        if (link) {
+            navClick(link, headerHeight, h);
         }
         observer.observe(h);
     });
@@ -166,7 +198,7 @@ function navClick(link, headerHeight, head = null) {
     link.addEventListener('click', (event) => {
         event.preventDefault();
         const href = link.getAttribute('href');
-        if(!head) {
+        if (!head) {
             head = document.getElementById(`${href.replace('#', '')}`);
         }
         const elementPosition = head.getBoundingClientRect().top + window.scrollY;
@@ -179,9 +211,9 @@ function navClick(link, headerHeight, head = null) {
     });
 }
 
+initFontSize();
 
 function init() {
-
     initReadMode();
     initNavLinks();
     initResize();
@@ -190,40 +222,83 @@ function init() {
     });
     const resizeObserver = new SizeObserver();
     resizeObserver.init();
-    console.timeEnd('load');
 }
-    console.time('load');
+
+
 if (typeof Turbo !== 'undefined') {
     document.addEventListener('turbo:load', init);
 } else {
     document.addEventListener('DOMContentLoaded', init);
 }
+
 // alert('Поправить Анимацию сжимания и разжимания контейнера для турбо');
 function getInitialState(name) {
     const savedState = localStorage.getItem(name);
     return savedState ? savedState === 'true' : false;
 }
 
+function initFontSize() {
+    let state = localStorage.getItem('sf-fontSize');
+    if (state) {
+        state = JSON.parse(state);
+        if (state.className) {
+            document.documentElement.classList.add(state.className);
+        }
+        document.documentElement.style.fontSize = state.size;
+    }
+    window.addEventListener('Radio:render', (event) => {
+        const {detail} = event;
+        if (detail) {
+            switch (detail.id) {
+                case 'size_switch':
+                    const inputs = detail.querySelectorAll('input');
+                    inputs && inputs.forEach((input, index) => {
+                        const size = index === 0 ? '14px' : index === 1 ? '16px' : '18px';
+                        const className = index === 0 ? 'sf-font-small' : index === 1 ? false : 'sf-font-big';
+                        if (state && state.index === index) {
+                            input.checked = true;
+                        }
+                        input.addEventListener('change', () => {
+                            document.documentElement.style.fontSize = size;
+                            if (className) {
+                                document.documentElement.classList.add(className);
+                            } else {
+                                document.documentElement.classList.remove('sf-font-small', 'sf-font-big');
+                            }
+                            localStorage.setItem('sf-fontSize', JSON.stringify({
+                                index: index,
+                                className: className,
+                                size: size
+                            }));
+                        });
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+}
+
 function initReadMode() {
     const state = getInitialState('readMode');
-    if(state) {
+    if (state) {
         const button = document.getElementById('read_mode');
-        if(button) {
+        if (button) {
             readMode(button);
         }
     }
 }
 
 
-
 function initResize() {
-    const resizeButton = document.querySelector('.sf-size-switcher');
     const body = document.querySelector('body');
 
     const readState = getInitialState('readMode');
     const isExpanded = getInitialState('expanded');
+
     if (isExpanded && !readState) {
-        setResize(resizeButton, body, isExpanded);
+        setResize(body, isExpanded);
     }
 
 }
@@ -295,32 +370,28 @@ window.menuScroll = function (button, next = true) {
     }
 };
 
-function setResize(button, container, isExpanded) {
-    button.classList.toggle('active');
-    const icon = button.querySelector('.sf-icon');
-    if (button.classList.contains('active')) {
-        icon.textContent = 'width_normal';
+function setResize(container, isExpanded) {
+    if (isExpanded) {
         container.classList.add('max-container-8');
         container.classList.remove('max-container-6');
     } else {
-        icon.textContent = 'width_wide';
         container.classList.add('max-container-6');
         container.classList.remove('max-container-8');
     }
     localStorage.setItem('expanded', isExpanded.toString());
 }
 
-window.toggleResize = function (button) {
+window.toggleResize = function () {
     const isExpanded = !getInitialState('expanded'),
         body = document.querySelector('body');
-    setResize(button, body, isExpanded);
+    setResize(body, isExpanded);
 };
 
 
 window.readMode = function (button) {
     const icon = button.children[0];
     const header = document.querySelector('header');
-    const  body = document.body;
+    const body = document.body;
     const navMenu = document.querySelector('.sf-nav-menu--left');
     const sideMenu = document.getElementById('side_menu');
     const mainContainer = document.querySelector('.container--main');
@@ -341,11 +412,11 @@ window.readMode = function (button) {
         if (mainContainer.classList.contains('read')) {
             icon.textContent = 'fullscreen_exit';
             body.classList.remove('max-container-8', 'max-container-6');
-            body.classList.add('max-container-1','read');
-            setReadModePosition(mainContainer,sideMenu);
+            body.classList.add('max-container-1', 'read');
+            setReadModePosition(mainContainer, sideMenu);
         } else {
             icon.textContent = 'fullscreen';
-            body.classList.remove('max-container-1','read');
+            body.classList.remove('max-container-1', 'read');
             const isExpanded = getInitialState('expanded');
             body.classList.add(`max-container-${isExpanded ? '8' : '6'}`);
             sideMenu.removeAttribute('style');
@@ -390,13 +461,22 @@ window.langSwitch = function (button) {
     }
 };
 
+
 window.addEventListener('click', function (e) {
-    const container = document.querySelector('.sf-language-switch--container');
-    const menu = container.querySelector('.sf-language-switch--language-panel-show');
-    if (!menu) {
+    const langContainer = document.querySelector('.sf-language-switch--container');
+    const menu = langContainer.querySelector('.sf-language-switch--language-panel-show');
+    const settingsContainer = document.querySelector('.sf-settings-wrap');
+    const moreContainer = document.querySelector('.sf-more-wrap');
+    if (!menu && !settingsContainer && !moreContainer) {
         return false;
     }
-    if (e.target !== container && !container.contains(e.target)) {
+    if (e.target !== settingsContainer && !settingsContainer.contains(e.target)) {
+        settingsContainer.classList.remove('active');
+    }
+    if (e.target !== moreContainer && !moreContainer.contains(e.target)) {
+        moreContainer.classList.remove('active');
+    }
+    if (e.target !== langContainer && !langContainer.contains(e.target)) {
         document.querySelector('.sf-language-switch--language-panel').classList.remove("sf-language-switch--language-panel-show");
     }
 });

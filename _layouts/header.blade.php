@@ -14,13 +14,13 @@
                 </button>
 
                 @include('_core._components.language')
-
-                <button class="sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch"
-                        id="theme-toggle">
-                    <i class="sf-icon icon-dark">dark_mode</i>
-                    <i class="sf-icon icon-light">light_mode</i>
-                </button>
-
+                @include('_core._components.settings')
+                @include('_core._components.more')
+{{--                <button class="sf-button sf-theme-button  sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch"--}}
+{{--                        id="theme-toggle">--}}
+{{--                    <i class="sf-icon icon-dark">dark_mode</i>--}}
+{{--                    <i class="sf-icon icon-light">light_mode</i>--}}
+{{--                </button>--}}
                 <button onclick="toggleMobileMenu(this)" class="sf-button sf-button-nav sf-button--on-surface-transparent sf-button--borderless sf-button--nav-switch">
                     <i class="sf-icon">menu</i>
                 </button>

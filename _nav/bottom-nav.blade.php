@@ -15,7 +15,10 @@
                     @if($prev)
                         <i class="sf-icon">chevron_left</i>
                     @endif
-                    {{$text}}
+                    <div class="flex bottom--navigation_text flex-col">
+                        <div>{{$text}}</div>
+                        <div>{{$item['label']}}</div>
+                    </div>
                     @if($key == "next")
                         <i class="sf-icon">chevron_right</i>
                     @endif
