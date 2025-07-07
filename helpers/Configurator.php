@@ -111,7 +111,7 @@
                     $this->settings[$locale] = $settings['pages'] ?? [];
                     $pages = $this->makeFlatten($settings['pages'], $locale);
                     $this->flattenMenu[$locale] = array_filter($pages['flat'], function ($item) {
-                      return $item['path'] !== null;
+                        return $item['path'] !== null;
                     });
                     $this->flattenMenu[$locale] = array_values($this->flattenMenu[$locale]);
                     $this->realFlatten[$locale] = $pages['flat'];
