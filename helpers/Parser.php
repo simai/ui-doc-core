@@ -10,7 +10,15 @@
 
         {
             foreach (TagRegistry::all() as $tag) {
-                $content = $tag->parse($content, );
+                $content = preg_replace_callback(
+                    $tag->getPattern(),
+                    function ($m) use ($tag) {
+                        $inner = trim($m[1]);
+                        $innerHtml = parent::parseMarkdownWithoutFrontMatter($inner);
+                        return $tag->getTemplate($innerHtml);
+                    },
+                    $content
+                );
             }
             return parent::parseMarkdownWithoutFrontMatter($content);
         }
