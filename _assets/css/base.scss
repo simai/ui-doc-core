@@ -412,6 +412,62 @@ pre {
   position: relative;
 }
 
+.files {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  font-size: 0.875rem;
+  border-color: rgba(225, 230, 234, var(--tw-border-opacity));
+  border-radius: 0.25rem;
+  border-width: 1px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 1rem 2rem;
+
+  .folder {
+    --tw-text-opacity: 1;
+    color: rgba(150, 83, 159, var(--tw-text-opacity));
+    padding: 8px 0px 0px 28px;
+    &:before {
+      background-size: 40px 18px;
+      display: block;
+      height: 18px;
+      margin-left: -46px;
+      position: absolute;
+      width: 40px;
+    }
+  }
+  .file {
+    --tw-text-opacity: 1;
+    color: rgba(15, 47, 83, var(--tw-text-opacity));
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.5rem;
+    &--open {
+      &:before {
+        background-size: 40px 18px;
+        display: block;
+        height: 18px;
+        margin-left: -46px;
+        position: absolute;
+        width: 40px;
+        content: url('data:image/svg+xml;charset=UTF-8, <svg xmlns="http://www.w3.org/2000/svg"xmlns:xlink="http://www.w3.org/1999/xlink"viewBox="0 0 224.16 85.9"><path fill="%23b0c1d3"transform="rotate(90,50,40)"d="M63.39,46.77s4.49-3.61,0-7.21L38.29,19.41S33.8,15.8,33.8,21.56V64.77s0,5.76,4.49,2.15Z"/><path fill="%23b0c1d3"d="M220.75,74.77V25s0-8-8-8H176.41c-5.25,0-5.8-2.33-5.8-6.33,0-2.17-1.68-7-7.93-7H129.57s-8,0-8,8V74.77s0,8,8,8h83.17s8,0,8-8"/></svg>');
+      }
+    }
+    &:before {
+      fill: currentcolor;
+      --tw-text-opacity: 1;
+      background-size: 40px 18px;
+      color: rgba(69, 101, 138, var(--tw-text-opacity));
+      content: url('data:image/svg+xml;charset=UTF-8, <svg xmlns= "http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink" viewBox= "0 0 224.16 86.11" ><path stroke= "%23b0c1d3" fill= "%23ffffff" stroke-linecap= "round" stroke-linejoin= "round" stroke-width= "6px" d= "M173.53,1.5l-27,.09s-7.42,0-7.42,7.42V77.07s0,7.42,7.42,7.42h49.21s7.42,0,7.42-7.42l-.07-48.21Z" /><polygon fill= "%23b0c1d3" stroke= "none" points= "172.9 1.94 172.9 29.46 202.6 29.46 172.9 1.94" /></svg>');
+      display: block;
+      height: 18px;
+      margin-left: -46px;
+      position: absolute;
+      width: 40px;
+    }
+  }
+}
+
 
 .sf-language-switch--language-item button {
   padding: var(--sf-a8) var(--sf-b6);
