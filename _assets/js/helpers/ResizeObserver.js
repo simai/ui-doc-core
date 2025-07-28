@@ -10,10 +10,9 @@ export class SizeObserver {
         this.menu = document.querySelector('.sf-menu-container');
 
         this.headerWrap = document.querySelector('.header--wrap');
+        this.headerRight = this.headerWrap.querySelector('.header--right');
         this.body = document.querySelector('body');
         this.main = document.querySelector('main');
-        this.editButton = document.querySelector('.sf-button-edit');
-        this.sidePanel = document.getElementById('side_panel');
         this.readMode = document.getElementById('read_mode');
         this.sideMenu = document.getElementById('side_menu');
         this.navMenu = document.getElementById('main_menu');
@@ -27,7 +26,7 @@ export class SizeObserver {
                 const width = entry.contentRect.width;
                 if (width < 543) {
                     if (this.setCollapsed) return;
-                    this.menu.classList.add('menu--collapsed',  'p-right-5');
+                    this.menu.classList.add('menu--collapsed', 'p-right-5');
                     this.setCollapsed = true;
                 } else {
                     if (!this.setCollapsed) return;
@@ -41,7 +40,7 @@ export class SizeObserver {
                 const width = entry.contentRect.width;
                 if (width === this.lastWidth) return;
                 this.lastWidth = width;
-                if(width < 980 && width > 768) {
+                if (width < 980 && width > 768) {
                     if (!this.setTabletBug) {
                         this.setTabletBug = true;
                         this.body.append(this.readMode);
@@ -63,18 +62,21 @@ export class SizeObserver {
                     }
                 } else {
                     if (this.main.classList.contains('read')) {
-                        const menuOffset = this.main.getBoundingClientRect().left + this.main.clientWidth + this.sideMenu.clientWidth + 16;
-                        if (menuOffset >= width) {
-                            this.setReadInside = true;
-                        } else {
-                            this.setReadInside = false;
-                        }
-                        setReadModePosition(this.main, this.sideMenu, this.setReadInside);
+                        setTimeout(() => {
+                            const menuOffset = this.main.getBoundingClientRect().left + this.main.clientWidth + this.readMode.clientWidth + 16;
+                            if (menuOffset >= width) {
+                                this.setReadInside = true;
+                            } else {
+                                this.setReadInside = false;
+                            }
+                            this.readMode.classList.add('fixed');
+                            setReadModePosition(this.main, this.readMode, this.setReadInside);
+                        }, 200);
                     }
                     document.body.classList.remove('overflow-hidden');
 
                     if (this.setTabletBug) {
-                        this.sidePanel.prepend(this.readMode);
+                        this.headerRight.prepend(this.readMode);
                         this.setTabletBug = false;
                     }
                     if (this.setTopMenu) {

@@ -39,8 +39,8 @@
                 $current = &$current['pages'][$normalizeSegment];
             }
             $dir = 'source/_docs-' . $locale;
-            if(is_dir($dir . '/' . $path)) {
-                if(is_file($dir . '/' . $path .'/index.md') || is_file($dir . '/' . $path . '/' . $path. '.md')) {
+            if (is_dir($dir . '/' . $path)) {
+                if (is_file($dir . '/' . $path . '/index.md') || is_file($dir . '/' . $path . '/' . $path . '.md')) {
                     $value['has_index'] = true;
                 } else {
                     $value['has_index'] = false;
@@ -54,9 +54,9 @@
             $items = [];
             $path = '';
             foreach ($segments as $segment) {
-                $path  .= '/' .$segment ;
+                $path .= '/' . $segment;
                 foreach ($this->realFlatten[$locale] as $value) {
-                    if($value['path']) {
+                    if ($value['path']) {
                         $link = $value['path'];
                     } else {
                         $link = $value['navPath'];
@@ -67,18 +67,6 @@
                 }
             }
             return $items;
-        }
-
-        private function eachArray($item, $segment)
-        {
-            if (is_array($item)) {
-                foreach ($item as $key => $value) {
-                    if ($key === $segment) {
-                        return $value;
-                    }
-                    $this->eachArray($value, $segment);
-                }
-            }
         }
 
         public function makeLocales(): void
@@ -108,14 +96,20 @@
                             $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
                         }
                     }
+                    uasort($settings['pages'], function ($a, $b) {
+                        $orderA = $a['current']['order'] ?? PHP_INT_MAX;
+                        $orderB = $b['current']['order'] ?? PHP_INT_MAX;
+                        return $orderA <=> $orderB;
+                    });
                     $this->settings[$locale] = $settings['pages'] ?? [];
+
                     $pages = $this->makeFlatten($settings['pages'], $locale);
                     $this->flattenMenu[$locale] = array_filter($pages['flat'], function ($item) {
-                      return $item['path'] !== null;
+                        return $item['path'] !== null;
                     });
                     $this->flattenMenu[$locale] = array_values($this->flattenMenu[$locale]);
                     $this->realFlatten[$locale] = $pages['flat'];
-                    $this->menu[$locale] = $this->buildMenuTree($settings['pages'] ?? [], '' , $locale);
+                    $this->menu[$locale] = $this->buildMenuTree($settings['pages'] ?? [], '', $locale);
                 }
             }
         }
@@ -125,7 +119,7 @@
             $pages = [
                 'flat' => [],
             ];
-            $this->makeMenu($items, $pages,'', $locale);
+            $this->makeMenu($items, $pages, '', $locale);
             return $pages;
         }
 
@@ -153,7 +147,7 @@
 
                 $tree[$fullPath] = [
                     'title' => $title,
-                    'path'  => $fullPath,
+                    'path' => $fullPath,
                     'children' => [],
                 ];
 
@@ -162,7 +156,7 @@
                         $menuPath = $fullPath . '/' . $menuKey;
                         $tree[$fullPath]['children'][$menuPath] = [
                             'title' => $menuLabel,
-                            'path'  => $menuPath,
+                            'path' => $menuPath,
                             'children' => [],
                         ];
                     }
@@ -182,7 +176,7 @@
                 $hasPages = isset($value['pages']) && is_array($value['pages']);
                 $path = trim($prefix . '/' . $key, '/');
                 $setItem = false;
-                if(isset($value['current']) && $value['current']['has_index']) {
+                if (isset($value['current']) && $value['current']['has_index']) {
                     $fullPath = trim($path, '/');
                     $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
                     $menuPath = ($path === $locale ? '' : '/' . $locale) . '/' . $finalPath;
@@ -194,7 +188,7 @@
                     $setItem = true;
                 }
                 if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
-                    if(!$setItem) {
+                    if (!$setItem) {
                         $fullPath = trim($path, '/');
                         $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
                         $menuPath = ($path === $locale ? '' : '/' . $locale) . '/' . $finalPath;
@@ -236,9 +230,6 @@
         }
 
 
-
-
-
         public function flattenNav(array $items, array &$flat): array
         {
 
@@ -259,7 +250,7 @@
             $returnArr = [];
             $needly = 0;
             foreach ($flattenNav as $key => $value) {
-                if(!$value['path']) {
+                if (!$value['path']) {
                     continue;
                 }
                 if ($value['path'] === $path) {

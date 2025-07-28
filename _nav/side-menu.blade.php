@@ -1,4 +1,3 @@
-@include('_core._components.right-top-menu')
 @if($page->headings && count($page->headings))
     <div class="side-menu-navigation">
         <h5 class="sf-side-menu-header">Навигация</h5>

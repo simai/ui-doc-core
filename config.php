@@ -9,16 +9,12 @@
         'siteDescription' => 'Simai framework documentation',
         'github' => 'https://github.com/simai/ui-doc-template/',
 
-        'docsearchApiKey' => env('DOCSEARCH_KEY'),
-        'docsearchIndexName' => env('DOCSEARCH_INDEX'),
         'locales' => [
             'en' => 'English',
             'ru' => 'Русский',
-            'de' => 'Deutsch',
-            'es' => 'Spanish',
         ],
         'defaultLocale' => 'ru',
-        'lang_path' => 'source/lang',
+        'tags' => ['ExampleTag','ListWrap'],
         'getNavItems' => function ($page) {
             return $page->configurator->getPrevAndNext($page->getPath(), $page->locale());
         },

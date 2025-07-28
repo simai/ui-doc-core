@@ -26,6 +26,8 @@ body {
           border-radius: var(--sf-a4);
           background-color: var(--sf-tertiary-transparent-overlay);
           color: var(--sf-on-surface);
+          margin: 2px 2px;
+          display: inline-block;
           @include breakpoint(tablet) {
             font-size: var(--sf-b4);
           }
@@ -34,7 +36,8 @@ body {
 
       td {
         border-bottom: 1px solid var(--sf-outline-variant);
-        padding: var(--sf-b2) 0;
+        padding: var(--sf-b2) var(--sf-a3);
+        vertical-align: baseline;
       }
     }
   }

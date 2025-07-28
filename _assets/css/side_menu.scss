@@ -26,13 +26,6 @@
     }
   }
 
-  .sf-side-menu-button-pannel {
-    .sf-button.side-menu-instrument {
-      width: var(--sf-d0);
-      justify-content: center;
-      font-size: var(--sf-c2);
-    }
-  }
 
   h5.sf-side-menu-header {
     font-weight: var(--sf-text--font-weight-7);
@@ -103,37 +96,6 @@
     }
   }
 
-  &-side {
-    &-menu {
-      &-button {
-        &-pannel {
-          @include breakpoint(midTablet) {
-            display: none;
-          }
-        }
-      }
-    }
-
-    &_item {
-      &:hover {
-        color: initial;
-        font-weight: 700;
-
-      }
-    }
-
-    &-menu {
-      &-list {
-        &_wrap {
-          padding-top: var(--sf-b6);
-          @include breakpoint(midTablet) {
-            height: auto;
-            overflow: auto;
-          }
-        }
-      }
-    }
-  }
 }
 
 body {
