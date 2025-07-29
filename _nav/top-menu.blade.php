@@ -4,19 +4,19 @@
     </button>
     <div id="top_menu" class="sf-menu truncate">
         <div class="sf-menu-item">
-            <a href="#"> Концепция </a>
+            <a href="#"><?= $page->translate('concept'); ?></a>
         </div>
         <div class="sf-menu-item">
-            <a href="#"> Ядро </a>
+            <a href="#"><?= $page->translate('core'); ?></a>
         </div>
         <div class="sf-menu-item">
-            <a href="#"> Утилиты </a>
+            <a href="#"><?= $page->translate('utilities'); ?></a>
         </div>
         <div class="sf-menu-item">
-            <a href="#"> Компоненты </a>
+            <a href="#"><?= $page->translate('components'); ?></a>
         </div>
         <div class="sf-menu-item">
-            <a href="#"> Смарт-компоненты </a>
+            <a href="#"><?= $page->translate('smart components'); ?></a>
         </div>
     </div>
     <button onclick="menuScroll(this, true)" class="sf-menu-scroll right absolute" type="button">

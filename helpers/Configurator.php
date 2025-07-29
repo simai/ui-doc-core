@@ -283,8 +283,7 @@
 
         public function getTranslate($text, $locale): string
         {
-            $text = $this->translations[$locale][$text];
-            return $text ?? '';
+            return $this->translations[$locale][$text] ?? '';
 
         }
 

@@ -110,9 +110,10 @@ window.toggleSettings = function (button) {
 
 window.addEventListener('Switch:render', (event) => {
     const {detail} = event;
-    if (detail) {
-        const input = detail.querySelector('input');
-        switch (detail.id) {
+    const {html} = detail;
+    if (html) {
+        const input = html.querySelector('input');
+        switch (html.id) {
             case 'theme_switch':
                 input.checked = SF.Loader.theme === 'dark';
                 input.addEventListener('change', event => {
@@ -125,6 +126,9 @@ window.addEventListener('Switch:render', (event) => {
                     toggleResize();
                 });
                 break;
+        }
+        if (typeof detail.checked === 'function') {
+            detail.checked();
         }
     }
 });
@@ -292,14 +296,17 @@ function initFontSize() {
     }
     window.addEventListener('Radio:render', (event) => {
         const {detail} = event;
-        if (detail) {
-            switch (detail.id) {
+        const {html} = detail;
+        let key = 0;
+        if (html) {
+            switch (html.id) {
                 case 'size_switch':
-                    const inputs = detail.querySelectorAll('input');
+                    const inputs = html.querySelectorAll('input');
                     inputs && inputs.forEach((input, index) => {
                         const size = index === 0 ? '14px' : index === 1 ? '16px' : '18px';
                         const className = index === 0 ? 'sf-font-small' : index === 1 ? false : 'sf-font-big';
                         if (state && state.index === index) {
+                            key = index;
                             input.checked = true;
                         }
                         input.addEventListener('change', () => {
@@ -320,6 +327,9 @@ function initFontSize() {
                 default:
                     break;
             }
+        }
+        if(typeof detail.radioChange === 'function') {
+            detail.radioChange(key);
         }
     });
 }
