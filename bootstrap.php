@@ -17,7 +17,7 @@
 
 
     use App\Helpers\Parser;
-    use App\Helpers\TagRegistry;
+    use App\Helpers\Tags\TagRegistry;
     use TightenCo\Jigsaw\File\TemporaryFilesystem;
     use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
     use TightenCo\Jigsaw\Handlers\MarkdownHandler;
@@ -56,7 +56,7 @@
 
     $events->beforeBuild(function ($jigsaw) use ($container) {
 
-        $namespace = 'App\\Helpers\\Tags\\';
+        $namespace = 'App\\Helpers\\CustomTags\\';
         $tags = $jigsaw->getConfig('tags');
         $instances = [];
 

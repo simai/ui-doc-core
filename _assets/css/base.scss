@@ -436,19 +436,16 @@ pre {
 }
 
 .files {
-  --tw-border-opacity: 1;
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  background-color: var(--sf-surface-2);
   font-size: 0.875rem;
-  border-color: rgba(225, 230, 234, var(--tw-border-opacity));
+  border-color: var(--sf-surface-3);
   border-radius: 0.25rem;
   border-width: 1px;
   margin: 1.5rem auto 2.5rem;
   padding: 1rem 2rem;
 
   .folder {
-    --tw-text-opacity: 1;
-    color: rgba(150, 83, 159, var(--tw-text-opacity));
+    color: var(--sf-tertiary-60);
     padding: 8px 0px 0px 28px;
 
     &:before {
@@ -485,8 +482,7 @@ pre {
   }
 
   .file {
-    --tw-text-opacity: 1;
-    color: rgba(15, 47, 83, var(--tw-text-opacity));
+    color: var(--sf-primary-70);
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     padding-top: 0.5rem;

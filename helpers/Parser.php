@@ -1,6 +1,7 @@
 <?php
     namespace App\Helpers;
 
+    use App\Helpers\Tags\TagRegistry;
     use DOMDocument;
     use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 

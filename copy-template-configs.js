@@ -4,6 +4,7 @@ const path = require('path');
 const filesToCopy = [
     'webpack.mix.js',
     'bootstrap.php',
+    'translate.config.php',
     'config.php',
     'composer.json',
     'tailwind.config.js',

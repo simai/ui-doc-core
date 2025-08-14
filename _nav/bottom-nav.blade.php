@@ -8,7 +8,7 @@
             @foreach($navigation as $key => $item)
                 @php
                     $prev = $key == "prev";
-                    $text = $prev ? 'Предыдущая' : 'Следующая';
+                    $text =  $page->translate($prev ? 'previous' : 'next');
                 @endphp
                 <a class="flex sf-button sf-button--on-surface-transparent sf-button--borderless bottom--navigation-item_{{$key}}"
                    href="{{$item['path']}}">

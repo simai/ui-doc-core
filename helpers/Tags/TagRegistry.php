@@ -1,6 +1,8 @@
 <?php
 
-    namespace App\Helpers;
+    namespace App\Helpers\Tags;
+
+    use App\Helpers\Interface\CustomTagInterface;
 
     class TagRegistry
     {

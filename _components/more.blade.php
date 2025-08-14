@@ -6,13 +6,13 @@
         <div class="flex sf-more-menu_item">
             <button onclick="window.open(`{{$page->github}}blob/main/source/{{$page->gitHubUrl()}}`, '_blank')" title="Изменить статью" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
                 <i class="sf-icon">edit</i>
-                <span>Изменить статью</span>
+                <span>{{$page->translate('edit article')}}</span>
             </button>
         </div>
         <div class="flex sf-more-menu_item">
             <button onclick="setIssue(`{{$page->github}}`)" title="Сообщить об ошибке" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
                 <i class="sf-icon">bug_report</i>
-                <span>Сообщить об ошибке</span>
+                <span>{{$page->translate('report a bug')}}</span>
             </button>
         </div>
     </div>
