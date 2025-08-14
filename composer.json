@@ -3,14 +3,19 @@
         "tightenco/jigsaw": "^1.7",
         "samdark/sitemap": "^2.2.1",
         "elaborate-code/jigsaw-localization": "^1.1",
-        "michelf/php-markdown": "^2.0"
+        "michelf/php-markdown": "^2.0",
+        "league/commonmark": "^2.7",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "scripts": {
+        "translate": "php bin/translate"
     },
     "autoload": {
         "psr-4": {
-            "App\\Listeners\\": "listeners/",
-            "App\\Helpers\\Tags\\": "tags/",
             "App\\Helpers\\": "source/_core/helpers/"
         }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.3"
     }
-
 }
