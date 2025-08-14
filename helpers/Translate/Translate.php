@@ -331,9 +331,6 @@
         {
             foreach ($this->files as $type => $files) {
                 foreach ($files as $file) {
-                    if ($file->getFilename() !== 'configurator.md') {
-                        continue;
-                    }
                     $filePathName = $file->getPathname();
                     $fileName = $file->getFilename();
                     $content = file_get_contents($filePathName);

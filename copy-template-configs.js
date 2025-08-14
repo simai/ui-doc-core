@@ -7,7 +7,6 @@ const filesToCopy = [
     'translate.config.php',
     'config.php',
     'composer.json',
-    'tailwind.config.js',
     'eslint.config.js',
     'package.json'
 ];
