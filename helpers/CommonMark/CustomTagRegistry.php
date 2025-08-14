@@ -13,7 +13,7 @@
         public function __construct(array $tagClassNames)
         {
             foreach ($tagClassNames as $className) {
-                $fqcn = "App\\Helpers\\Tags\\$className";
+                $fqcn = "App\\Helpers\\CustomTags\\$className";
 
                 if (!class_exists($fqcn)) {
                     throw new InvalidArgumentException("Custom tag class not found: $fqcn");
