@@ -3,36 +3,70 @@
 
     use League\CommonMark\Node\Block\AbstractBlock;
 
-    class CustomTagNode extends AbstractBlock
+    final class CustomTagNode extends AbstractBlock
     {
-        private array $lines = [];
-        private ?string $translatedContent = null;
-
         public function __construct(
-            private string $tagType
+            private string $type,
+            private array $attrs = [],
+            private array $meta = [],
         ) {
             parent::__construct();
         }
 
-        public function getTagType(): string
+        /**
+         * @return string
+         */
+        public function getType(): string
         {
-            return $this->tagType;
+            return $this->type;
         }
 
-
-        public function setTranslatedContent(string $text): void
-        {
-            $this->translatedContent = $text;
-        }
-
-        public function getLiteral(): string
-        {
-            return $this->translatedContent ?? '';
-        }
-
+        /**
+         * @return bool
+         */
         public function isContainer(): bool
         {
             return true;
         }
-    }
 
+        /**
+         * @return array
+         */
+        public function getAttrs(): array
+        {
+            return $this->attrs;
+        }
+
+        /**
+         * @param array $attrs
+         * @return void
+         */
+        public function setAttrs(array $attrs): void
+        {
+            $this->attrs = $attrs;
+        }
+
+        /**
+         * @param string $class
+         * @return void
+         */
+        public function addClass(string $class): void
+        {
+            $cur = $this->attrs['class'] ?? '';
+            $list = array_filter(array_unique(array_merge(
+                $cur ? preg_split('/\s+/', $cur) : [],
+                preg_split('/\s+/', trim($class))
+            )));
+            if ($list) {
+                $this->attrs['class'] = implode(' ', $list);
+            }
+        }
+
+        /**
+         * @return array
+         */
+        public function getMeta(): array
+        {
+            return $this->meta;
+        }
+    }

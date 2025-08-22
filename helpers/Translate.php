@@ -1,10 +1,12 @@
 <?php
 
-    namespace App\Helpers\Translate;
-    require 'vendor/autoload.php';
+    namespace App\Helpers;
 
     use App\Helpers\CommonMark\CustomTagRegistry;
     use App\Helpers\CommonMark\CustomTagsExtension;
+    use App\Helpers\Interface\CustomTagInterface;
+    use App\Helpers\CommonMark\TagRegistry;
+    use Composer\Autoload\ClassLoader;
     use Exception;
     use League\CommonMark\Environment\Environment;
     use League\CommonMark\Exception\CommonMarkException;
@@ -19,9 +21,14 @@
     use Dotenv\Dotenv;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
+    use Symfony\Component\Intl\Languages;
     use Symfony\Component\Yaml\Yaml;
 
-
+    if (!class_exists(ClassLoader::class)) {
+        throw new \RuntimeException(
+            "Composer autoloader not loaded. Run via 'composer translate' или bin/translate."
+        );
+    }
     $projectRoot = getcwd();
 
     $dotenv = Dotenv::createImmutable($projectRoot);
@@ -35,6 +42,10 @@
 
         public string $projectRoot;
         public string $endpoint;
+
+        public array $jigsawConfig;
+
+        public array $usedLocales;
 
         public array $hashData;
 
@@ -69,20 +80,21 @@
             $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
             $this->config = require $this->projectRoot . '/translate.config.php';
             $this->targetDir = $this->config['source_dir'] . "_docs-{$this->config['target_lang']}";
+            $this->registerJigsawConfig();
         }
 
         /**
          * @return void
          * @throws CommonMarkException
+         * @throws Exception
          */
         public function init(): void
         {
             if (!isset($this->config['languages'])) {
-                throw new Exception("Missing required parameters");
+                throw new Exception("Missing required parameter 'languages'");
             }
             $this->cachePath = $this->config['main'] . $this->config['cache_dir'] . 'translations/';
             $this->loadCache();
-            $this->registerCustomTags();
             $this->initParser();
             $this->collectFiles();
 
@@ -90,12 +102,27 @@
 
         /**
          * @return void
+         * @throws Exception
          */
-        private function registerCustomTags(): void
+        private function registerJigsawConfig(): void
         {
-            $config = require $this->config['main'] . 'config.php';
-            $this->registry = new CustomTagRegistry($config['tags']);
+            if(!is_file($this->config['main'] . 'config.php')) {
+                throw new Exception("Missing required file 'config.php'");
+            }
+            $this->jigsawConfig = require $this->config['main'] . 'config.php';
+            $instances = [];
+            $namespace = 'App\\Helpers\\CustomTags\\';
+            foreach ($this->jigsawConfig['tags'] as $short) {
+                $class = $namespace . $short;
+                if (class_exists($class)) {
+                    $obj = new $class();
+                    if ($obj instanceof CustomTagInterface) $instances[] = $obj;
+                }
+            }
+            $this->registry = TagRegistry::register($instances);
+            $this->usedLocales = $this->jigsawConfig['locales'] ?? [];
         }
+
 
 
         /**
@@ -148,7 +175,7 @@
                         }
                     }
                 }
-                $this->putFiles();
+                $this->translateFiles();
             }
         }
 
@@ -272,14 +299,18 @@
 
                 $extracted = array_intersect_key($textsToTranslateArray, $keysAssoc);
 
+
                 foreach ($extracted as $key => $value) {
                     $extracted[$key]['translated'] = $flattenArray[$key];
                 }
 
+
                 $textsToTranslateArray = array_values(array_diff_key($textsToTranslateArray, $keysAssoc));
 
                 $normalizedMarkdown = str_replace("\r\n", "\n", $file);
+
                 $lines = preg_split('/\R/u', $normalizedMarkdown);
+
 
                 $chunks = $this->chunkTextArray($textsToTranslateArray);
                 $finalTranslated = [];
@@ -306,29 +337,54 @@
                 foreach (array_reverse($finalTranslated) as $block) {
                     $startLine = $block['start'];
                     $endLine = $block['end'];
-
                     $blockText = implode("\n", array_slice($lines, $startLine - 1, $endLine - $startLine + 1));
                     $translatedText = $block['translated'];
                     $originalText = $block['text'];
 
-                    $replacedBlockText = preg_replace('/' . preg_quote($originalText, '/') . '/', $translatedText, $blockText, 1);
+                    $replacedBlockText = $this->replace_last_literal($blockText, $originalText, $translatedText);
                     $replacedLines = explode("\n", $replacedBlockText);
 
                     array_splice($lines, $startLine - 1, $endLine - $startLine + 1, $replacedLines);
                 }
-
                 return implode("\n", $lines);
             }
             return $file;
         }
 
+        /**
+         * @param string $haystack
+         * @param string $search
+         * @param string $replace
+         * @return string
+         */
+        private function replace_last_literal(string $haystack, string $search, string $replace): string {
+            $pos = mb_strrpos($haystack, $search);
+            if ($pos === false) return $haystack;
+            return mb_substr($haystack, 0, $pos)
+                . $replace
+                . mb_substr($haystack, $pos + mb_strlen($search));
+        }
+
+        /**
+         * @param string $s
+         * @param string $enc
+         * @return string
+         */
+        private function mb_ucfirst(string $s, string $enc = 'UTF-8'): string {
+            if ($s === '') return $s;
+            $first = mb_substr($s, 0, 1, $enc);
+            $rest  = mb_substr($s, 1, null, $enc);
+            return mb_strtoupper($first, $enc) . $rest;
+        }
 
         /**
          * @return void
          * @throws CommonMarkException
+         * @throws Exception
          */
-        private function putFiles(): void
+        private function translateFiles(): void
         {
+            $usedLangKeys = array_keys($this->usedLocales);
             foreach ($this->files as $type => $files) {
                 foreach ($files as $file) {
                     $filePathName = $file->getPathname();
@@ -336,10 +392,12 @@
                     $content = file_get_contents($filePathName);
 
                     foreach ($this->config['languages'] as $lang) {
+                        if(in_array($lang, $usedLangKeys)) {
+                            throw new Exception('Language "' . $lang . '" is already translated.');
+                        }
                         $hash = md5($content);
                         $srcPath = $file->getPathname();
                         $destPath = str_replace("_docs-{$this->config['target_lang']}", "_docs-{$lang}", $srcPath);
-
                         if ($lang === $this->config['target_lang'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
                             continue;
                         }
@@ -606,9 +664,12 @@
          */
         private function checkCached(array $original, string $lang): array
         {
+
+
             $keys = [];
 
             if (!isset($original)) return $keys;
+
             foreach ($original as $k => $v) {
                 $translated = $this->getCached($lang, $v);
                 if ($translated !== null) {
@@ -616,6 +677,7 @@
                     $original[$k] = $translated;
                 }
             }
+
             return [$keys, $original];
         }
 
@@ -649,9 +711,13 @@
         private function saveCache(): void
         {
             if (!is_dir($this->cachePath)) mkdir($this->cachePath, 0777, true);
+            $arTranslated = [];
             foreach ($this->prevTranslation as $lang => $map) {
+                $langFullName = $this->mb_ucfirst(Languages::getName($lang));
+                $arTranslated[$lang] = $langFullName;
                 file_put_contents($this->cachePath . "/translate_{$lang}.json", json_encode($map, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             }
+            file_put_contents($this->cachePath . "/.config.json", json_encode($arTranslated, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             file_put_contents($this->cachePath . "/hash.json", json_encode($this->hashData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
 

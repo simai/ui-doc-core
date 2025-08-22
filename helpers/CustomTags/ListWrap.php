@@ -1,33 +1,16 @@
 <?php
 
-namespace App\Helpers\CustomTags;
+    namespace App\Helpers\CustomTags;
 
-use App\Helpers\Interface\CustomTagInterface;
+    use App\Helpers\CommonMark\BaseTag;
 
-class ListWrap implements CustomTagInterface
-{
-    public function getPattern(): string
+    final class ListWrap extends BaseTag
     {
-        return '/!links\s*\n([\s\S]*?)\n!endlinks/';
-    }
+        public function type(): string { return 'links'; }
 
-    public function getTemplate(string $template): string
-    {
-        return "<div class=\"links\">{$template}</div>";
-    }
+        public function baseAttrs(): array
+        {
+            return ['class' => 'links'];
+        }
 
-    public function getType(): string
-    {
-        // TODO: Implement getType() method.
     }
-
-    public function getOpeningPattern(): ?string
-    {
-        return '/^!links\s*$/m';
-    }
-
-    public function getClosingPattern(): ?string
-    {
-        return '/^!endlinks\s*$/m';
-    }
-}

@@ -4,28 +4,45 @@ namespace App\Helpers\Interface;
 interface CustomTagInterface
 {
     /**
-     * Регулярное выражение для поиска кастомного блока
+     * @return string
      */
-    public function getPattern(): string;
+    public function type(): string;
 
     /**
-     * Шаблон, в который будет обёрнуто содержимое блока
+     * @return string
      */
-    public function getTemplate(string $innerHtml): string;
+    public function openRegex(): string;
 
     /**
-     * Имя или тип тега (используется в AST)
+     * @return string
      */
-    public function getType(): string;
+    public function closeRegex(): string;
 
     /**
-     * Открывающий шаблон (для блоков)
+     * @return string
      */
-    public function getOpeningPattern(): ?string;
+    public function htmlTag(): string;
 
     /**
-     * Закрывающий шаблон (для блоков)
+     * @return array
      */
-    public function getClosingPattern(): ?string;
+    public function baseAttrs(): array;
+
+    /**
+     * @return bool
+     */
+    public function allowNestingSame(): bool;
+
+    /**
+     * @return callable|null
+     */
+    public function attrsFilter(): ?callable;
+
+    /**
+     * @return callable|null
+     */
+    public function renderer(): ?callable;
 }
+
+
 

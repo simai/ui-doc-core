@@ -16,61 +16,52 @@
      */
 
 
+    use App\Helpers\CommonMark\CustomTagRegistry;
+    use App\Helpers\Interface\CustomTagInterface;
     use App\Helpers\Parser;
-    use App\Helpers\Tags\TagRegistry;
-    use TightenCo\Jigsaw\File\TemporaryFilesystem;
-    use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
-    use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+    use App\Helpers\CommonMark\TagRegistry;
     use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-    use TightenCo\Jigsaw\View\ViewRenderer;
 
-    $container->bind(
-        FrontMatterParser::class,
-        Parser::class);
+    try {
+        $container->bind(CustomTagRegistry::class, function ($c) {
+            $namespace = 'App\\Helpers\\CustomTags\\';
+            $shorts = (array)$c['config']->get('tags', []);
+            $instances = [];
+            foreach ($shorts as $short) {
+                $class = $namespace . $short;
+                if (class_exists($class)) {
+                    $obj = new $class();
+                    if ($obj instanceof CustomTagInterface) $instances[] = $obj;
+                }
+            }
+            return TagRegistry::register($instances);
+        });
+    } catch (ReflectionException $e) {
 
-    $container->bind(
-        MarkdownHandler::class,
-        function ($container) {
-            $temporaryFilesystem = $container[TemporaryFilesystem::class];
-            $parser = $container[FrontMatterParser::class];
-            $viewRenderer = $container[ViewRenderer::class];
+    }
 
-            return new MarkdownHandler(
-                $temporaryFilesystem,
-                $parser,
-                $viewRenderer
-            );
-        }
-    );
-    $container->bind(
-        CollectionItemHandler::class,
-        function ($container) {
-            $config = $container['config'];
-            $handlers = [
-                $container[MarkdownHandler::class],
-            ];
-            return new CollectionItemHandler($config, $handlers);
-        }
-    );
 
+    try {
+        $container->bind(FrontMatterParser::class, Parser::class);
+    } catch (ReflectionException $e) {
+
+    }
 
     $events->beforeBuild(function ($jigsaw) use ($container) {
+        $locales = $jigsaw->getConfig('locales');
+        $tempConfig = __DIR__ . '/temp/translations/.config.json';
 
-        $namespace = 'App\\Helpers\\CustomTags\\';
-        $tags = $jigsaw->getConfig('tags');
-        $instances = [];
 
-        foreach ($tags as $shortName) {
-            $className = $namespace . $shortName;
-
-            if (class_exists($className)) {
-                $instances[] = new $className();
+        if (is_file($tempConfig)) {
+            $allLocales = [];
+            $tempConfigJson = json_decode(file_get_contents($tempConfig), true) ?: [];
+            foreach ($locales as $key => $locale) {
+                $allLocales[$key] = $locale;
             }
-        }
-        try {
-            TagRegistry::register($instances);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
+            foreach ($tempConfigJson as $key => $value) {
+                $allLocales[$key] = $value;
+            }
+            $jigsaw->setConfig('locales', $allLocales);
         }
 
         $locales = $jigsaw->getConfig('locales');
@@ -112,13 +103,13 @@
                     foreach ($matches as $match) {
                         $headings[] = [
                             'anchor' => $match[1],
-                            'text' => trim(strip_tags($match[2])),
+                            'text' => trim(html_entity_decode(strip_tags($match[2]))),
                         ];
                     }
                 }
                 if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $key => $match) {
-                        $text = trim(strip_tags($match[3]));
+                        $text = trim(html_entity_decode(strip_tags($match[3])));
                         $id = $configurator->makeUniqueHeadingId($page->getPath(), $match[1], $key);
                         $issetId = strlen(trim($match[2])) > 0;
                         if ($issetId) {

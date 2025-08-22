@@ -2,32 +2,15 @@
 
 namespace App\Helpers\CustomTags;
 
-use App\Helpers\Interface\CustomTagInterface;
+use App\Helpers\CommonMark\BaseTag;
 
-class ExampleTag implements CustomTagInterface
+final class ExampleTag extends BaseTag
 {
-    public function getPattern(): string
+    public function type(): string { return 'example'; }
+
+    public function baseAttrs(): array
     {
-        return '/!example\s*\n([\s\S]*?)\n!endexample/';
+        return ['class' => 'example overflow-hidden radius-1/2 overflow-x-auto'];
     }
 
-    public function getTemplate(string $template): string
-    {
-        return "<div class=\"example overflow-hidden radius-1/2 overflow-x-auto\">{$template}</div>";
-    }
-
-    public function getType(): string
-    {
-        // TODO: Implement getType() method.
-    }
-
-    public function getOpeningPattern(): ?string
-    {
-        return '/^!example\s*$/m';
-    }
-
-    public function getClosingPattern(): ?string
-    {
-        return '/^!endexample\s*$/m';
-    }
 }

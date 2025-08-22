@@ -1,8 +1,8 @@
 <?php
-
     namespace App\Helpers\CommonMark;
 
     use League\CommonMark\Node\Block\AbstractBlock;
+    use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
     use League\CommonMark\Parser\Block\BlockContinue;
     use League\CommonMark\Parser\Block\BlockContinueParserInterface;
     use League\CommonMark\Parser\Block\BlockStart;
@@ -10,80 +10,126 @@
     use League\CommonMark\Parser\Cursor;
     use League\CommonMark\Parser\MarkdownParserStateInterface;
 
-    class UniversalBlockParser implements BlockStartParserInterface
+    final class UniversalBlockParser implements BlockStartParserInterface
     {
-        public function __construct(private CustomTagRegistry $registry)
-        {
-        }
+        /**
+         * @param CustomTagRegistry $registry
+         */
+        public function __construct(private CustomTagRegistry $registry) {}
 
-        public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+        /**
+         * @param Cursor $cursor
+         * @param MarkdownParserStateInterface $state
+         * @return BlockStart|null
+         */
+        public function tryStart(Cursor $cursor, MarkdownParserStateInterface $state): ?BlockStart
         {
             $line = $cursor->getLine();
 
-            // 1) Не разрешаем старт нового кастом-блока, если уже внутри CustomTagNode
-            $active = $parserState->getActiveBlockParser();
-            if (method_exists($active, 'getBlock') && $active->getBlock() instanceof CustomTagNode) {
-                return BlockStart::none();
-            }
+            foreach ($this->registry->getSpecs() as $spec) {
 
-            foreach ($this->registry->getPatterns() as $entry) {
-                $type  = $entry['type'];
-                $open  = $entry['open'];
-                $close = $entry['close'];
-
-
-                if (preg_match($open, $line)) {
-
-                    $cursor->advanceToEnd();
-
-                    return BlockStart::of(new class($type, $close) implements BlockContinueParserInterface {
-                        private string $type;
-                        private string $close;
-                        private ?CustomTagNode $node = null;
-
-                        public function __construct(string $type, string $close)
-                        {
-                            $this->type  = $type;
-                            $this->close = $close;
-                            // контейнер; внутри пусть парсится обычный markdown
-                            $this->node  = new CustomTagNode($type, '');
-                        }
-
-                        public function tryContinue(Cursor $cursor, BlockContinueParserInterface $active): ?BlockContinue
-                        {
-                            $line = $cursor->getLine();
-                            // 3) Закрывающий маркер: тоже съедаем строку и завершаем блок
-                            if (preg_match($this->close, $line)) {
-                                $cursor->advanceToEnd();
-                                return BlockContinue::finished();
-                            }
-
-                            // продолжаем парсить детей внутри контейнера
-                            return BlockContinue::at($cursor);
-                        }
-
-                        public function addLine(string $line): void
-                        {
-                            // Ничего не копим вручную: это контейнер, дети появятся сами
-                        }
-
-                        public function closeBlock(): void
-                        {
-                        }
-
-                        public function getBlock(): AbstractBlock { return $this->node; }
-                        public function isContainer(): bool { return true; }
-                        public function canHaveLazyContinuationLines(): bool { return true; }
-                        public function canContain(AbstractBlock $childBlock): bool
-                        {
-                            return !($childBlock instanceof CustomTagNode);
-                        }
-                    })
-                        ->at($cursor);
+                if (!preg_match($spec->openRegex, $line, $m)) {
+                    continue;
                 }
+
+
+                $active = $state->getActiveBlockParser();
+                if ($active && method_exists($active, 'getBlock')) {
+                    $blk = $active->getBlock();
+                    if ($blk instanceof CustomTagNode
+                        && $blk->getType() === $spec->type
+                        && !$spec->allowNestingSame
+                    ) {
+                        return BlockStart::none();
+                    }
+                }
+
+
+                $cursor->advanceToEnd();
+
+                $attrStr   = $m['attrs'] ?? '';
+                $userAttrs = Attrs::parseOpenLine($attrStr);
+                $attrs     = Attrs::merge($spec->baseAttrs, $userAttrs);
+
+
+                $node = new CustomTagNode(
+                    $spec->type,
+                    $attrs,
+                    ['openMatch' => $m, 'attrStr' => $attrStr]
+                );
+
+
+                if ($spec->attrsFilter instanceof \Closure) {
+                    $node->setAttrs(($spec->attrsFilter)($node->getAttrs(), $node->getMeta()));
+                }
+
+
+                return BlockStart::of(new class($spec, $node) extends AbstractBlockContinueParser {
+                    /**
+                     * @param CustomTagSpec $spec
+                     * @param CustomTagNode $node
+                     */
+                    public function __construct(
+                        private CustomTagSpec $spec,
+                        private CustomTagNode $node
+                    ) {}
+
+                    /**
+                     * @return AbstractBlock
+                     */
+                    public function getBlock(): AbstractBlock { return $this->node; }
+
+                    /**
+                     * @return bool
+                     */
+                    public function isContainer(): bool { return true; }
+
+                    /**
+                     * @return bool
+                     */
+                    public function canHaveLazyContinuationLines(): bool { return false; }
+
+
+                    /**
+                     * @param AbstractBlock $childBLock
+                     * @return bool
+                     */
+                    public function canContain(AbstractBlock $childBLock): bool { return true; }
+
+                    /**
+                     * @param Cursor $cursor
+                     * @param BlockContinueParserInterface $active
+                     * @return BlockContinue|null
+                     */
+                    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $active): ?BlockContinue
+                    {
+                        $line = $cursor->getLine();
+
+                        if ($this->spec->closeRegex === null) {
+                            return BlockContinue::finished();
+                        }
+
+                        if (preg_match($this->spec->closeRegex, $line)) {
+                            $cursor->advanceToEnd();
+                            return BlockContinue::finished();
+                        }
+
+                        return BlockContinue::at($cursor);
+                    }
+
+                    /**
+                     * @param string $line
+                     * @return void
+                     */
+                    public function addLine(string $line): void {}
+
+                    /**
+                     * @return void
+                     */
+                    public function closeBlock(): void {}
+                })->at($cursor);
             }
 
             return BlockStart::none();
         }
-
     }

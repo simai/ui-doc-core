@@ -19,6 +19,9 @@
         public array $realFlatten;
         public string $locale = 'ru';
 
+        /**
+         * @param $locales
+         */
         public function __construct($locales)
         {
             $this->locales = array_keys($locales->toArray());
@@ -26,6 +29,13 @@
             $this->makeLocales();
         }
 
+        /**
+         * @param $array
+         * @param $path
+         * @param $value
+         * @param $locale
+         * @return void
+         */
         private function array_set_deep(&$array, $path, $value, $locale): void
         {
             $segments = explode('/', $path);
@@ -49,6 +59,11 @@
             $current['current'] = $value;
         }
 
+        /**
+         * @param $locale
+         * @param $segments
+         * @return array
+         */
         public function generateBreadCrumbs($locale, $segments)
         {
             $items = [];
@@ -69,6 +84,9 @@
             return $items;
         }
 
+        /**
+         * @return void
+         */
         public function makeLocales(): void
         {
             foreach ($this->locales as $locale) {
@@ -81,6 +99,9 @@
             }
         }
 
+        /**
+         * @return void
+         */
         public function makeSettings(): void
         {
             foreach ($this->locales as $locale) {
@@ -114,6 +135,11 @@
             }
         }
 
+        /**
+         * @param array $items
+         * @param string $locale
+         * @return array[]
+         */
         public function makeFlatten(array $items, string $locale): array
         {
             $pages = [
@@ -123,11 +149,21 @@
             return $pages;
         }
 
+        /**
+         * @param string $locale
+         * @return array
+         */
         public function getMenu(string $locale): array
         {
             return $this->menu[$locale];
         }
 
+        /**
+         * @param array $items
+         * @param string $prefix
+         * @param string $locale
+         * @return array
+         */
         function buildMenuTree(array $items, string $prefix = '', string $locale = 'ru'): array
         {
             $tree = [];
@@ -170,6 +206,13 @@
             return $tree;
         }
 
+        /**
+         * @param array $items
+         * @param array $pages
+         * @param string $prefix
+         * @param string $locale
+         * @return void
+         */
         public function makeMenu(array $items, array &$pages, string $prefix = '', string $locale = 'ru'): void
         {
             foreach ($items as $key => $value) {
@@ -218,18 +261,34 @@
         }
 
 
+        /**
+         * @param $relativePath
+         * @param $level
+         * @param $index
+         * @return string
+         */
         public function makeUniqueHeadingId($relativePath, $level, $index): string
         {
             $base = $relativePath . '-' . $level . '-' . $index;
             return 'h-' . substr(md5($base), 0, 12);
         }
 
+        /**
+         * @param $path
+         * @param $headings
+         * @return void
+         */
         public function setHeading($path, $headings): void
         {
             $this->headings[$path] = $headings;
         }
 
 
+        /**
+         * @param array $items
+         * @param array $flat
+         * @return array
+         */
         public function flattenNav(array $items, array &$flat): array
         {
 
@@ -244,6 +303,11 @@
             return $flat;
         }
 
+        /**
+         * @param string $path
+         * @param string $locale
+         * @return array
+         */
         public function getPrevAndNext(string $path, string $locale): array
         {
             $flattenNav = $this->flattenMenu[$locale];
@@ -271,22 +335,39 @@
             return $returnArr;
         }
 
+        /**
+         * @param string $locale
+         * @return void
+         */
         public function setLocale(string $locale): void
         {
             $this->locale = $locale;
         }
 
+        /**
+         * @param array $paths
+         * @return void
+         */
         public function setPaths(array $paths): void
         {
             $this->paths = array_merge($paths, $this->paths);
         }
 
+        /**
+         * @param $text
+         * @param $locale
+         * @return string
+         */
         public function getTranslate($text, $locale): string
         {
             return $this->translations[$locale][$text] ?? '';
 
         }
 
+        /**
+         * @param $locale
+         * @return array
+         */
         public function getItems($locale): array
         {
             return $this->settings[$locale] ?? [];

@@ -5,20 +5,27 @@
     use League\CommonMark\Environment\EnvironmentBuilderInterface;
     use League\CommonMark\Extension\ExtensionInterface;
 
-    class CustomTagsExtension implements ExtensionInterface
+
+    final class CustomTagsExtension implements ExtensionInterface
     {
-        private CustomTagRegistry $registry;
+        /**
+         * @param CustomTagRegistry $registry
+         */
+        public function __construct(private CustomTagRegistry $registry) {}
 
-        public function __construct(CustomTagRegistry $registry)
-        {
-            $this->registry = $registry;
-        }
-
+        /**
+         * @param EnvironmentBuilderInterface $env
+         * @return void
+         */
         public function register(EnvironmentBuilderInterface $environment): void
         {
-            $environment->addInlineParser(new UniversalInlineParser($this->registry), 100);
-            $environment->addBlockStartParser(new UniversalBlockParser($this->registry), 100);
 
-            $environment->addRenderer(CustomTagNode::class, new CustomTagRenderer((array)$this->registry),100);
+//             $env->addInlineParser(new UniversalInlineParser($this->registry), 150);
+
+
+            $environment->addBlockStartParser(new UniversalBlockParser($this->registry), 250);
+
+
+            $environment->addRenderer(CustomTagNode::class, new CustomTagRenderer($this->registry));
         }
     }

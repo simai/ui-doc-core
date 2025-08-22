@@ -8,13 +8,23 @@
 
     class UniversalInlineParser implements InlineParserInterface
     {
+        /**
+         * @param CustomTagRegistry $registry
+         */
         public function __construct(private CustomTagRegistry $registry) {}
 
+        /**
+         * @return array
+         */
         public function getCharacters(): array
         {
             return [];
         }
 
+        /**
+         * @param InlineParserContext $inlineContext
+         * @return bool
+         */
         public function parse(InlineParserContext $inlineContext): bool
         {
             $cursor = $inlineContext->getCursor();
@@ -44,6 +54,9 @@
             return false;
         }
 
+        /**
+         * @return InlineParserMatch
+         */
         public function getMatchDefinition(): InlineParserMatch
         {
             return InlineParserMatch::regex('.+');
