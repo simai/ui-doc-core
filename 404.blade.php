@@ -1,4 +1,4 @@
-@extends('_layouts.master')
+@extends('_core._layouts.master')
 
 @section('body')
 <div class="flex flex-col items-center mt-32 text-gray-700">
