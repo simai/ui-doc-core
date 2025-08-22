@@ -11,9 +11,9 @@
 
         'locales' => [
             'en' => 'English',
-            'ru' => 'Русский',
         ],
-        'defaultLocale' => 'ru',
+        'defaultLocale' => 'en',
+        'lang_path' => 'source/lang',
         'tags' => ['ExampleTag','ListWrap'],
         'getNavItems' => function ($page) {
             return $page->configurator->getPrevAndNext($page->getPath(), $page->locale());
@@ -27,7 +27,7 @@
         'locale' => function ($page) {
             $path = str_replace('\\', '/', $page->getPath());
             $locale = explode('/', $path);
-            $current = 'ru';
+            $current = $page->defaultLocale;
             $locales = array_keys($page->locales->toArray());
             foreach ($locale as $segment) {
                 if (in_array($segment, $locales)) {

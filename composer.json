@@ -5,7 +5,8 @@
         "elaborate-code/jigsaw-localization": "^1.1",
         "michelf/php-markdown": "^2.0",
         "league/commonmark": "^2.7",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "symfony/intl": "^7.3"
     },
     "scripts": {
         "translate": "php bin/translate"
