@@ -107,7 +107,7 @@
                         ];
                     }
                 }
-                if (preg_match_all('~<(h[1-6])([^>]*)>(.*?)</\1\s*>~is', $html, $matches, PREG_SET_ORDER)) {
+                if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $key => $match) {
                         $text = trim(html_entity_decode(strip_tags($match[3])));
                         $id = $configurator->makeUniqueHeadingId($page->getPath(), $match[1], $key);
@@ -175,8 +175,12 @@
                         }
                         $id = $configurator->makeUniqueHeadingId($relativePath, $tag, $count);
                         $count++;
-
-                        return "<$tag$attrs id=\"$id\"><a href='#{$id}' onclick='copyAnchor(this)' aria-disabled='false' class='header-anchor'>#</a><span>{$match[3]}</span></$tag>";
+                        $match[3] = preg_replace(
+                            '/(\S+)$/u',
+                            '<span class="nowrap">$1<span class="sf-icon">link</span></span>',
+                            $match[3]
+                        );
+                        return "<$tag$attrs id=\"$id\"><a href='#{$id}' onclick='copyAnchor(this)' aria-disabled='false' class='header-anchor'>{$match[3]}</a></$tag>";
                     },
                     $html
                 );
