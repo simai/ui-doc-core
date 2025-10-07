@@ -200,14 +200,18 @@ body .container {
   @include breakpoint(tablet) {
     display: none;
   }
-
+  .aside-wrap {
+    height: calc(100vh - var(--sf-header-height) - calc(var(--sf-c2) * 2));
+    overflow: auto;
+    @include breakpoint(tablet) {
+      height: auto;
+    }
+  }
   &--left {
     flex: 0 0 22%;
     border-right: 1px solid var(--sf-outline-variant);
 
     .aside-wrap {
-      height: calc(100vh - var(--sf-header-height) - calc(var(--sf-c2) * 2));
-      overflow: auto;
       padding-right: var(--sf-c2);
     }
 
@@ -605,6 +609,8 @@ button, a {
 .container--main {
   flex: 0 0 60%;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
   @include breakpoint(midTablet) {
     flex: 0 0 70%;
   }
@@ -688,24 +694,42 @@ main {
     position: relative;
 
     a {
-      opacity: 0;
-      position: absolute;
-      left: -20px;
-      color: var(--sf-primary);
-      font-size: var(--sf-text--size-1);
+      //opacity: 0;
+      //position: absolute;
+      left: calc(100% - 1em);
+      font-size: inherit;
+      line-height: inherit;
+      transition: .3s color ease;
+      //top: 0;
+      span.sf-icon {
+        margin-left: var(--sf-space-1);
+        color: var(--sf-primary);
+        opacity: 0;
+        transition: .3s opacity ease;
+      }
       @include breakpoint(tablet) {
-        display: none;
+        span.sf-icon {
+          display: none;
+        }
       }
     }
 
     &:hover {
       a {
-        opacity: 1;
         color: var(--sf-primary);
+        span.sf-icon {
+          opacity: 1;
+        }
       }
     }
   }
 }
+
+.nowrap {
+  white-space: nowrap;
+}
+
+
 
 @include breakpoint(tablet) {
   p, ul, a, code, table {

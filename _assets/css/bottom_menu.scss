@@ -1,6 +1,7 @@
 .bottom {
   &--navigation {
-    margin-top: 2rem;
+    margin-top: auto;
+    padding-top: 2rem;
     gap: var(--sf-text--size-1);
     @include breakpoint(mobile) {
       flex-direction: column;

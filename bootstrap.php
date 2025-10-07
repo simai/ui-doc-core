@@ -107,7 +107,7 @@
                         ];
                     }
                 }
-                if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
+                if (preg_match_all('~<(h[1-6])([^>]*)>(.*?)</\1\s*>~is', $html, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $key => $match) {
                         $text = trim(html_entity_decode(strip_tags($match[3])));
                         $id = $configurator->makeUniqueHeadingId($page->getPath(), $match[1], $key);
@@ -166,7 +166,7 @@
                 $count = 0;
                 $html = preg_replace('/<!--.*?-->/s', '', $html);
                 $html = preg_replace_callback(
-                    '/<(h[1-4])( [^>]*)?>(.*?)<\/\1>/si',
+                    '/<(h[1-6])( [^>]*)?>(.*?)<\/\1>/si',
                     function ($match) use (&$count, $relativePath, $html, $configurator) {
                         $tag = $match[1];
                         $attrs = $match[2] ?? '';

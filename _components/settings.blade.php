@@ -1,5 +1,5 @@
-<div class="sf-settings-wrap">
-<button onclick="toggleSettings(this)" title="{{$page->translate('settings')}}" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
+<div class="sf-settings-wrap sf-float-wrap">
+<button onclick="toggleFloat(this)" title="{{$page->translate('settings')}}" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
     <i class="sf-icon">settings</i>
 </button>
     <div class="sf-settings-menu">

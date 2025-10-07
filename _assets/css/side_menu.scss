@@ -2,6 +2,7 @@
 
   padding-left: var(--sf-c2);
   min-width: 200px;
+  width: 100%;
 
   @include breakpoint(midTablet) {
     position: fixed;
@@ -68,7 +69,7 @@
         font-size: var(--sf-b4);
         color: var(--sf-on-surface);
         transition: font-weight 0.2s;
-
+        display: block;
         &.active {
           font-weight: 700;
         }

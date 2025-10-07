@@ -1,8 +1,23 @@
-export class SearchClass {
-    constructor({fuse}) {
+export class Search {
+    constructor(params) {
         this.value = '';
-        this.fuse = fuse;
+        this._cache = new Map();
+        this._abortCtrl = null;
+        this.mode = 'fuse';
+        this.debounceMs = 500;
+        this.results = null;
+        this.bitrixSearch = null;
+        this.minChars = 2;
+        this._debouncedDoSearch = this._debounce(this._doSearch.bind(this), this.debounceMs);
+        this.initParams(params);
         this.init();
+    }
+
+    initParams(params) {
+        if (!params) return;
+        Object.keys(params).forEach(key => {
+            this[key] = params[key];
+        });
     }
 
     init() {
@@ -32,43 +47,147 @@ export class SearchClass {
 
     }
 
+    setMode(mode) {
+        this.mode = mode;
+        this.clearResults();
+        if (this.input?.value?.trim().length >= this.minChars) {
+            this._debouncedDoSearch(this.input.value.trim(), 'focus');
+        } else {
+            this._debouncedDoSearch.cancel?.();
+        }
+    }
+
+    async _doSearch(query, event) {
+        if (this._abortCtrl) this._abortCtrl.abort();
+        this._abortCtrl = new AbortController();
+
+        const cacheKey = `${this.mode}:${query}`;
+        if (this._cache.has(cacheKey)) {
+            const cached = this._cache.get(cacheKey);
+            this._renderByEvent(cached, event);
+            return;
+        }
+
+        let results = [];
+        try {
+            if (this.mode === 'fuse') {
+                results = this._searchFuse(query);
+            } else if (this.mode === 'bitrix') {
+                results = await this._searchBitrix(query, this._abortCtrl.signal);
+                results = this._normalizeResults(results);
+            } else if (this.mode === 'hybrid') {
+                const [r1, r2] = await Promise.allSettled([
+                    Promise.resolve(this._searchFuse(query)),
+                    this._searchBitrix(query, this._abortCtrl.signal)
+                ]);
+                results = [
+                    ...(r1.status === 'fulfilled' ? r1.value : []),
+                    ...(r2.status === 'fulfilled' ? r2.value : []),
+                ];
+                return results;
+            }
+
+            this._cache.set(cacheKey, results);
+            this._renderByEvent(results, event);
+        } catch (e) {
+            if (e.name === 'AbortError') return; // нормально — отменили
+            console.warn('Search error:', e);
+            this.renderResults([]);
+        }
+    }
+
+    _normalizeResults(results) {
+        if (!results) return null;
+        const data = [];
+        for (const key in results.items) {
+            const {snippet, title, url} = results.items[key];
+            const replaced = snippet.replace(/<\/?b>/g, tag => tag === '<b>' ? '<mark>' : '</mark>');
+            data.push({
+                item: {title: title, content: replaced, url: url},
+            });
+        }
+        return data;
+    }
+
+    _renderByEvent(results, event) {
+        if (event === 'focus') {
+            setTimeout(() => this.renderResults(results), 200);
+        } else {
+            this.renderResults(results);
+            this.closeState(this.value !== '');
+        }
+    }
+
+    _debounce(fn, wait) {
+        let t;
+
+        function debounced(...args) {
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), wait);
+        }
+
+        debounced.cancel = () => clearTimeout(t);
+        return debounced;
+    }
+
+    _searchFuse(query) {
+        if (!this.fuse) return [];
+        const res = this.fuse.search(query);
+
+        return res.map(r => ({
+            item: {title: r.item.title, content: r.item.content, url: r.item.url},
+            matches: (r.matches || []).map(m => ({
+                key: m.key, value: m.value, indices: m.indices
+            }))
+        }));
+    }
+
+    async _searchBitrix(query, signal) {
+        if (!this.bitrixSearch) return [];
+        return await this.bitrixSearch(query, {signal});
+    }
+
     clearResults() {
         this.resultsContainer.innerHTML = '';
         this.resultsWrap.classList.add('hidden');
+        this.results = null;
     }
 
     initDoc() {
-        if (this.input) {
-            ['input', 'focus'].forEach(event => {
-                this.input.addEventListener(event, (e) => {
+        if (!this.input) return;
+
+        ['input', 'focus'].forEach(event => {
+            this.input.addEventListener(event, (e) => {
                     const value = e.target.value.trim();
-                    if (this.value === value) {
-                        return;
-                    }
-                    if (value.length > 2) {
-                        const results = this.fuse.search(e.target.value.trim());
+                    if (this.results) {
                         if (event === 'focus') {
                             setTimeout(() => {
-                                this.renderResults(results);
-                            }, 400);
+                                this.resultsWrap.classList.remove('hidden');
+                            }, 290);
+
                         } else {
-                            this.value = e.target.value;
-                            this.renderResults(results);
-                            this.closeState(this.value !== '');
+                            this.resultsWrap.classList.remove('hidden');
                         }
                     }
-                    if (!value.length) {
-                        this.resultsWrap.classList.add('hidden');
-                    }
-                });
-            });
+                    if (this.value === value) return;
 
-            document.addEventListener('click', (event) => {
-                if (event.target !== this.wrap && event.target !== this.searchButton && !this.searchButton.contains(event.target) && !this.wrap.contains(event.target)) {
-                    this.closeSearch();
+                    if (value.length >= this.minChars) {
+                        this.value = value;
+                        this._debouncedDoSearch(value, event);
+                    } else {
+                        if (!value.length) this.resultsWrap.classList.add('hidden');
+                    }
                 }
-            });
-        }
+            )
+            ;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (event.target !== this.wrap && event.target !== this.searchButton &&
+                !this.searchButton.contains(event.target) && !this.wrap.contains(event.target)) {
+                this.closeSearch();
+            }
+        });
     }
 
     highlightMatch(text, indices) {
@@ -122,12 +241,14 @@ export class SearchClass {
             this.resultsWrap.classList.remove('hidden');
             return;
         }
+        this.results = results;
         results.forEach(result => {
             const {item, matches} = result;
 
             let highlightedTitle = item.title;
             let highlightedContent = item.content?.slice(0, 200) || '';
-            matches.forEach(match => {
+
+            matches && matches.forEach(match => {
                 if (match.key === 'title') {
                     highlightedTitle = this.highlightMatch(match.value, match.indices);
                 } else if (match.key === 'content') {
@@ -177,7 +298,7 @@ export class SearchClass {
             this.logo.classList.remove('hidden');
             this.headerRight.classList.remove('hidden');
         } else {
-            this.menu.classList.remove('hidden');
+            this.menu?.classList.remove('hidden');
         }
 
     }
@@ -193,7 +314,7 @@ export class SearchClass {
             this.logo.classList.add('hidden');
             this.headerRight.classList.add('hidden');
         } else {
-            this.menu.classList.add('hidden');
+            this.menu?.classList.add('hidden');
         }
     }
 

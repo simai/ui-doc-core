@@ -21,20 +21,22 @@ export class SizeObserver {
     }
 
     setObserver() {
-        this.menuObserver = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                const width = entry.contentRect.width;
-                if (width < 543) {
-                    if (this.setCollapsed) return;
-                    this.menu.classList.add('menu--collapsed', 'p-right-5');
-                    this.setCollapsed = true;
-                } else {
-                    if (!this.setCollapsed) return;
-                    this.menu.classList.remove('menu--collapsed', 'p-right-5');
-                    this.setCollapsed = false;
+        if (this.menu) {
+            this.menuObserver = new ResizeObserver(entries => {
+                for (const entry of entries) {
+                    const width = entry.contentRect.width;
+                    if (width < 543) {
+                        if (this.setCollapsed) return;
+                        this.menu.classList.add('menu--collapsed', 'p-right-5');
+                        this.setCollapsed = true;
+                    } else {
+                        if (!this.setCollapsed) return;
+                        this.menu.classList.remove('menu--collapsed', 'p-right-5');
+                        this.setCollapsed = false;
+                    }
                 }
-            }
-        });
+            });
+        }
         this.mainObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
                 const width = entry.contentRect.width;
@@ -43,25 +45,29 @@ export class SizeObserver {
                 if (width < 980 && width > 768) {
                     if (!this.setTabletBug) {
                         this.setTabletBug = true;
-                        this.body.append(this.readMode);
+                        if(this.readMode) {
+                            this.body.append(this.readMode);
+                        }
                     }
-                    if (this.setTopMenu) {
+                    if (this.setTopMenu && this.menu) {
                         this.setTopMenu = false;
                         this.logo.after(this.menu);
                     }
                 } else if (width <= 768) {
-                    if (this.main.classList.contains('read')) {
-                        readMode(this.readMode);
+                    if(this.readMode) {
+                        if (this.main.classList.contains('read')) {
+                            readMode(this.readMode);
+                        }
                     }
                     if (!this.setTabletBug) {
                         this.setTabletBug = true;
                     }
-                    if (!this.setTopMenu) {
+                    if (!this.setTopMenu && this.menu) {
                         this.setTopMenu = true;
                         this.navMenu.prepend(this.menu);
                     }
                 } else {
-                    if (this.main.classList.contains('read')) {
+                    if (this.readMode && this.main.classList.contains('read')) {
                         setTimeout(() => {
                             const menuOffset = this.main.getBoundingClientRect().left + this.main.clientWidth + this.readMode.clientWidth + 16;
                             if (menuOffset >= width) {
@@ -76,10 +82,12 @@ export class SizeObserver {
                     document.body.classList.remove('overflow-hidden');
 
                     if (this.setTabletBug) {
-                        this.headerRight.prepend(this.readMode);
+                        if(this.readMode) {
+                            this.headerRight.prepend(this.readMode);
+                        }
                         this.setTabletBug = false;
                     }
-                    if (this.setTopMenu) {
+                    if (this.setTopMenu && this.menu) {
                         this.setTopMenu = false;
                         this.logo.after(this.menu);
                     }
@@ -90,6 +98,9 @@ export class SizeObserver {
 
     init() {
         this.mainObserver.observe(this.body);
-        this.menuObserver.observe(this.menu);
+        if (this.menu) {
+            this.menuObserver.observe(this.menu);
+        }
+
     }
 }

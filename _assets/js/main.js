@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js';
-import {SearchClass} from "./helpers/Search.js";
+import {Search} from "./helpers/Search.js";
 import {SizeObserver} from "./helpers/ResizeObserver";
 import setReadModePosition from "./helpers/functions";
 
@@ -10,18 +10,30 @@ window.toggleNav = (btn) => {
     btn.closest('.sf-nav-menu-element').classList.toggle('active');
 };
 
-let fuse = null;
+let _fusePromise;
 
-
-
-async function initSearch() {
-    if (!fuse) {
-        fuse = await initFuse();
-    }
-    const Search = new SearchClass({
-        fuse: fuse
-    });
+function getFuseOnce() {
+    if (!_fusePromise) _fusePromise = initFuse();
+    return _fusePromise;
 }
+
+window.initSearch = async function initSearch(params = {}) {
+    const mode = params.mode ?? 'fuse';
+
+    const fuse =
+        params.fuse ??
+        (mode === 'fuse' && typeof Fuse === 'function' ? await getFuseOnce() : null);
+
+    if (mode === 'fuse' && !fuse) {
+        console.warn('Fuse mode selected, but Fuse is unavailable.');
+        return null;
+    }
+
+    return new Search({
+        ...params,
+        ...(fuse && {fuse}),
+    });
+};
 
 async function initFuse() {
     return await fetch(`/search-index_${locale}.json`)
@@ -43,6 +55,8 @@ async function initFuse() {
                 includeMatches: true
             };
             return new Fuse(data, options);
+        }).catch(e => {
+            return null;
         });
 }
 
@@ -96,13 +110,8 @@ window.toggleMobileMenu = function (button) {
 
 };
 
-window.toggleActions = function (button) {
-    const wrap = button.parentNode;
-    wrap.classList.toggle('active');
-};
 
-
-window.toggleSettings = function (button) {
+window.toggleFloat = function (button) {
     const wrap = button.parentNode;
     wrap.classList.toggle('active');
 };
@@ -150,7 +159,15 @@ function initNavLinks() {
     const navLinks = document.querySelectorAll(".sf-side-menu-list-item a");
     const header = document.querySelector("header");
     const visibleIds = new Set();
+    const wrap = document.getElementById('side_menu_list');
     const headerHeight = header ? header.offsetHeight : 0;
+
+    wrap && ['resize', 'sf-loader-ready'].forEach(event => {
+        window.addEventListener(event, () => {
+            lockInlineWidth(navLinks, wrap);
+        });
+    });
+
     initClicks(navLinks, header);
 
     let lastVisibleId = null;
@@ -265,11 +282,10 @@ function init() {
     initReadMode();
     initNavLinks();
     initResize();
-    initSearch().then(() => {
-
-    });
+    initSearch();
     const resizeObserver = new SizeObserver();
     resizeObserver.init();
+
 }
 
 
@@ -328,7 +344,7 @@ function initFontSize() {
                     break;
             }
         }
-        if(typeof detail.radioChange === 'function') {
+        if (typeof detail.radioChange === 'function') {
             detail.radioChange(key);
         }
     });
@@ -523,21 +539,41 @@ window.langSwitch = function (button) {
 };
 
 
+function lockInlineWidth(items, wrap) {
+    items.forEach(el => {
+        const list = el.closest('.sf-side-menu-list-item');
+        const item = list.querySelector('.sf-side_item');
+        item.removeAttribute('style');
+        const probe = list.cloneNode(true);
+        wrap.appendChild(probe);
+        probe.style.position = 'absolute';
+        probe.style.visibility = 'hidden';
+        probe.style.fontWeight = '700';
+
+        const w700 = probe.querySelector('span').getBoundingClientRect().width;
+        wrap.removeChild(probe);
+        el.style.maxWidth = `${w700}px`;
+    });
+
+}
+
 window.addEventListener('click', function (e) {
-    const langContainer = document.querySelector('.sf-language-switch--container');
-    const menu = langContainer.querySelector('.sf-language-switch--language-panel-show');
-    const settingsContainer = document.querySelector('.sf-settings-wrap');
-    const moreContainer = document.querySelector('.sf-more-wrap');
-    if (!menu && !settingsContainer && !moreContainer) {
+    const floatContainers = document.querySelectorAll('.sf-float-wrap');
+    if (!floatContainers.length) {
         return false;
     }
-    if (e.target !== settingsContainer && !settingsContainer.contains(e.target)) {
-        settingsContainer.classList.remove('active');
+
+    floatContainers.forEach(container => {
+        if (e.target !== container && !container.contains(e.target)) {
+            container.classList.remove('active');
+        }
+    });
+    const langContainer = document.querySelector('.sf-language-switch--container');
+    const menu = langContainer?.querySelector('.sf-language-switch--language-panel-show');
+    if (!menu) {
+        return false;
     }
-    if (e.target !== moreContainer && !moreContainer.contains(e.target)) {
-        moreContainer.classList.remove('active');
-    }
-    if (e.target !== langContainer && !langContainer.contains(e.target)) {
+    if (langContainer && e.target !== langContainer && !langContainer.contains(e.target)) {
         document.querySelector('.sf-language-switch--language-panel').classList.remove("sf-language-switch--language-panel-show");
     }
 });

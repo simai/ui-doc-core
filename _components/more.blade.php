@@ -1,5 +1,5 @@
-<div class="sf-more-wrap">
-    <button onclick="toggleActions(this)" title="{{$page->translate('actions')}}" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
+<div class="sf-more-wrap sf-float-wrap">
+    <button onclick="toggleFloat(this)" title="{{$page->translate('actions')}}" class="sf-button sf-button-settings  sf-button--on-surface-transparent sf-button--borderless">
         <i class="sf-icon">more_vert</i>
     </button>
     <div class="sf-more-menu">
