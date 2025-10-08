@@ -171,7 +171,7 @@
                     function ($match) use (&$count, $relativePath, $html, $configurator) {
                         $fingerPrint = $configurator->mkFingerprint($match[3]);
                         if(!isset($configurator->fingerPrint[$fingerPrint])) {
-                            return  $match[3];
+                            return  $match[0];
                         }
                         $tag = $match[1];
                         $attrs = $match[2] ?? '';
