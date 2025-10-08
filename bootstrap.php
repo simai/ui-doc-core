@@ -86,7 +86,6 @@
         $data = json_decode($json, true);
         $jigsaw->setConfig('sha', $data['sha'] ?? null);
     });
-
     $events->afterCollections(function ($jigsaw) {
         $index = [];
         $configurator = $jigsaw->getConfig('configurator');
@@ -115,7 +114,9 @@
                         if ($issetId) {
                             $id = trim($match[2]);
                         }
-                        $rightMenuHeadings[] = [
+                        $fingerPrint = $configurator->mkFingerprint($match[3]);
+                        $configurator->setFingerprint($id, $fingerPrint);
+                        $rightMenuHeadings[$id] = [
                             'level' => $match[1],
                             'id' => $id,
                             'type' => preg_replace('/h/', '', $match[1]),
@@ -168,6 +169,10 @@
                 $html = preg_replace_callback(
                     '/<(h[1-6])( [^>]*)?>(.*?)<\/\1>/si',
                     function ($match) use (&$count, $relativePath, $html, $configurator) {
+                        $fingerPrint = $configurator->mkFingerprint($match[3]);
+                        if(!isset($configurator->fingerPrint[$fingerPrint])) {
+                            return  $match[3];
+                        }
                         $tag = $match[1];
                         $attrs = $match[2] ?? '';
                         if (str_contains($attrs, 'id=')) {

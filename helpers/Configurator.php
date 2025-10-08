@@ -11,6 +11,7 @@
         public array $locales;
         public array $paths = [];
         public array $settings;
+        public array $fingerPrint = [];
 
         public array $translations = [];
         public array $headings;
@@ -259,6 +260,21 @@
                 }
             }
         }
+
+        /**
+         * @param string $html
+         * @return string
+         */
+        public function mkFingerprint (string $html): string {
+        $t = trim(html_entity_decode(strip_tags($html)));
+        $t = preg_replace('/\s+/u', ' ', mb_strtolower($t));
+        return md5($t);
+    }
+
+    public function setFingerprint($id, string $fingerprint): void
+    {
+        $this->fingerPrint[$fingerprint] = $id;
+    }
 
 
         /**
