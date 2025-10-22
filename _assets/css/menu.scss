@@ -16,15 +16,16 @@
     border-radius: var(--sf-radius-1);
     gap: var(--sf-b6);
     position: relative;
+    text-align: left;
 
 
     &.visited {
-      background-color: var(--sf-surface-3);
+      background-color: var(--sf-surface-container-active);
     }
 
     &:not(.visited, .active) {
       &:hover {
-        background-color: var(--sf-surface-transparent-hover);
+        background-color: var(--sf-surface-container-hover);
       }
     }
   }
@@ -71,12 +72,12 @@
 
         &:not(.active) {
           &:hover {
-            color: var(--sf-on-surface);
+            color: var(--sf-surface-container-hover);
           }
         }
 
         &.active {
-          background-color: var(--sf-surface-3);
+          background-color: var(--sf-surface-container-active);
         }
       }
 

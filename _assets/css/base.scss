@@ -60,7 +60,7 @@ body {
 
   hr {
     border-width: 1px;
-    border-color: var(--sf-surface-2);
+    border-color: var(--sf-surface-1);
     margin-top: var(--sf-heading--space-top);
     + p {
       margin-top: var(--sf-heading--space-top);
@@ -68,8 +68,22 @@ body {
   }
 
   .sf-button {
-    --sf-button--padding-sides: var(--sf-a8);
-
+    &-readMode {
+      &.read:not(.inside) {
+        align-self: flex-start;
+        margin-left: var(--sf-b6);
+        top: var(--sf-b6);
+        position: sticky;
+      }
+      &.inside {
+        position: fixed;
+        right: var(--sf-space-2);
+        top: calc(var(--sf-text--height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
+      }
+      @include breakpoint(midTablet) {
+        top: calc(var(--sf-text--height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
+      }
+    }
     &-segment {
       display: none;
       position: fixed;
@@ -88,15 +102,10 @@ body {
           top: 0;
           display: flex;
         }
-        display: flex;
-        font-size: var(--sf-c0);
-        line-height: var(--sf-c0);
+        &:not(.hidden) {
+          display: flex;
+        }
       }
-    }
-
-    @include breakpoint(tablet) {
-      --sf-button--padding-sides: var(--sf-a8);
-      font-size: var(--sf-c0);
     }
   }
 
@@ -128,19 +137,6 @@ body {
 
 .sf {
   &-button {
-    &.sf-button {
-      &--nav-switch, &-settings, &-readMode {
-        --sf-button--text-size: var(--sf-c2);
-        max-width: var(--sf-d0);
-        justify-content: center;
-        &.fixed {
-          top: var(--sf-b6);
-        }
-        @include breakpoint(tablet) {
-          max-width: var(--sf-c8);
-        }
-      }
-    }
 
     &-nav {
       @include breakpoint(desktop) {
@@ -284,7 +280,7 @@ blockquote {
   margin-block: var(--sf-text--space-bottom);
   border-left-style: solid;
   border-left-width: 4px;
-  border-color: var(--sf-surface-2);
+  border-color: var(--sf-surface-1);
   padding-inline: calc(var(--sf-b6) / 2);
   padding-block: calc(var(--sf-b6) / 2);
   color: var(--sf-secondary);
@@ -296,7 +292,9 @@ blockquote {
 
 main {
   padding: var(--sf-c6);
-
+  &:has(.sf-button.read) {
+    border: 0;
+  }
   .links {
     ul {
       list-style-type: none;
@@ -440,9 +438,9 @@ pre {
 }
 
 .files {
-  background-color: var(--sf-surface-2);
+  background-color: var(--sf-surface-1);
   font-size: 0.875rem;
-  border-color: var(--sf-surface-3);
+  border-color: var(--sf-surface-container-active);
   border-radius: 0.25rem;
   border-width: 1px;
   margin: 1.5rem auto 2.5rem;
@@ -476,7 +474,7 @@ pre {
 
     &.focus {
       border-radius: var(--sf-radius-1);
-      background-color: var(--sf-surface-2);
+      background-color: var(--sf-surface-1);
       padding-block: calc(var(--sf-a4) * 3);
       margin-top: 8px;
       margin-left: -25px;
@@ -565,7 +563,7 @@ pre {
 .sf-language-switch--language-panel {
   --sf-language-switch--language-panel-display: none;
   position: absolute;
-  background-color: var(--sf-surface-2);
+  background-color: var(--sf-surface-1);
   top: calc(100% + var(--sf-b2));
   width: 100%;
   overflow-y: auto;

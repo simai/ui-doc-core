@@ -24,10 +24,11 @@ body {
           line-height: var(--sf-c2);
           padding: 2px 8px;
           border-radius: var(--sf-a4);
-          background-color: var(--sf-tertiary-transparent-overlay);
+          background-color: var(--sf-tertiary-container);
           color: var(--sf-on-surface);
           margin: 2px 2px;
           display: inline-block;
+          white-space: nowrap;
           @include breakpoint(tablet) {
             font-size: var(--sf-b4);
           }

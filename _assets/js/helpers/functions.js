@@ -1,14 +1,29 @@
-export default function  setReadModePosition(container, sideMenu, setInside = false) {
+export default function  setReadModePosition(container, readModeButton) {
+    const mainRect = container.getBoundingClientRect();
+    const sideWidth = readModeButton.offsetParent
+        ? readModeButton.clientWidth
+        : readModeButton.getBoundingClientRect().width;
+
+    const menuOffset = mainRect.left + container.clientWidth + sideWidth + 16;
+
+    const viewportWidth = document.documentElement.clientWidth;
+    const setInside = menuOffset >= viewportWidth;
     if(container.classList.contains('read')) {
-        const containerOffset = container.getBoundingClientRect().left;
-        const minus = setInside ? sideMenu.clientWidth + 16 : -16;
         if (setInside) {
-            sideMenu.classList.add('inside');
+            if(container.contains(readModeButton)) return;
+            readModeButton.classList.add('inside');
+            container.append(readModeButton);
         } else {
-            sideMenu.classList.remove('inside');
+            if(container.contains(readModeButton)) {
+                container.parentNode.append(readModeButton)
+            }
+            readModeButton.classList.remove('inside');
         }
-        sideMenu.style.left = `${(container.clientWidth + containerOffset) - minus}px`;
     } else {
-        sideMenu.removeAttribute('style');
+        if (setInside) {
+            readModeButton.classList.add('inside');
+        } else {
+            readModeButton.classList.remove('inside');
+        }
     }
 }

@@ -30,7 +30,15 @@
     @endif
 
     @include('_core._layouts.core')
+    @php
+    $jsTranslation = $page->getJsTranslations();
+    @endphp
 
+    @if ($jsTranslation)
+        <script>
+        window.sfJsLang = {!! json_encode($jsTranslation, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!};
+        </script>
+    @endif
     <link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}">
     <script>
         window.getCookie = function (name) {

@@ -3,7 +3,9 @@
   padding-left: var(--sf-c2);
   min-width: 200px;
   width: 100%;
-
+  &.read {
+    display: none;
+  }
   @include breakpoint(midTablet) {
     position: fixed;
     display: flex;
@@ -109,9 +111,6 @@ body {
 
     }
     &-readMode {
-      @include breakpoint(midTablet) {
-        top: calc(var(--sf-header-height) + var(--sf-a8) + var(--sf-d0));
-      }
       @include breakpoint(tablet) {
         display: none;
       }

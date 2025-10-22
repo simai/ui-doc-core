@@ -23,7 +23,7 @@
 //             $env->addInlineParser(new UniversalInlineParser($this->registry), 150);
 
 
-            $environment->addBlockStartParser(new UniversalBlockParser($this->registry), 250);
+            $environment->addBlockStartParser(new UniversalBlockParser($this->registry), 0);
 
 
             $environment->addRenderer(CustomTagNode::class, new CustomTagRenderer($this->registry));

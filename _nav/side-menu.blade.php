@@ -1,6 +1,6 @@
 @if($page->headings && count($page->headings))
     <div class="side-menu-navigation">
-        <h5 class="sf-side-menu-header">Навигация</h5>
+        <h5 class="sf-side-menu-header">{{$page->translate('navigation')}}</h5>
         <div class="sf-side-menu-list_wrap">
             <ul id="side_menu_list" class="sf-side-menu-list flex flex-col">
                 @foreach($page->headings as $heading)
@@ -13,7 +13,8 @@
                 @endforeach
             </ul>
         </div>
-        <button onclick="navOpen()" id="sf_segment_close" class="sf-button sf-button-segment_close sf-button--1 sf-button--on-surface-transparent sf-button--borderless side-menu-instrument">
+        <button onclick="navOpen()" id="sf_segment_close"
+                class="sf-button sf-button-segment_close sf-button-size-1 sf-icon-button-size-1 sf-button--on-surface sf-button-type-link side-menu-instrument">
             <i class="sf-icon">close</i>
         </button>
     </div>

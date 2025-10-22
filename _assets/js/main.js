@@ -17,6 +17,26 @@ function getFuseOnce() {
     return _fusePromise;
 }
 
+function scrollToActiveMenu() {
+    window.addEventListener('DOMContentLoaded', () => {
+        const menu = document.querySelector('.sf-nav-wrap');
+        if (!menu) return;
+        const activeItem = menu.querySelector('.sf-nav-item.active');
+        const activeCategories = Array.from(menu.querySelectorAll('.sf-nav-menu-element.active'));
+
+        if (activeItem) {
+            activeItem.scrollIntoView({behavior: 'smooth', block: 'center', container: 'nearest'});
+        }
+        if (!activeItem && activeCategories.length) {
+            activeCategories[activeCategories.length - 1].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                container: 'nearest'
+            });
+        }
+    });
+}
+
 window.initSearch = async function initSearch(params = {}) {
     const mode = params.mode ?? 'fuse';
 
@@ -153,6 +173,12 @@ window.setIssue = function (githubUrl) {
     }
 };
 
+function toggleLinksWidth() {
+    const navLinks = document.querySelectorAll(".sf-side-menu-list-item a");
+    const wrap = document.getElementById('side_menu_list');
+    lockInlineWidth(navLinks, wrap);
+}
+
 
 function initNavLinks() {
     const headers = document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]");
@@ -161,12 +187,22 @@ function initNavLinks() {
     const visibleIds = new Set();
     const wrap = document.getElementById('side_menu_list');
     const headerHeight = header ? header.offsetHeight : 0;
+    if (navLinks[0]) {
+        const familyRaw = window.getComputedStyle(navLinks[0]).fontFamily;
 
-    wrap && ['resize', 'sf-loader-ready'].forEach(event => {
-        window.addEventListener(event, () => {
-            lockInlineWidth(navLinks, wrap);
+        const mainFont = familyRaw.split(',')[0].trim().replace(/^['"]|['"]$/g, '');
+        document.fonts.addEventListener('loadingdone', (event) => {
+            const hasInter = event.fontfaces.some(f => f.family === mainFont);
+            if (hasInter) {
+                wrap && ['resize', 'sf-loader-ready'].forEach(event => {
+                    window.addEventListener(event, () => {
+                        lockInlineWidth(navLinks, wrap);
+                    });
+                });
+                lockInlineWidth(navLinks, wrap);
+            }
         });
-    });
+    }
 
     initClicks(navLinks, header);
 
@@ -279,12 +315,11 @@ function navClick(link, headerHeight, head = null) {
 initFontSize();
 
 function init() {
-    initReadMode();
     initNavLinks();
     initResize();
     initSearch();
-    const resizeObserver = new SizeObserver();
-    resizeObserver.init();
+    scrollToActiveMenu();
+    initReadMode();
 
 }
 
@@ -299,6 +334,15 @@ if (typeof Turbo !== 'undefined') {
 function getInitialState(name) {
     const savedState = localStorage.getItem(name);
     return savedState ? savedState === 'true' : false;
+}
+
+if (window.sfJsLang && window.sfJsLang.copy && window.sfJsLang['copy done']) {
+
+    window.addEventListener('Copy:beforeRender', (event) => {
+        event.detail.params.text = window.sfJsLang.copy;
+        event.detail.params.done = window.sfJsLang['copy done'];
+    });
+
 }
 
 function initFontSize() {
@@ -351,11 +395,13 @@ function initFontSize() {
 }
 
 function initReadMode() {
+    const resizeObserver = new SizeObserver();
+    resizeObserver.init();
     const state = getInitialState('readMode');
     if (state) {
         const button = document.getElementById('read_mode');
         if (button) {
-            readMode(button);
+            applyReadMode(button);
         }
     }
 }
@@ -458,12 +504,13 @@ window.toggleResize = function () {
 };
 
 
-window.readMode = function (button) {
+window.applyReadMode = function (button) {
     const icon = button.children[0];
     const header = document.querySelector('header');
     const body = document.body;
     const navMenu = document.querySelector('.sf-nav-menu--left');
     const headerRight = header.querySelector('.header--right');
+    const segmentButton = document.getElementById('sf_segment');
     const sideMenu = document.getElementById('side_menu');
     const mainContainer = document.querySelector('.container--main');
     const sideMenuNavigation = document.querySelector('.side-menu-navigation');
@@ -484,20 +531,21 @@ window.readMode = function (button) {
             icon.textContent = 'fullscreen_exit';
             body.classList.remove('max-container-8', 'max-container-6');
             body.classList.add('max-container-1', 'read');
-            button.classList.add('fixed');
-            mainContainer.append(button);
-            setTimeout(() => {
-                setReadModePosition(mainContainer, button);
-            }, 200);
+            button.classList.add('read');
+            segmentButton.classList.add('hidden');
+            mainContainer.parentNode.insertBefore(button, sideMenu);
+            requestAnimationFrame(() => setReadModePosition(mainContainer, button))
         } else {
             icon.textContent = 'fullscreen';
             body.classList.remove('max-container-1', 'read');
             const isExpanded = getInitialState('expanded');
             body.classList.add(`max-container-${isExpanded ? '8' : '6'}`);
-            button.classList.remove('fixed');
+            button.classList.remove('read');
+            segmentButton.classList.remove('hidden');
             sideMenu.removeAttribute('style');
             headerRight.prepend(button);
         }
+        toggleLinksWidth();
     }
     localStorage.setItem('readMode', String(mainContainer.classList.contains('read')));
 
@@ -556,6 +604,7 @@ function lockInlineWidth(items, wrap) {
     });
 
 }
+
 
 window.addEventListener('click', function (e) {
     const floatContainers = document.querySelectorAll('.sf-float-wrap');

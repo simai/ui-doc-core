@@ -29,6 +29,7 @@
             "Composer autoloader not loaded. Run via 'composer translate' или bin/translate."
         );
     }
+
     $projectRoot = getcwd();
 
     $dotenv = Dotenv::createImmutable($projectRoot);
@@ -79,7 +80,7 @@
             $this->region = $_ENV['AZURE_REGION'] ?? '';
             $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
             $this->config = require $this->projectRoot . '/translate.config.php';
-            $this->targetDir = $this->config['source_dir'] . "_docs-{$this->config['target_lang']}";
+            $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}";
             $this->registerJigsawConfig();
         }
 
@@ -397,7 +398,7 @@
                         }
                         $hash = md5($content);
                         $srcPath = $file->getPathname();
-                        $destPath = str_replace("_docs-{$this->config['target_lang']}", "_docs-{$lang}", $srcPath);
+                        $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}", "{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}", $srcPath);
                         if ($lang === $this->config['target_lang'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
                             continue;
                         }

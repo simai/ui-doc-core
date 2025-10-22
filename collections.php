@@ -14,6 +14,7 @@
             'path' => function ($page) use ($lang) {
                 $relative = str_replace('\\', '/', $page->_meta->relativePath);
                 $rest = trim(Str::after($relative, "$lang/"), '/');
+
                 return "$lang/" . trim(
                         rtrim($rest, '/') . (
                         basename($rest) !== $page->_meta->filename

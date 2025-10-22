@@ -14,18 +14,15 @@
             $attrStr = trim((string)$attrStr);
             if ($attrStr === '') return [];
 
-            // 1) Нормализация: NBSP -> обычный пробел, умные кавычки -> ASCII
             $attrStr = str_replace(
                 ["\xC2\xA0", "“", "”", "‘", "’"],
                 [' ', '"', '"', "'", "'"],
                 $attrStr
             );
-            // Свести подряд идущие пробелы к одному
             $attrStr = preg_replace('/[ \t\x{00A0}]+/u', ' ', $attrStr);
 
             $attrs = ['class' => ''];
             $classes = [];
-            $set = false;
 
             if (preg_match_all(
                 '/([\p{L}\p{N}_][\p{L}\p{N}_:-]*)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>`]+))/u',
@@ -41,8 +38,6 @@
                         $attrs[$key] = $val;
                     }
                 }
-                $set = true;
-                // вырезаем разобранные пары key=value из строки
                 $attrStr = trim(preg_replace(
                     '/([\p{L}\p{N}_][\p{L}\p{N}_:-]*)\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s"\'=<>`]+)/u',
                     '',

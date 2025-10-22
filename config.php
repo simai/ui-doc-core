@@ -1,28 +1,56 @@
 <?php
 
+    use Dotenv\Dotenv;
     use Illuminate\Support\Str;
+
+    $projectRoot = getcwd();
+
+
+    $dotenv = Dotenv::createImmutable(getcwd());
+    $dotenv->safeLoad();
+
+    foreach ((array) getenv() as $k => $v) {
+        $_ENV[$k] = $v;
+    }
 
     return [
         'baseUrl' => '',
         'production' => false,
+        'env' => getenv(),
+        'category' => false,
+        'cache' => false,
         'siteName' => 'Simai Documentation',
         'siteDescription' => 'Simai framework documentation',
         'github' => 'https://github.com/simai/ui-doc-template/',
-
         'locales' => [
-            'en' => 'English',
+            'ru' => 'Russian',
         ],
-        'defaultLocale' => 'en',
+        'pretty' => false,
+        'defaultLocale' => 'ru',
         'lang_path' => 'source/lang',
         'tags' => ['ExampleTag','ListWrap'],
         'getNavItems' => function ($page) {
             return $page->configurator->getPrevAndNext($page->getPath(), $page->locale());
+        },
+        'getMenu' => function ($page) {
+            $locale = $page->locale();
+            if($page->category) {
+                $path = collect(explode('/', trim(str_replace('\\', '/', $page->getPath()), '/')))
+                    ->take(2)->toArray();
+                return $page->configurator->getMenu($locale, $path);
+            } else {
+                return $page->configurator->getMenu($locale);
+            }
         },
         'generateBreadcrumbs' => function ($page) {
             $currentPath = trim($page->getPath(), '/');
             $locale = $page->locale();
             $segments = $currentPath === '' ? [] : explode('/', $currentPath);
             return $page->configurator->generateBreadCrumbs($locale, $segments);
+        },
+        'getJsTranslations' => function ($page) {
+            $locale = $page->locale();
+            return $page->configurator->getJsTranslations($locale);
         },
         'locale' => function ($page) {
             $path = str_replace('\\', '/', $page->getPath());
@@ -44,9 +72,9 @@
             $arShift = array_slice($arPath, 2);
 
             if(count($arShift) > 0) {
-                $path = "_docs-{$lang}" . '/' . implode('/', $arShift) . '.md';
+                $path = "{$page->env['DOCS_DIR']}/{$lang}" . '/' . implode('/', $arShift) . '.md';
             } else {
-                $path = "_docs-{$lang}/index.md";
+                $path = "{$page->env['DOCS_DIR']}/{$lang}/index.md";
             }
             return $path;
         },

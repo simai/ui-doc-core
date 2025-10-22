@@ -4,6 +4,8 @@
     /** @var $container \Illuminate\Container\Container */
     /** @var $events \TightenCo\Jigsaw\Events\EventBus */
 
+    use App\Helpers\Configurator;
+
     /**
      * You can run custom code at different stages of the build process by
      * listening to the 'beforeBuild', 'afterCollections', and 'afterBuild' events.
@@ -16,41 +18,12 @@
      */
 
 
-    use App\Helpers\CommonMark\CustomTagRegistry;
-    use App\Helpers\Interface\CustomTagInterface;
-    use App\Helpers\Parser;
-    use App\Helpers\CommonMark\TagRegistry;
-    use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
-    try {
-        $container->bind(CustomTagRegistry::class, function ($c) {
-            $namespace = 'App\\Helpers\\CustomTags\\';
-            $shorts = (array)$c['config']->get('tags', []);
-            $instances = [];
-            foreach ($shorts as $short) {
-                $class = $namespace . $short;
-                if (class_exists($class)) {
-                    $obj = new $class();
-                    if ($obj instanceof CustomTagInterface) $instances[] = $obj;
-                }
-            }
-            return TagRegistry::register($instances);
-        });
-    } catch (ReflectionException $e) {
-
-    }
-
-
-    try {
-        $container->bind(FrontMatterParser::class, Parser::class);
-    } catch (ReflectionException $e) {
-
-    }
-
-    $events->beforeBuild(function ($jigsaw) use ($container) {
+    $configurator = new Configurator($container);
+    $events->beforeBuild(function ($jigsaw) use ($container, $configurator) {
         $locales = $jigsaw->getConfig('locales');
-        $tempConfig = __DIR__ . '/temp/translations/.config.json';
 
+        $tempConfig = __DIR__ . '/temp/translations/.config.json';
 
         if (is_file($tempConfig)) {
             $allLocales = [];
@@ -65,7 +38,7 @@
         }
 
         $locales = $jigsaw->getConfig('locales');
-        $configurator = new \App\Helpers\Configurator($locales);
+        $configurator->prepare($locales, $jigsaw);
         $jigsaw->setConfig('configurator', $configurator);
 
 
@@ -80,6 +53,8 @@
             ]
         ]);
         $json = @file_get_contents($url, false, $context);
+
+
         if (!$json) {
             return null;
         }
@@ -88,18 +63,22 @@
     });
     $events->afterCollections(function ($jigsaw) {
         $index = [];
-        $configurator = $jigsaw->getConfig('configurator');
         $paths = [];
+        $configurator = $jigsaw->getConfig('configurator');
+
         foreach ($jigsaw->getConfig('collections') as $collectionName => $config) {
             $collection = $jigsaw->getCollection($collectionName);
-            foreach ($collection as $page) {
+            foreach ($collection as  $page) {
+
                 $paths[] = $page->getPath();
                 $html = $page->getContent();
                 $plain = strip_tags($html);
                 $headings = [];
                 $rightMenuHeadings = [];
+
                 if (preg_match_all('/<h2.*?id="(.*?)".*?>(.*?)<\/h2>/si', $html, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $match) {
+
                         $headings[] = [
                             'anchor' => $match[1],
                             'text' => trim(html_entity_decode(strip_tags($match[2]))),
@@ -127,7 +106,6 @@
                 }
 
                 $configurator->setHeading($page->getPath(), $rightMenuHeadings);
-
                 $page->set('headings', $rightMenuHeadings);
                 $title = $page->title ?? '';
                 $contentLines = preg_split('/\r\n|\r|\n/', $plain);
@@ -194,7 +172,6 @@
         }
         $index = $jigsaw->getConfig('INDEXES');
         $dest = $jigsaw->getDestinationPath();
-
         if (!file_exists($dest)) {
             mkdir($dest, 0755, true);
         }
@@ -202,7 +179,6 @@
 
             file_put_contents($dest . "/search-index_{$lang}.json", json_encode($page, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
-
     });
 
 
