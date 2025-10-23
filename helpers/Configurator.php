@@ -117,6 +117,9 @@
                     $value['has_index'] = false;
                 }
             };
+            if(!isset($value['showInMenu'])) {
+                $value['showInMenu'] = true;
+            }
             $current['current'] = $value;
         }
 
@@ -213,7 +216,7 @@
         {
             foreach ($items['pages'] as &$item) {
                 $current = $item;
-                if (!isset($current['pages']) || !isset($current['current'])) continue;
+                if (!isset($current['pages']) || !isset($current['current']) || !isset($item['current']['menu'])) continue;
                 $this->sortPagesRecursively($item['pages'], $item['current']['menu']);
             }
 
@@ -388,6 +391,7 @@
                     'title' => $title,
                     'path' => $isLink ? $slug : $fullPath,
                     'isLink' => $isLink,
+                    'showInMenu' => $item['current']['showInMenu'],
                     'children' => [],
                 ];
 
