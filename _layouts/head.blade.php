@@ -25,7 +25,7 @@
 
     @stack('meta')
 
-    @if ($page->production)
+    @if ($page->turbo)
         <script src="{{ mix('js/turbo.js', 'assets/build') }}"></script>
     @endif
 

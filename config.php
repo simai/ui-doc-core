@@ -17,6 +17,7 @@
         'baseUrl' => '',
         'production' => false,
         'env' => getenv(),
+        'turbo' => false,
         'category' => false,
         'cache' => false,
         'siteName' => 'Simai Documentation',
