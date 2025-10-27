@@ -80,7 +80,7 @@
             $this->region = $_ENV['AZURE_REGION'] ?? '';
             $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
             $this->config = require $this->projectRoot . '/translate.config.php';
-            $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}";
+            $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}";
             $this->registerJigsawConfig();
         }
 
@@ -398,8 +398,8 @@
                         }
                         $hash = md5($content);
                         $srcPath = $file->getPathname();
-                        $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}", "{$_ENV['DOCS_DIR']}/{$this->config['target_lang']}", $srcPath);
-                        if ($lang === $this->config['target_lang'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
+                        $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}", "{$_ENV['DOCS_DIR']}/{$lang}", $srcPath);
+                        if ($lang === $this->config['default_lang'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
                             continue;
                         }
 
@@ -417,18 +417,21 @@
                                 if ($fileName === '.lang.php') {
                                     $translated = $this->translateLangFiles($data, $lang);
                                     $translated = "<?php\nreturn " . var_export($translated, true) . ";\n";
+
                                 } else if ($fileName === '.settings.php') {
                                     $data = include $filePathName;
                                     $translated = $this->generateSettingsTranslate($data, $lang);
                                     $translated = "<?php\nreturn " . var_export($translated, true) . ";\n";
+
                                 } else {
+
                                     $translated = $content;
                                 }
                             } else {
+
                                 $translated = $content;
                             }
                         }
-
                         $dir = dirname($destPath);
                         if (!is_dir($dir)) mkdir($dir, 0777, true);
                         file_put_contents($destPath, $translated);
@@ -608,6 +611,7 @@
 
             $response = curl_exec($ch);
 
+
             if (curl_errno($ch)) {
                 echo 'Ошибка CURL: ' . curl_error($ch) . "\n";
             }
@@ -716,10 +720,11 @@
             foreach ($this->prevTranslation as $lang => $map) {
                 $langFullName = $this->mb_ucfirst(Languages::getName($lang));
                 $arTranslated[$lang] = $langFullName;
-                file_put_contents($this->cachePath . "/translate_{$lang}.json", json_encode($map, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                file_put_contents($this->cachePath . "translate_{$lang}.json", json_encode($map, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             }
-            file_put_contents($this->cachePath . "/.config.json", json_encode($arTranslated, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-            file_put_contents($this->cachePath . "/hash.json", json_encode($this->hashData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            file_put_contents($this->cachePath . ".config.json", json_encode($arTranslated, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            file_put_contents($this->cachePath . "hash.json", json_encode($this->hashData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            echo 'Translate complete';
         }
 
         /**
