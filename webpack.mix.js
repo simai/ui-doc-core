@@ -1,10 +1,13 @@
 const mix = require('laravel-mix');
+const fs = require('fs');
 require('laravel-mix-jigsaw');
 
 mix.disableSuccessNotifications();
 mix.setPublicPath('source/assets/build');
 mix.copy('source/_core/_assets/img', 'source/assets/build/img');
-mix.copy('source/img/', 'source/assets/build/img');
+if (fs.existsSync('source/img')) {
+    mix.copy('source/img', 'source/assets/build/img');
+}
 mix.copy('source/_core/_assets/fonts', 'source/assets/build/fonts');
 mix.sass('source/_core/_assets/css/main.scss', 'css');
 mix.webpackConfig({
