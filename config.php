@@ -24,10 +24,10 @@
         'siteDescription' => 'Simai framework documentation',
         'github' => 'https://github.com/simai/ui-doc-template/',
         'locales' => [
-            'ru' => 'Russian',
+            'en' => 'English',
         ],
         'pretty' => false,
-        'defaultLocale' => 'ru',
+        'defaultLocale' => 'en',
         'lang_path' => 'source/lang',
         'tags' => ['ExampleTag','ListWrap'],
         'getNavItems' => function ($page) {
