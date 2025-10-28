@@ -80,7 +80,7 @@
             $this->region = $_ENV['AZURE_REGION'] ?? '';
             $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
             $this->config = require $this->projectRoot . '/translate.config.php';
-            $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}";
+            $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['defaultLocale']}";
             $this->registerJigsawConfig();
         }
 
@@ -398,8 +398,8 @@
                         }
                         $hash = md5($content);
                         $srcPath = $file->getPathname();
-                        $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}", "{$_ENV['DOCS_DIR']}/{$lang}", $srcPath);
-                        if ($lang === $this->config['default_lang'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
+                        $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['defaultLocale']}", "{$_ENV['DOCS_DIR']}/{$lang}", $srcPath);
+                        if ($lang === $this->config['defaultLocale'] || isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
                             continue;
                         }
 
