@@ -25,23 +25,23 @@ export class SizeObserver {
         if (!this.readMode) return;
         if (width < 980) {
             this.mutate(() => {
+                requestAnimationFrame(() => {
+                    if (!this.main || !this.readMode) return;
+                    setReadModePosition(this.main, this.readMode);
+                });
                 if (!this.readState) {
                     this.readState = true;
                 }
-                requestAnimationFrame(() => {
-                    if (!this.main || !this.readMode) return;
-                    setReadModePosition(this.main, this.readMode);
-                });
             });
         } else {
             this.mutate(() => {
+                requestAnimationFrame(() => {
+                    if (!this.main || !this.readMode || !this.readState) return;
+                    setReadModePosition(this.main, this.readMode);
+                });
                 if (this.readState) {
                     this.readState = false;
                 }
-                requestAnimationFrame(() => {
-                    if (!this.main || !this.readMode) return;
-                    setReadModePosition(this.main, this.readMode);
-                });
             });
         }
     };
@@ -94,7 +94,7 @@ export class SizeObserver {
                 }
             }
         });
-    }
+    };
 
     init() {
         this.mainObserver.observe(this.body);
