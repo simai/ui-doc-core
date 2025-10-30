@@ -199,13 +199,16 @@ body .container {
   .aside-wrap {
     height: calc(100vh - var(--sf-header-height) - calc(var(--sf-c2) * 2));
     overflow: auto;
+    padding-left: var(--sf-c2);
+    @include breakpoint(midTablet) {
+      padding: 0;
+    }
     @include breakpoint(tablet) {
       height: auto;
     }
   }
   &--left {
     flex: 0 0 22%;
-    border-right: 1px solid var(--sf-outline-variant);
 
     .aside-wrap {
       padding-right: var(--sf-c2);
@@ -292,6 +295,10 @@ blockquote {
 
 main {
   padding: var(--sf-c6);
+  border-inline: 1px solid var(--sf-outline-variant);
+  @include breakpoint(midTablet) {
+    border-right: 0;
+  }
   &:has(.sf-button.read) {
     border: 0;
   }
@@ -325,8 +332,6 @@ main {
   }
 
   &.read {
-    border-right: 1px solid var(--sf-outline-variant);
-    border-left: 1px solid var(--sf-outline-variant);
     position: relative;
   }
 

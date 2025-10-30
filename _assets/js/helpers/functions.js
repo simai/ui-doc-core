@@ -15,12 +15,15 @@ export default function  setReadModePosition(container, readModeButton) {
             container.append(readModeButton);
         } else {
             if(container.contains(readModeButton)) {
-                container.parentNode.append(readModeButton)
+                container.parentNode.append(readModeButton);
             }
             readModeButton.classList.remove('inside');
         }
     } else {
         if (setInside) {
+            if(!container.contains(readModeButton)) {
+                container.append(readModeButton);
+            }
             readModeButton.classList.add('inside');
         } else {
             readModeButton.classList.remove('inside');
