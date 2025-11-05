@@ -24,6 +24,7 @@
     use TightenCo\Jigsaw\Handlers\IgnoredHandler;
     use TightenCo\Jigsaw\Handlers\MarkdownHandler;
     use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
+    use TightenCo\Jigsaw\Jigsaw;
     use TightenCo\Jigsaw\Loaders\CollectionDataLoader as JigsawLoader;
     use TightenCo\Jigsaw\Parsers\FrontMatterParser;
     use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
@@ -58,6 +59,8 @@
         public string $docsDir = 'source/docs/';
         private Container $container;
 
+        private Jigsaw $jigsaw;
+
         /**
          * @param Container $container
          */
@@ -72,6 +75,7 @@
 
         public function prepare($locales, $jigsaw): void
         {
+            $this->jigsaw = $jigsaw;
             $this->distPath = $jigsaw->getDestinationPath();
             $this->useCategory = $jigsaw->getConfig('category');
             $this->locale = $jigsaw->getConfig('defaultLocale');
@@ -117,7 +121,7 @@
                     $value['has_index'] = false;
                 }
             };
-            if(!isset($value['showInMenu'])) {
+            if (!isset($value['showInMenu'])) {
                 $value['showInMenu'] = true;
             }
             $current['current'] = $value;
@@ -242,50 +246,75 @@
             }
         }
 
-        /**
-         * @return void
-         */
+        private function getFirstPageWithIndex($key, $item): ?string
+        {
+            if (!empty($item['current']['has_index'])) {
+                return $key;
+            }
+
+            if(isset($item['pages'])) {
+                foreach ($item['pages'] as $skey => $page) {
+                    $getKey = $this->getFirstPageWithIndex($key . '/' . $skey, $page);
+                    if ($getKey) {
+                        return $getKey;
+                    }
+                }
+            } else {
+                return $key . '/' .array_key_first($item['current']['menu']);
+            }
+
+            return null;
+        }
+
         public function makeMultipleStructure(): void
         {
             foreach ($this->locales as $locale) {
                 foreach ($this->settings[$locale] as $item) {
-                    $this->hasIndexPage = $item['current']['has_index'];
+                    $this->hasIndexPage = !empty($item['current']['has_index']);
                     if ($this->hasIndexPage) {
                         $this->indexPage = '';
                     }
-                    if (isset($item['current']['menu'])) {
-                        foreach ($item['current']['menu'] as $key => $title) {
-                            $isLink = $this->isLink($key);
-                            $path = '/' . $locale . '/' . $key;
-                            if (!$this->hasIndexPage && !$isLink) {
-                                $this->hasIndexPage = true;
-                                $this->indexPage = $key;
-                            }
-                            $this->topMenu[$locale][$key] = [
-                                'path' => $isLink ? $key : $path,
-                                'isLink' => $isLink,
-                                'title' => $title,
-                            ];
-                            if (!$isLink && isset($item['pages'][$key])) {
 
-                                $menu = $this->buildMenuTree([
-                                    $key => $item['pages'][$key]
-                                ] ?? [], '', $locale);
+                    if (!isset($item['current']['menu']) || !is_array($item['current']['menu'])) {
+                        continue;
+                    }
 
+                    foreach ($item['current']['menu'] as $menuKey => $title) {
+                        $isLink = $this->isLink($menuKey);
+                        $path = '/' . $locale . '/' . $menuKey;
 
-                                $this->topMenu[$locale][$key]['children'] = $item['pages'][$key];
-                                $pages = $this->makeFlatten([
-                                    $key => $item['pages'][$key]
-                                ], $locale);
+                        if (!$this->hasIndexPage && !$isLink) {
+                            $this->hasIndexPage = true;
+                            $this->indexPage = $menuKey;
+                        }
 
-                                $this->multipleHandler->setFlatten($locale, $key, $pages);
-                                $this->multipleHandler->setMenu($locale, $key, $menu);
-                            }
+                        $path = $isLink ? $menuKey : $path;
+
+                        if (empty($item['current']['has_index']) && isset($item['pages'][$menuKey]) && is_array($item['pages'][$menuKey])) {
+
+                                $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
+                                if ($needKey !== null) {
+                                    $path = '/' . $locale . '/' . $needKey;
+                                }
+                        }
+
+                        $this->topMenu[$locale][$menuKey] = [
+                            'path' => $path,
+                            'isLink' => $isLink,
+                            'title' => $title,
+                        ];
+
+                        if (!$isLink && isset($item['pages'][$menuKey])) {
+                            $menu = $this->buildMenuTree([$menuKey => $item['pages'][$menuKey]] ?? [], '', $locale);
+                            $this->topMenu[$locale][$menuKey]['children'] = $item['pages'][$menuKey];
+                            $pages = $this->makeFlatten([$menuKey => $item['pages'][$menuKey]], $locale);
+
+                            $this->multipleHandler->setFlatten($locale, $menuKey, $pages);
+                            $this->multipleHandler->setMenu($locale, $menuKey, $menu);
                         }
                     }
                 }
             }
-
         }
 
         /**
@@ -389,7 +418,7 @@
                 }
                 $tree[$fullPath] = [
                     'title' => $title,
-                    'path' => $isLink ? $slug : $fullPath,
+                    'path' => $isLink ? $slug : ($item['current']['has_index'] ? $fullPath : null),
                     'isLink' => $isLink,
                     'showInMenu' => $item['current']['showInMenu'],
                     'children' => [],

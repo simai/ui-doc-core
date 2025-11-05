@@ -45,7 +45,7 @@
                             <span class="sf-nav-title">{{ $node['title'] }}</span>
                         </a>
                     @endif
-                    @elseif ($node['showInMenu'])
+                    @elseif ($node['showInMenu'] && $node['path'])
                         <a href="{{ $path }}"
                            class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }}">
                             <span class="sf-nav-title">{{ $node['title'] }}</span>

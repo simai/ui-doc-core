@@ -352,6 +352,7 @@ main {
 
   &-container {
     margin-left: var(--sf-c8);
+    flex: 1;
     transition: .3s padding ease;
     @include breakpoint(tablet) {
       margin-left: 0;
