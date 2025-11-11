@@ -29,6 +29,6 @@ mix.jigsaw()
     .options({ processCssUrls: false })
     .browserSync({
         server: 'build_local',
-        files: ['build_local/**.php', 'build_local/**.scss', 'build_local/**.js', 'build_local/**.md', 'build_local/**.css'],
+        files: ['build_local/**.html'],
     })
     .version();

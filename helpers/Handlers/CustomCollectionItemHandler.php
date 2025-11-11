@@ -2,12 +2,14 @@
 
     namespace App\Helpers\Handlers;
 
+    use App\Helpers\BuildCache;
     use App\Helpers\Configurator;
     use Illuminate\Support\Arr;
     use Illuminate\Support\Str;
     use TightenCo\Jigsaw\Handlers\CollectionItemHandler as Base;
     use TightenCo\Jigsaw\File\OutputFile;
     use Illuminate\Support\Collection as BaseCollection;
+
     class CustomCollectionItemHandler extends Base
     {
         /** @var \Illuminate\Support\Collection */
@@ -17,9 +19,11 @@
         protected Configurator $configurator;
 
         protected string $docDir = '';
+
+        protected BuildCache $buildCache;
         protected array $docDirArray = [];
 
-        public function __construct(BaseCollection $config, $handlers, Configurator $configurator)
+        public function __construct(BaseCollection $config, $handlers, Configurator $configurator, BuildCache $cache)
         {
             parent::__construct($config, $handlers);
             $this->customConfig = $config;
@@ -27,17 +31,37 @@
             $this->myHandlers = collect($handlers);
             $this->docDir = trim($_ENV['DOCS_DIR']);
             $this->docDirArray = explode('/', $this->docDir);
+            $this->buildCache = $cache;
+        }
+
+        private function makeRelativePath($file): string
+        {
+            $segments = explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/'));
+            $segments = array_slice($segments, count($this->docDirArray));
+            $segments[] = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+
+            return implode('/', array_filter($segments));
         }
 
         public function handle($file, $pageData)
         {
+            $relative = $this->makeRelativePath($file);
+            $contentHash = md5($file->getContents() . $this->buildCache->globalHash());
+            if ($this->buildCache->isEnabled()) {
+        
+                if ($this->buildCache->shouldSkip($relative, $contentHash)) {
+                    return collect();
+                } else {
+                    $this->configurator->console->writeln(PHP_EOL . "<comment>=== Build {$relative} ===</comment>");
+                }
+            }
             $handler = $this->myHandlers->first(function ($handler) use ($file) {
                 return $handler->shouldHandle($file);
             });
             $name = collect(explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/')))
                 ->skip(count($this->docDirArray) + 1)
                 ->implode('/');
-            $name = $name . '/' . str_replace('.md','',$file->getFilename());
+            $name = $name . '/' . str_replace('.md', '', $file->getFilename());
 
             $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $name);
 
@@ -45,8 +69,7 @@
                 return null;
             }
 
-
-            return $handler->handleCollectionItem($file, $pageData)
+            $results = $handler->handleCollectionItem($file, $pageData)
                 ->map(function ($outputFile, $templateToExtend) use ($file) {
                     if ($templateToExtend) {
                         $outputFile->data()->setExtending($templateToExtend);
@@ -61,7 +84,16 @@
                         $outputFile->contents(),
                         $outputFile->data(),
                     ) : null;
-                })->filter()->values();
+                })
+                ->filter()
+                ->values();
+            if ($results->isNotEmpty()) {
+                $outputPath = $results->first()->path() . '/' . $results->first()->name();
+
+                $this->buildCache->store($relative, $contentHash, ['output' => $outputPath ]);
+            }
+
+            return $results;
         }
 
 
@@ -88,8 +120,9 @@
             return $this->getName($file);
         }
 
-        protected function getName($file): string {
-            if(!count($this->docDirArray)) {
+        protected function getName($file): string
+        {
+            if (!count($this->docDirArray)) {
                 return '';
             }
             return collect(explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/')))

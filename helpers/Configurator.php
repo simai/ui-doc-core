@@ -12,6 +12,8 @@
     use App\Helpers\Interface\CustomTagInterface;
     use FilesystemIterator;
     use Illuminate\Support\Str;
+    use Symfony\Component\Console\Helper\ProgressBar;
+    use TightenCo\Jigsaw\Console\ConsoleOutput;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
     use ReflectionException;
@@ -28,7 +30,7 @@
     use TightenCo\Jigsaw\Loaders\CollectionDataLoader as JigsawLoader;
     use TightenCo\Jigsaw\Parsers\FrontMatterParser;
     use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
-    use TightenCo\Jigsaw\SiteBuilder;
+    use TightenCo\Jigsaw\SiteBuilder as BaseSiteBuilder;
 
     class Configurator
     {
@@ -54,6 +56,8 @@
         private MultipleHandler $multipleHandler;
 
         public array $topMenu = [];
+
+        public ConsoleOutput $console;
         public array $realFlatten = [];
         public string $locale = 'en';
         public string $docsDir = 'source/docs/';
@@ -67,6 +71,7 @@
         public function __construct(Container $container)
         {
             $this->container = $container;
+            $this->console = $this->container['consoleOutput'];
             $this->docsDir = 'source/' . $_ENV['DOCS_DIR'] . '/';
             $this->bind();
             $this->extractImages();
@@ -75,13 +80,19 @@
 
         public function prepare($locales, $jigsaw): void
         {
+            $this->console->writeln(PHP_EOL . '<comment>=== Configurator prepare ===</comment>');
             $this->jigsaw = $jigsaw;
             $this->distPath = $jigsaw->getDestinationPath();
             $this->useCategory = $jigsaw->getConfig('category');
             $this->locale = $jigsaw->getConfig('defaultLocale');
+            $this->console->writeln(PHP_EOL . "<comment>=== Default locale set is ({$this->locale}) ===</comment>");
             $this->locales = array_keys($locales->toArray());
             $this->makeSettings();
-
+            $value = filter_var($this->useCategory, FILTER_VALIDATE_BOOLEAN);
+            $this->console->writeln(PHP_EOL . sprintf(
+                    '<comment>=== UseCategory: %s ===</comment>',
+                    $value ? 'true' : 'false'
+                ));
             if ($this->useCategory) {
                 $this->multipleHandler = new MultipleHandler();
                 $this->makeMultipleStructure();
@@ -160,6 +171,7 @@
          */
         public function makeLocales(): void
         {
+            $this->console->writeln(PHP_EOL . "<comment>=== Making locales from .lang.php... ===</comment>");
             foreach ($this->locales as $locale) {
                 $locales = [];
                 $file = $this->docsDir . '/' . $locale . '/.lang.php';
@@ -168,6 +180,7 @@
                     $this->translations[$locale] = $content;
                 }
             }
+            $this->console->writeln(PHP_EOL . "<comment>=== Making success... ===</comment>");
         }
 
         /**
@@ -252,7 +265,7 @@
                 return $key;
             }
 
-            if(isset($item['pages'])) {
+            if (isset($item['pages'])) {
                 foreach ($item['pages'] as $skey => $page) {
                     $getKey = $this->getFirstPageWithIndex($key . '/' . $skey, $page);
                     if ($getKey) {
@@ -260,7 +273,7 @@
                     }
                 }
             } else {
-                return $key . '/' .array_key_first($item['current']['menu']);
+                return $key . '/' . array_key_first($item['current']['menu']);
             }
 
             return null;
@@ -292,10 +305,10 @@
 
                         if (empty($item['current']['has_index']) && isset($item['pages'][$menuKey]) && is_array($item['pages'][$menuKey])) {
 
-                                $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
-                                if ($needKey !== null) {
-                                    $path = '/' . $locale . '/' . $needKey;
-                                }
+                            $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
+                            if ($needKey !== null) {
+                                $path = '/' . $locale . '/' . $needKey;
+                            }
                         }
 
                         $this->topMenu[$locale][$menuKey] = [
@@ -322,32 +335,55 @@
          */
         public function makeSettings(): void
         {
+
+            $total = 0;
             foreach ($this->locales as $locale) {
-                $settings = [];
                 $dir = $this->docsDir . $locale;
                 if (is_dir($dir)) {
                     foreach (new RecursiveIteratorIterator(
                                  new RecursiveDirectoryIterator($dir)
                              ) as $file) {
                         if ($file->isFile() && $file->getFilename() === '.settings.php') {
-                            $relativePath = str_replace($dir, '', dirname($file->getPathname()));
-                            $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
-                            $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
+                            $total++;
                         }
                     }
-                    if (!file_exists($this->distPath)) {
-                        mkdir($this->distPath, 0755, true);
-                    }
-
-                    if (empty($settings)) {
-                        return;
-                    }
-
-
-                    $settings = $this->sortPages($settings);
-                    $this->settings[$locale] = $settings['pages'] ?? [];
-
                 }
+            }
+            if ($total > 0) {
+                $this->console->writeln(PHP_EOL . "<comment>=== Searching .settings.php... ===</comment>");
+                $progress = new ProgressBar($this->console, $total);
+                $progress->start();
+                foreach ($this->locales as $locale) {
+                    $settings = [];
+                    $dir = $this->docsDir . $locale;
+                    if (is_dir($dir)) {
+                        foreach (new RecursiveIteratorIterator(
+                                     new RecursiveDirectoryIterator($dir)
+                                 ) as $file) {
+                            if ($file->isFile() && $file->getFilename() === '.settings.php') {
+                                $progress->advance();
+                                $relativePath = str_replace($dir, '', dirname($file->getPathname()));
+                                $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+                                $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
+                            }
+                        }
+                        if (!file_exists($this->distPath)) {
+                            mkdir($this->distPath, 0755, true);
+                        }
+
+                        if (empty($settings)) {
+                            return;
+                        }
+
+
+                        $settings = $this->sortPages($settings);
+                        $this->settings[$locale] = $settings['pages'] ?? [];
+
+                    }
+                }
+                $progress->finish();
+
+                $this->console->writeln(PHP_EOL . "<comment>=== Success read all ({$total}) .settings.php ===</comment>");
             }
         }
 
@@ -682,6 +718,7 @@
          */
         function extractImages(bool $dryRun = false): void
         {
+
             @ini_set('pcre.backtrack_limit', '10000000');
             @ini_set('pcre.recursion_limit', '100000');
 
@@ -695,62 +732,89 @@
             $changedFiles = 0;
             $inlineHits = 0;
             $refHits = 0;
-
+            $files = [];
             foreach ($scanDirs as $dir) {
                 $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
                     $dir,
                     FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_FILEINFO
                 ));
-
-
                 foreach ($it as $file) {
-                    if (!$file->isFile() || strtolower($file->getExtension()) !== 'md') continue;
-
-                    $path = $file->getPathname();
-                    $md = file_get_contents($path);
-                    if ($md === false || $md === '') continue;
-                    $orig = $md;
-
-                    $md = preg_replace_callback($reInlineShortcut, function ($m) use ($source, &$inlineHits) {
-                        $alt = $m[1];
-                        $b64 = $m[2];
-                        $ext = $m[3] ?? 'png';
-                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                        $inlineHits++;
-                        return '![' . $alt . '](/' . $rel . ')';
-                    }, $md);
-
-                    $md = preg_replace_callback($reInlineDataUri, function ($m) use ($source, &$inlineHits) {
-                        $alt = $m[1];
-                        $ext = $this->extFromMime($m[2]);
-                        $b64 = $m[3];
-                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                        $inlineHits++;
-                        return '![' . $alt . '](/' . $rel . ')';
-                    }, $md);
-
-                    $md = preg_replace_callback($reRefDataUri, function ($m) use ($source, &$refHits) {
-                        $label = $m[1];
-                        $ext = $this->extFromMime($m[2]);
-                        $b64 = $m[3];
-                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                        $refHits++;
-                        return '[' . $label . ']: /' . $rel;
-                    }, $md);
-
-                    if ($md !== $orig) {
-                        $changedFiles++;
-                        if ($dryRun) {
-                            echo "[dry-run] would update: {$path}\n";
-                        } else {
-                            file_put_contents($path, $md);
-                            echo "Updated: {$path}\n";
-                        }
+                    if ($file->isFile() && strtolower($file->getExtension()) === 'md') {
+                        $files[] = $file;
                     }
                 }
             }
+            $total = count($files);
+            if ($total > 0) {
+                $this->console->writeln(PHP_EOL . '<comment>=== Extracting images ===</comment>');
+                $progress = new ProgressBar($this->console, $total);
+                $progress->start();
+                foreach ($scanDirs as $dir) {
+                    $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
+                        $dir,
+                        FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_FILEINFO
+                    ));
 
-            echo "Done. Files changed: {$changedFiles}; inline saved: {$inlineHits}; ref saved: {$refHits}\n";
+
+                    foreach ($it as $file) {
+                        if (!$file->isFile() || strtolower($file->getExtension()) !== 'md') continue;
+                        $progress->advance();
+                        $path = $file->getPathname();
+                        $md = file_get_contents($path);
+                        if ($md === false || $md === '') continue;
+                        $orig = $md;
+
+                        $md = preg_replace_callback($reInlineShortcut, function ($m) use ($source, &$inlineHits) {
+                            $alt = $m[1];
+                            $b64 = $m[2];
+                            $ext = $m[3] ?? 'png';
+                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                            $inlineHits++;
+                            return '![' . $alt . '](/' . $rel . ')';
+                        }, $md);
+
+                        $md = preg_replace_callback($reInlineDataUri, function ($m) use ($source, &$inlineHits) {
+                            $alt = $m[1];
+                            $ext = $this->extFromMime($m[2]);
+                            $b64 = $m[3];
+                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                            $inlineHits++;
+                            return '![' . $alt . '](/' . $rel . ')';
+                        }, $md);
+
+                        $md = preg_replace_callback($reRefDataUri, function ($m) use ($source, &$refHits) {
+                            $label = $m[1];
+                            $ext = $this->extFromMime($m[2]);
+                            $b64 = $m[3];
+                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                            $refHits++;
+                            return '[' . $label . ']: /' . $rel;
+                        }, $md);
+
+                        if ($md !== $orig) {
+                            $changedFiles++;
+                            if ($dryRun) {
+                                echo "[dry-run] would update: {$path}\n";
+                            } else {
+                                file_put_contents($path, $md);
+                                echo "Updated: {$path}\n";
+                            }
+                        }
+                    }
+                }
+
+                $progress->finish();
+                $this->console?->writeln(PHP_EOL . sprintf(
+                        '<info>Done</info>: files=%d, inline=%d, refs=%d, changed=%d',
+                        $total,
+                        $inlineHits,
+                        $refHits,
+                        $changedFiles
+                    ));
+            } else {
+                $this->console->writeln(PHP_EOL . '<comment>=== Skip Extracting images 0 files ===</comment>');
+            }
+
         }
 
 
@@ -759,9 +823,26 @@
          */
         public function bind(): void
         {
+            $this->console->writeln(PHP_EOL . '<comment>=== Configurator bind ===</comment>');
+
             try {
                 $this->container->forgetInstance(SiteBuilder::class);
-                $this->container->bind(SiteBuilder::class, function ($app) {
+                $this->container->bind(BuildCache::class, function ($c) {
+                    $useCache = $c['config']->get('cache');
+                    $cache = new BuildCache($useCache);
+                    $value = filter_var($useCache, FILTER_VALIDATE_BOOLEAN);
+                    $this->console->writeln(PHP_EOL . sprintf(
+                            '<comment>=== Use cache: %s ===</comment>',
+                            $value ? 'true' : 'false'
+                        ));
+                    $customCachePath = $c['config']->get('cachePath');
+                    $paths = $this->container['buildPath'];
+                    $destination = $paths['destination'];
+                    $cache->setCachePath($customCachePath ?: $c->cachePath(), $destination);
+                    return $cache;
+                });
+
+                $this->container->bind(BaseSiteBuilder::class, function ($app) {
                     return new SiteBuilder(
                         $app['files'],
                         $app->cachePath(),
@@ -774,7 +855,8 @@
                             $app->make(MarkdownHandler::class),
                             $app->make(BladeHandler::class),
                             $app->make(DefaultHandler::class),
-                        ]
+                        ],
+                        $app->make(BuildCache::class)
                     );
                 });
                 $this->container->bind('outputPathResolver', function () {
@@ -797,8 +879,9 @@
                         $c->make(MarkdownHandler::class),
                         $c->make(BladeHandler::class),
                     ];
+                    $cache = $c->make(BuildCache::class);
 
-                    return new CustomCollectionItemHandler($config, $handlers, $this);
+                    return new CustomCollectionItemHandler($config, $handlers, $this, $cache);
 
                 });
                 $this->container->bind(CustomTagRegistry::class, function ($c) {
@@ -818,5 +901,6 @@
             } catch (ReflectionException $e) {
 
             }
+            $this->console->writeln(PHP_EOL . '<comment>=== Bind success ===</comment>');
         }
     }
