@@ -13,7 +13,7 @@ body {
     }
 
 
-    table {
+    table:not(.hljs-ln) {
       width: 100%;
       text-align: left;
       margin-top: var(--sf-c6);

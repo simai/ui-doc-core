@@ -50,13 +50,29 @@
         public function __construct(FrontYamlParser $frontYaml, CustomTagRegistry $registry)
         {
             parent::__construct($frontYaml);
-
-            $env = new Environment();
+            $config = [
+                'html_input' => 'allow',
+                'allow_unsafe_links' => true,
+                'disallowed_raw_html' => [
+                    'disallowed_tags' => [
+                        'title',
+                        'textarea',
+                        'style',
+                        'xmp',
+                        'noembed',
+                        'noframes',
+                        'script',
+                        'plaintext',
+                    ],
+                ],
+            ];
+            $env = new Environment($config);
             $env->addExtension(new CustomTagsExtension($registry));
             $env->addExtension(new CommonMarkCoreExtension());
-            $env->addExtension(new GithubFlavoredMarkdownExtension());
             $env->addExtension(new FrontMatterExtension());
             $env->addExtension(new AttributesExtension());
+            $env->addExtension(new GithubFlavoredMarkdownExtension());
+
 
             $env->addEventListener(DocumentParsedEvent::class, function (DocumentParsedEvent $event)  {
                 $doc = $event->getDocument();
