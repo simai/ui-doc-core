@@ -9,7 +9,7 @@
 
 @include('_core._layouts.head')
 
-<body class="theme-light flex flex-col justify-between min-h-screen leading-normal max-container-6">
+<body class="flex flex-col justify-between min-h-screen leading-normal max-container-6">
 
 @include('_core._layouts.header')
 
@@ -36,7 +36,7 @@
 [!Fab](size=2 type=primary)
 @stack('scripts')
 <button onclick="navOpen()" id="sf_segment"
-        class="sf-button sf-button-segment sf-button-size-1 sf-icon-button-size-1 sf-button--on-surface sf-button-type-link side-menu-instrument">
+        class="sf-button sf-button-segment sf-button-size--1 sf-icon-button--size-1 sf-button--on-surface sf-button--link side-menu-instrument">
     <i class="sf-icon">segment</i>
 </button>
 
