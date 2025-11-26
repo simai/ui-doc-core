@@ -3,10 +3,21 @@
         window.sfSearchNotFound = '{{$page->translate('notFound')}}'
     </script>
     <div class="sf-input-container sf-input-container--1 sf-input-search-container grow-none">
-        <div class="sf-input sf-input--size-1 sf-input--decoration-bordered s">
+        <div id="input_search" class="sf-input sf-input--size-1 sf-input--decoration-bordered">
             <div class="sf-input-field">
                 <i class="sf-icon">search</i>
-                <input name="search" type="text" class="sf-input-main" placeholder="{{$page->translate('search')}}">
+                <div class="sf-input-text-container">
+                    <div class="sf-input-group">
+                        <input name="search" type="text" class="sf-input-main sf-input-text"
+                               placeholder="{{$page->translate('search')}}">
+                    </div>
+                </div>
+                <button
+                        id="search_close"
+                        type="button"
+                        class="sf-close sf-close--size-1 hidden">
+                    <i class="sf-icon"></i>
+                </button>
             </div>
         </div>
 

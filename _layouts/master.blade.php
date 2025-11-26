@@ -33,7 +33,7 @@
         </div>
     </aside>
 </div>
-[!Fab](size=2 type=primary)
+[!Fab](size=2 type=default scheme=primary)
 @stack('scripts')
 <button onclick="navOpen()" id="sf_segment"
         class="sf-button sf-button-segment sf-button-size--1 sf-icon-button--size-1 sf-button--on-surface sf-button--link side-menu-instrument">

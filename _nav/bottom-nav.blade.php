@@ -10,12 +10,12 @@
                     $prev = $key == "prev";
                     $text =  $page->translate($prev ? 'previous' : 'next');
                 @endphp
-                <a class="sf-button sf-button-size-1 sf-button--on-surface sf-button-type-link bottom--navigation-item_{{$key}}"
+                <a class="sf-button sf-button--size-1 sf-button--on-surface sf-button--link bottom--navigation-item_{{$key}}"
                    href="{{$item['path']}}">
                     @if($prev)
                         <i class="sf-icon">chevron_left</i>
                     @endif
-                    <div class="sf-button--text-container">
+                    <div class="sf-button-text-container sf-button-text">
                         <div class="flex bottom--navigation_text flex-col">
                             <div>{{$text}}</div>
                             <div>{{$item['label']}}</div>

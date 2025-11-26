@@ -30,7 +30,7 @@ export class Search {
         this.resultsContainer = this.resultsWrap.querySelector('.docsearch-input__main');
         this.logo = document.querySelector('a.logo');
         this.headerRight = document.querySelector('.header--right');
-        this.close = this.wrap.querySelector('.sf-input-close');
+        this.close = this.wrap.querySelector('#search_close');
         [this.searchButton, this.input].forEach((item) => {
             item.addEventListener('click', () => {
                 this.openSearch();
@@ -272,9 +272,9 @@ export class Search {
 
     closeState(state) {
         if (!state) {
-            this.close.parentNode.classList.add('hidden');
+            this.close.classList.add('hidden');
         } else {
-            this.close.parentNode.classList.remove('hidden');
+            this.close.classList.remove('hidden');
         }
     }
 
