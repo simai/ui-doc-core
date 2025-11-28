@@ -4,7 +4,9 @@
     "dev": "mix",
     "watch": "mix watch",
     "prod": "mix --production",
-    "translate": "php vendor/bin/jigsaw translate",
+    "translate": "php vendor/bin/docara translate",
+    "transpatetest": "php vendor/bin/docara translate --test",
+    "init": "php vendor/bin/docara init",
     "postinstall": "node source/_core/copy-template-configs.js"
   },
   "devDependencies": {
@@ -16,12 +18,12 @@
     "fast-glob": "^3.2.12",
     "highlight.js": "^10.5.0",
     "laravel-mix": "^6.0.39",
-    "laravel-mix-docara": "github:simai/docara-mix",
     "markdown-it-attrs": "^4.3.1",
+    "laravel-mix-docara": "github:simai/docara-mix",
     "normalize-scss": "^8.0.0",
     "postcss": "^8.4.40",
-    "sass": "^1.89.2",
     "postcss-import": "^14.0.2",
+    "sass": "^1.89.2",
     "sass-loader": "^12.1.0",
     "tailwindcss": "^3.4.6"
   },
