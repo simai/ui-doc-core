@@ -5,7 +5,6 @@ const filesToCopy = [
     'webpack.mix.js',
     'bootstrap.php',
     'translate.config.php',
-    'composer.json',
     'eslint.config.js',
     'package.json'
 ];
