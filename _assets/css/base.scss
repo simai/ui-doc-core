@@ -20,7 +20,6 @@ iframe {
 }
 
 :root {
-  font-size: 16px;
   --sf-header-height: 73px;
   @include breakpoint(tablet) {
     --sf-header-height: 53px;
@@ -30,7 +29,6 @@ iframe {
 body {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 1rem;
   min-height: 100vh;
   min-width: 320px;
 

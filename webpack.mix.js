@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 const fs = require('fs');
-require('laravel-mix-jigsaw');
+require('laravel-mix-docara');
 
 mix.disableSuccessNotifications();
 mix.setPublicPath('source/assets/build');
@@ -23,12 +23,12 @@ mix.webpackConfig({
         ]
     },
 });
-mix.jigsaw()
+mix.docara()
     .js('source/_core/_assets/js/main.js', 'js')
     .js('source/_core/_assets/js/turbo.js', 'js')
+    .options({ processCssUrls: false })
     .browserSync({
         server: 'build_local',
         files: ['build_local/**.php', 'build_local/**.scss', 'build_local/**.js', 'build_local/**.md', 'build_local/**.css'],
     })
-    .options({ processCssUrls: false })
     .version();

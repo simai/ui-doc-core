@@ -2,7 +2,8 @@
 
 namespace App\Helpers\CustomTags;
 
-use App\Helpers\CommonMark\BaseTag;
+
+use TightenCo\Jigsaw\CustomTags\BaseTag;
 
 final class ExampleTag extends BaseTag
 {

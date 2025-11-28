@@ -1,6 +1,5 @@
 {
     "require": {
-        "tightenco/jigsaw": "^1.8",
         "samdark/sitemap": "^2.4.1",
         "elaborate-code/jigsaw-localization": "^1.1",
         "michelf/php-markdown": "^2.0",
@@ -9,7 +8,6 @@
         "symfony/intl": "^7.3.4"
     },
     "scripts": {
-        "translate": "php bin/translate",
         "docs:create": "php bin/docs-create.php"
     },
     "autoload": {
