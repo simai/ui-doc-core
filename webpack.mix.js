@@ -19,16 +19,19 @@ mix.webpackConfig({
             'node_modules/**',
             'source/assets/build/**',
             'vendor/**',
-            'build_local/**'
-        ]
+            'build_local/**',
+        ],
     },
 });
-mix.docara()
+
+mix
+    .docara()
     .js('source/_core/_assets/js/main.js', 'js')
     .js('source/_core/_assets/js/turbo.js', 'js')
-    .options({ processCssUrls: false })
+    .options({processCssUrls: false})
     .browserSync({
         server: 'build_local',
-        files: ['build_local/**.php', 'build_local/**.scss', 'build_local/**.js', 'build_local/**.md', 'build_local/**.css'],
+        files: ['build_local/**/*'],
+        open: false,
     })
     .version();

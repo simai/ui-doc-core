@@ -8,10 +8,10 @@
 
   &-item {
 
-    font-weight: var(--sf-text--font-weight);
+    font-weight: var(--sf-weight--regular);
     padding: var(--sf-a8) var(--sf-b6);
     color: var(--sf-on-surface);
-    line-height: var(--sf-text--height-1);
+    line-height: var(--sf-text-height-1);
     transition: .3s background-color ease;
     border-radius: var(--sf-radius-1);
     gap: var(--sf-b6);

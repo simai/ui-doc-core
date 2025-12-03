@@ -65,7 +65,7 @@ body {
     border-width: 1px;
     border-color: var(--sf-surface-1);
     margin-top: var(--sf-heading--space-top);
-    + p {
+    + * {
       margin-top: var(--sf-heading--space-top);
     }
   }
@@ -81,10 +81,10 @@ body {
       &.inside {
         position: fixed;
         right: var(--sf-space-2);
-        top: calc(var(--sf-text--height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
+        top: calc(var(--sf-text-height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
       }
       @include breakpoint(midTablet) {
-        top: calc(var(--sf-text--height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
+        top: calc(var(--sf-text-height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
       }
     }
     &-segment {
@@ -348,6 +348,23 @@ main {
   min-width: var(--sf-f7);
 }
 
+table {
+  thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  tbody {
+    max-height: var(--dc-table--height-max);
+    display: block;
+    overflow-y: auto;
+  }
+}
+
+.source {
+  border-radius: var(--dc-code-radius);
+}
+
 
 .sf-menu {
   display: inline-flex;
@@ -386,8 +403,13 @@ main {
 }
 
 .logo {
-  @include breakpoint(tablet) {
-    max-width: 84px;
+  svg {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    @include breakpoint(tablet) {
+      max-width: 120px;
+    }
   }
 }
 
@@ -401,7 +423,7 @@ main {
 
 .sf-menu .sf-menu-item a {
   color: var(--sf-on-surface);
-  font-weight: var(--sf-text--font-weight-5);
+  font-weight: var(--sf-weight--medium);
 
   &:hover {
     color: var(--sf-primary);
@@ -528,7 +550,7 @@ pre {
 
 .sf-language-switch--language-item button {
   padding: var(--sf-a8) var(--sf-b6);
-  line-height: var(--sf-text--height-1);
+  line-height: var(--sf-text-height-1);
   gap: var(--sf-space1\/2);
 
   &.active {
@@ -572,7 +594,6 @@ pre {
 .sf-language-switch--language-panel {
   --sf-language-switch--language-panel-display: none;
   position: absolute;
-  background-color: var(--sf-surface-1);
   top: calc(100% + var(--sf-b2));
   width: 100%;
   overflow-y: auto;

@@ -90,7 +90,7 @@
     .sf {
       &-input {
         .sf-input-inner-label {
-          padding-right: var(--sf-text--height-1);
+          padding-right: var(--sf-text-height-1);
         }
 
         &-body {
@@ -103,13 +103,13 @@
         }
 
         &-close {
-          --sf-close--diameter: var(--sf-text--height-1);
+          --sf-close--diameter: var(--sf-text-height-1);
           display: flex;
           justify-content: center;
           align-items: anchor-center;
           width: var(--sf-close--diameter);
           height: var(--sf-close--diameter);
-          font-size: var(--sf-text--height-1);
+          font-size: var(--sf-text-height-1);
           color: var(--sf-outline);
           cursor: pointer;
           border: none;

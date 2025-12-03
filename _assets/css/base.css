@@ -45,11 +45,11 @@ aside {
 }
 
 aside ul li a, aside ul button {
-    font-weight: var(--sf-text--font-weight);
+    font-weight: var(--sf-weight--regular);
     padding: var(--sf-space-1\/3) var(--sf-space-1);
     font-size: var(--sf-text--size-1);
     color: var(--sf-on-surface);
-    line-height: var(--sf-text--height-1);
+    line-height: var(--sf-text-height-1);
     display: flex;
 }
 
@@ -68,7 +68,7 @@ aside .sf-nav-button span {
 }
 
 aside .sf-nav-button .sf-icon {
-    font-size: var(--sf-text--height-1);
+    font-size: var(--sf-text-height-1);
     height: var(--sf-с0);
 }
 
@@ -105,7 +105,7 @@ main {
 .sf-menu .sf-menu-item {
     display: inline-flex;
     font-size: var(--sf-text--size-1);
-    line-height: var(--sf-text--height-1);
+    line-height: var(--sf-text-height-1);
 
 }
 
@@ -115,7 +115,7 @@ main {
 
 .sf-menu .sf-menu-item a {
     color: var(--sf-on-surface);
-    font-weight: var(--sf-text--font-weight-5);
+    font-weight: var(--sf-weight--medium);
     &:hover {
         color: var(--sf-primary);
     }
@@ -156,13 +156,12 @@ main {
 
 .sf-language-switch--language-item {
     padding: var(--sf-space-1\/3) var(--sf-space-1);
-    line-height: var(--sf-text--height-1);
+    line-height: var(--sf-text-height-1);
 }
 
 .sf-language-switch--language-panel {
     --sf-language-switch--language-panel-display: none;
     position: absolute;
-    background-color: var(--sf-surface-1);
     top: 150%;
     width: 100%;
     overflow-y: auto;
@@ -192,13 +191,13 @@ main {
 }
 
 .sf-input-close {
-    --sf-close--diameter: var(--sf-text--height-1);
+    --sf-close--diameter: var(--sf-text-height-1);
     display: flex;
     justify-content: center;
     align-items: anchor-center;
     width: var(--sf-close--diameter);
     height: var(--sf-close--diameter);
-    font-size: var(--sf-text--height-1);
+    font-size: var(--sf-text-height-1);
     color: var(--sf-outline);
     cursor: pointer;
     border: none;

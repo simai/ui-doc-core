@@ -8,7 +8,7 @@
                         $padding = $heading['type'] / 2 - 0.5;
                     @endphp
                     <li {{$heading['type'] > 1 ? "style=padding-left:{$padding}rem;"  : ''}} class="sf-side-menu-list-item sf-side-menu-list-item--{{ $heading['level'] }}">
-                        <a class="sf-side_item" href="#{{ $heading['id'] }}"><span>{{ $heading['text'] }}</span></a>
+                        <a class="sf-side_item block" href="#{{ $heading['id'] }}"><span>{{ $heading['text'] }}</span></a>
                     </li>
                 @endforeach
             </ul>
