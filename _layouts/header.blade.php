@@ -11,18 +11,18 @@
             @include('_core._nav.search-input')
 
             <div class="header--right flex gap-1 md:gap-1 relative">
-                <button class="sf-button sf-button-search sf-button--size-1 sf-icon-button--size-1 sf-button--link sf-button--on-surface side-menu-instrument">
+                <button class="sf-icon-button sf-button-search sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument">
                     <i class="sf-icon">search</i>
                 </button>
                 <button id="read_mode" onclick="applyReadMode(this)"
-                        class="sf-button sf-button-readMode sf-button--size-1 sf-icon-button--size-1 sf-button--link sf-button--on-surface side-menu-instrument">
+                        class="sf-icon-button sf-icon-button-readMode sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument">
                     <i class="sf-icon">fullscreen</i>
                 </button>
                 @include('_core._components.language')
                 @include('_core._components.settings')
                 @include('_core._components.more')
                 <button onclick="toggleMobileMenu(this)"
-                        class="sf-button sf-button-nav sf-button--size-1 sf-icon-button--size-1 sf-button--on-surface sf-button--link sf-button--nav-switch">
+                        class="sf-icon-button sf-button-nav sf-icon-button--size-1 sf-icon-button--on-surface sf-icon-button--link sf-button--nav-switch">
                     <i class="sf-icon">menu</i>
                 </button>
             </div>

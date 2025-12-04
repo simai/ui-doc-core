@@ -20,9 +20,9 @@ iframe {
 }
 
 :root {
-  --sf-header-height: 73px;
-  @include breakpoint(tablet) {
-    --sf-header-height: 53px;
+  --sf-header-height: 75px;
+  @include breakpoint(midTablet) {
+    --sf-header-height: 61px;
   }
 }
 
@@ -403,16 +403,6 @@ table {
   }
 }
 
-.logo {
-  svg {
-    max-width: 200px;
-    width: 100%;
-    height: auto;
-    @include breakpoint(tablet) {
-      max-width: 120px;
-    }
-  }
-}
 
 .sf-menu .sf-menu-item {
   display: inline-flex;

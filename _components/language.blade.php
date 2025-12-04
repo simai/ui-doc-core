@@ -4,7 +4,7 @@
 @endphp
 
 <div class="sf-language-switch sf-language-switch--container flex">
-    <button  onclick="langOpen(this)" class="sf-button sf-button--size-1 sf-icon-button--size-1 sf-button--link sf-button--on-surface sf-button--nav-switch sf-language-switch--button"
+    <button  onclick="langOpen(this)" class="sf-icon-button sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface sf-button--nav-switch sf-language-switch--button"
             id="lang_switch">
         <i class="sf-icon">language</i>
     </button>

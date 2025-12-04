@@ -62,6 +62,7 @@
   }
 
   &--wrap {
+    width: 100%;
     @include breakpoint(mobile) {
       width: 0;
       opacity: 0;
@@ -76,12 +77,13 @@
     &.open {
       .sf {
         &-input {
+          &-container {}
           border-color: var(--sf-primary-hover)
         }
       }
     }
 
-    width: 100%;
+
 
     mark {
       color: #d20e21;
