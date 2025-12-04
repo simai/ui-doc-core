@@ -15,7 +15,7 @@
                     <i class="sf-icon">search</i>
                 </button>
                 <button id="read_mode" onclick="applyReadMode(this)"
-                        class="sf-icon-button sf-icon-button-readMode sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument">
+                        class="sf-icon-button sf-button-readMode sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument">
                     <i class="sf-icon">fullscreen</i>
                 </button>
                 @include('_core._components.language')
