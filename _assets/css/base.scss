@@ -20,10 +20,8 @@ iframe {
 }
 
 :root {
-  --sf-header-height: 75px;
-  @include breakpoint(midTablet) {
-    --sf-header-height: 61px;
-  }
+  --sf-header-height: 0px;
+  --sf-footer-height: 0px;
 }
 
 
@@ -66,6 +64,7 @@ body {
     border-width: 1px;
     border-color: var(--sf-surface-1);
     margin-top: var(--sf-heading--space-top);
+
     + * {
       margin-top: var(--sf-heading--space-top);
     }
@@ -79,15 +78,18 @@ body {
         top: var(--sf-b6);
         position: sticky;
       }
+
       &.inside {
         position: fixed;
         right: var(--sf-space-2);
         top: calc(var(--sf-text-height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
       }
+
       @include breakpoint(midTablet) {
         top: calc(var(--sf-text-height-1) + var(--sf-header-height) + (var(--sf-ui--1--space-y) * 2) + (var(--sf-a8) * 2));
       }
     }
+
     &-segment {
       display: none;
       position: fixed;
@@ -123,11 +125,18 @@ body {
     gap: var(--sf-d3);
     padding-top: var(--sf-b6);
     padding-bottom: var(--sf-b6);
-    z-index: 9999;
+    z-index: 100;
     @include breakpoint(tablet) {
       padding-top: var(--sf-a8);
       padding-bottom: var(--sf-a8);
     }
+  }
+  footer {
+    border-top: 1px solid var(--sf-outline-variant);
+    background-color: var(--sf-surface-0);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
   }
 }
 
@@ -192,62 +201,6 @@ body .container {
   }
 }
 
-.sf-nav-menu {
-  min-width: 0;
-  @include breakpoint(bigTablet) {
-    font-size: var(--sf-b4);
-  }
-  @include breakpoint(tablet) {
-    display: none;
-  }
-  .aside-wrap {
-    height: calc(100vh - var(--sf-header-height) - calc(var(--sf-c2) * 2));
-    overflow: auto;
-    padding-left: var(--sf-c2);
-    @include breakpoint(midTablet) {
-      padding: 0;
-    }
-    @include breakpoint(tablet) {
-      height: auto;
-    }
-  }
-  &--left {
-    flex: 0 0 22%;
-
-    .aside-wrap {
-      padding-right: var(--sf-c2);
-    }
-
-    @include breakpoint(midTablet) {
-      flex: 0 0 30%;
-    }
-    @include breakpoint(tablet) {
-      .aside-wrap {
-        padding-right: 0;
-        height: auto;
-
-      }
-      padding: var(--sf-b2);
-      transition: .3s left ease;
-      display: flex;
-      background-color: var(--sf-surface-0);
-      position: fixed;
-      left: 100%;
-      top: var(--sf-header-height);
-      bottom: 0;
-      width: 100%;
-      height: calc(100% - var(--sf-header-height));
-      flex: 1 auto;
-      z-index: 9999;
-      flex-direction: column;
-      border: 0;
-      &.active {
-        left: 0;
-      }
-    }
-  }
-
-}
 
 aside ul {
   list-style-type: none;
@@ -260,15 +213,14 @@ ul {
 
 
 aside {
-  .aside-wrap {
-    top: calc(var(--sf-header-height) + var(--sf-c2));
-    position: sticky;
-  }
+  top: var(--sf-header-height);
+  position: sticky;
+  height: calc(100vh - var(--sf-header-height) - var(--sf-footer-height)) ;
+  overflow: auto;
+  flex: 0 0 20%;
 
   &.read {
-    .aside-wrap {
-      top: 0;
-    }
+    top: 0;
   }
 }
 
@@ -291,14 +243,14 @@ blockquote {
   padding-inline: calc(var(--sf-b6) / 2);
   padding-block: calc(var(--sf-b6) / 2);
   color: var(--sf-secondary);
+
   p {
     margin: 0;
   }
 }
 
 
-main {
-  padding: var(--sf-c6);
+article {
   border-inline: 1px solid var(--sf-outline-variant);
   @include breakpoint(midTablet) {
     border-right: 0;
@@ -306,6 +258,7 @@ main {
   &:has(.sf-button.read) {
     border: 0;
   }
+
   .links {
     ul {
       list-style-type: none;
@@ -355,6 +308,7 @@ table {
     width: 100%;
     table-layout: fixed;
   }
+
   tbody {
     max-height: var(--dc-table--height-max);
     display: block;
@@ -626,13 +580,8 @@ button, a {
 
 
 .container--main {
-  flex: 0 0 60%;
+  flex: 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  @include breakpoint(midTablet) {
-    flex: 0 0 70%;
-  }
   //transition: .3s flex ease;
   &.read {
     flex: 0 0 100%;
@@ -726,6 +675,7 @@ main {
         opacity: 0;
         transition: .3s opacity ease;
       }
+
       @include breakpoint(tablet) {
         span.sf-icon {
           display: none;
@@ -736,6 +686,7 @@ main {
     &:hover {
       a {
         color: var(--sf-primary);
+
         span.sf-icon {
           opacity: 1;
         }
@@ -747,7 +698,6 @@ main {
 .nowrap {
   white-space: nowrap;
 }
-
 
 
 @include breakpoint(tablet) {

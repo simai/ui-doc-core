@@ -2,6 +2,7 @@ import Fuse from 'fuse.js';
 import { Search } from './helpers/Search.js';
 import { SizeObserver } from './helpers/ResizeObserver';
 import setReadModePosition from './helpers/functions';
+import './helpers/SfStickyOffsets';
 
 const locale = getCookie('locale') ?? 'ru';
 

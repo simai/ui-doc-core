@@ -1,5 +1,9 @@
 export class Search {
     constructor(params) {
+        const header = document.querySelector('header');
+        if (!header) {
+            return null;
+        }
         this.value = '';
         this._cache = new Map();
         this._abortCtrl = null;

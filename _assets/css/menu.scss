@@ -1,4 +1,53 @@
 .sf-nav {
+  &-menu {
+    min-width: 0;
+    @include breakpoint(bigTablet) {
+      font-size: var(--sf-b4);
+    }
+    @include breakpoint(tablet) {
+      display: none;
+    }
+    .aside-wrap {
+      @include breakpoint(tablet) {
+        height: auto;
+      }
+    }
+    &--right {
+      flex: 0 0 18%;
+    }
+    &--left {
+      flex: 0 0 22%;
+
+
+      @include breakpoint(midTablet) {
+        flex: 0 0 30%;
+      }
+      @include breakpoint(tablet) {
+        .aside-wrap {
+          padding-right: 0;
+          height: auto;
+        }
+        padding: var(--sf-b2);
+        transition: .3s left ease;
+        display: flex;
+        background-color: var(--sf-surface-0);
+        position: fixed;
+        left: 100%;
+        top: var(--sf-header-height);
+        bottom: 0;
+        width: 100%;
+        height: calc(100% - var(--sf-header-height));
+        flex: 1 auto;
+        z-index: 9999;
+        flex-direction: column;
+        border: 0;
+        &.active {
+          left: 0;
+        }
+      }
+    }
+
+  }
   &-wrap {
     @include breakpoint(tablet) {
       width: 100%;
@@ -55,13 +104,6 @@
   }
 
   &-menu {
-    padding-top: var(--sf-c2);
-
-    &-wrap {
-      ul {
-        //padding-left: var(--sf-a8);
-      }
-    }
 
     &-element {
       &--link {
@@ -89,9 +131,6 @@
 
     }
 
-    strong {
-
-    }
 
     li:has(button) {
 

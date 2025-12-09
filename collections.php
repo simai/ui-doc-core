@@ -11,7 +11,7 @@
 
             'language' => $lang,
             'extends' => '_core._layouts.documentation',
-            'filter' => fn($page) => $page->_meta->extension === 'md',
+            'filter' => fn($page) => $page->_meta->extension === 'md' || Str::contains($page->_meta->extension, 'blade.php'),
             'path' => function ($page) use ($lang) {
                 $relative = str_replace('\\', '/', $page->_meta->relativePath);
                 $rest = trim(Str::after($relative, "$lang/"), '/');

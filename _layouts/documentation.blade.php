@@ -3,8 +3,7 @@
 
 @section('body')
     <section>
-
-        @include('_core._nav.breadcrumbs')
+        @include('_core._components._nav.breadcrumbs')
 
         <div class="flex flex-col lg:flex-row">
             <div class="main--content" v-pre>
@@ -12,5 +11,5 @@
             </div>
         </div>
     </section>
-    @include('_core._nav.bottom-nav')
+    @include('_core._components._nav.bottom-nav')
 @endsection

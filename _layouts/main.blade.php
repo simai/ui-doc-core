@@ -1,16 +1,7 @@
-<!DOCTYPE html>
+<main role="main" class="w-full flex flex-auto justify-center container p-left-1 p-right-1">
+    @includeWhen(layout_enabled($page, 'asideLeft'), '_core._components.aside.aside-left', ['section' => layout_section($page, 'asideLeft.blocks')])
 
-<html lang="{{$page->defaultLocale}}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="canonical" href="{{ $page->getUrl() }}">
-        <meta name="description" content="{{ $page->description }}">
-        <title>{{ $page->title }}</title>
-        <link rel="stylesheet" href="{{ mix('css/main.css', '/_core/assets/build') }}">
-        <script defer src="{{ mix('js/main.js', '/_core/assets/build') }}"></script>
-    </head>
-    <body class="text-gray-900 antialiased">
-        @yield('body')
-    </body>
-</html>
+    @includeWhen(layout_enabled($page, 'main'), '_core._layouts.article')
+
+    @includeWhen(layout_enabled($page, 'asideRight'), '_core._components.aside.aside-right', ['section' => layout_section($page, 'asideRight.blocks')])
+</main>
