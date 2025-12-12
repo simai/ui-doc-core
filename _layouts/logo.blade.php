@@ -1,6 +1,6 @@
 <a href="/" title="{{ $page->siteName }} home" class="logo sf-logo inline-flex items-center">
     <a href="/" title="{{ $page->siteName }} home" class="logo sf-logo inline-flex items-center">
-        <svg width="1094" height="186" viewBox="0 0 1094 186" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 1094 186" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_2423_1237)">
                 <path d="M0 18.6C0 8.32751 8.3275 0 18.6 0H167.4C177.673 0 186 8.3275 186 18.6V167.4C186 177.673 177.673 186 167.4 186H18.6C8.32751 186 0 177.673 0 167.4V18.6Z" fill="#E81123"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M27 93.0013L76.812 43L93 59.2495L59.3722 93.0051L92.9938 126.754L76.8097 143L27 93.0013Z" fill="#F7F7F7"/>
