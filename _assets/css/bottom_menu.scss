@@ -43,6 +43,9 @@
       }
     }
     &-item {
+      &_prev {
+        text-align: start;
+      }
       &_next {
         margin-left: auto;
         text-align: end;

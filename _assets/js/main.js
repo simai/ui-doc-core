@@ -164,16 +164,24 @@ window.addEventListener('Switch:render', (event) => {
 
 window.setIssue = function (githubUrl) {
     const selection = window.getSelection();
-    const text = selection ? selection.toString() : '';
+    const text = selection ? selection.toString().trim() : '';
+
+    let title, body;
+
     if (text.length > 0) {
-        const issueUrl =
-            `${githubUrl}issues/new?` +
-            'title=' +
-            encodeURIComponent('Issue: ' + text.slice(0, 60)) +
-            '&body=' +
-            encodeURIComponent('**Выделено:**\n\n' + text);
-        window.open(issueUrl, '_blank');
+        title = 'Issue: ' + text.slice(0, 60);
+        body = '**Selected text:**\n\n' + text;
+    } else {
+        title = 'New Issue';
+        body = 'Please describe the issue here.';
     }
+
+    const issueUrl =
+        `${githubUrl}issues/new?` +
+        'title=' + encodeURIComponent(title) +
+        '&body=' + encodeURIComponent(body);
+
+    window.open(issueUrl, '_blank');
 };
 
 function toggleLinksWidth() {
