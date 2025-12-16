@@ -159,6 +159,7 @@ body {
     }
   }
   &-folder {
+    position: relative;
     &-item {
       &:has(.sf-folder-chevron) {
         cursor: pointer;
@@ -178,13 +179,20 @@ body {
     }
   }
   &-files {
-    background-color: var(--sf-surface-1);
-    border-color: var(--sf-surface-container-active);
-    border-radius: 0.25rem;
-    border-width: 1px;
-    margin: 1.5rem auto 2.5rem;
-    padding: 1rem 2rem;
     --sf-icon-color: var(--sf-secondary);
+    &-wrap {
+      overflow: hidden;
+      background-color: var(--sf-surface-1);
+      border-color: var(--sf-surface-container-active);
+      border-radius: 0.25rem;
+      border-width: 1px;
+      margin: 1.5rem auto 2.5rem;
+    }
+    &-main {
+      max-height: var(--dc-folders-height-max);
+      overflow: auto;
+      padding: 1rem 2rem;
+    }
     &-focus {
       color: var(--sf-primary);
       --sf-icon-color: var(--sf-primary);
@@ -200,6 +208,7 @@ body {
   }
 
   &-file {
+    position: relative;
     .absolute {
       margin-left: -26px;
       width: auto;

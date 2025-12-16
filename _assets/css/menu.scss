@@ -69,7 +69,7 @@
 
 
     &.visited {
-      background-color: var(--sf-primary-container);
+      background-color: var(--sf-surface-container-active);
     }
 
     &:not(.visited, .active) {
