@@ -340,6 +340,7 @@ initFontSize();
 function init() {
     initNavLinks();
     initResize();
+    initMenuScrollButtons();
     initSearch();
     scrollToActiveMenu();
     initReadMode();
@@ -449,34 +450,24 @@ function initResize() {
 }
 
 function getNextOrPrevHiddenItem(container, items, next) {
-    const containerRect = container.getBoundingClientRect();
-    const active = container.querySelector('.active');
+    if (!items.length) return null;
 
-    if (!items.length) {
-        return null;
-    }
+    const viewportStart = container.scrollLeft;
+    const viewportEnd = viewportStart + container.clientWidth;
+    const active = container.querySelector('.active');
     if (active) {
         active.classList.remove('active');
-        const activeIndex = items.indexOf(active);
-        if (next) {
-            items = items.slice(activeIndex + 1);
-        } else {
-            items = items.slice(0, activeIndex - 1).reverse();
-        }
     }
 
-    for (const item of items) {
-        const rect = item.getBoundingClientRect();
-        let isFullyVisible;
-        if (next) {
-            isFullyVisible =
-                rect.left >= containerRect.left && rect.right <= containerRect.right;
-        } else {
-            isFullyVisible =
-                rect.right <= containerRect.right && rect.left >= containerRect.left;
-        }
+    if (next) {
+        return items.find(
+            (item) => item.offsetLeft + item.clientWidth > viewportEnd + 1,
+        ) ?? null;
+    }
 
-        if (!isFullyVisible) {
+    for (let i = items.length - 1; i >= 0; i--) {
+        const item = items[i];
+        if (item.offsetLeft < viewportStart - 1) {
             return item;
         }
     }
@@ -484,42 +475,74 @@ function getNextOrPrevHiddenItem(container, items, next) {
     return null;
 }
 
+window.updateMenuScrollButtons = function updateMenuScrollButtons() {
+    const menu = document.getElementById('top_menu');
+    const container = document.querySelector('.sf-menu-container');
+    const leftBtn = document.querySelector('.sf-menu-scroll.left');
+    const rightBtn = document.querySelector('.sf-menu-scroll.right');
+
+    if (!menu || !container || (!leftBtn && !rightBtn)) return;
+
+    const epsilon = 4;
+    const maxScroll = menu.scrollWidth - menu.clientWidth;
+    if (maxScroll <= epsilon) {
+        leftBtn?.classList.add('hidden');
+        rightBtn?.classList.add('hidden');
+        container.classList.remove('p-left-5', 'p-right-5');
+        return;
+    }
+
+    const atStart = menu.scrollLeft <= epsilon;
+    const atEnd = menu.scrollLeft >= maxScroll - epsilon;
+
+    if (leftBtn) {
+        leftBtn.classList.toggle('hidden', atStart);
+    }
+    if (rightBtn) {
+        rightBtn.classList.toggle('hidden', atEnd);
+    }
+
+    container.classList.toggle('p-left-5', !atStart);
+    container.classList.toggle('p-right-5', !atEnd);
+};
+
 window.menuScroll = function (button, next = true) {
     const menu = document.getElementById('top_menu');
     const container = document.querySelector('.sf-menu-container');
+    if (!menu || !container) return;
     const items = Array.from(menu.children);
     const nextHidden = getNextOrPrevHiddenItem(menu, items, next);
-    const nextClass = next ? 'left' : 'right';
-    if (menu) {
-        if (nextHidden) {
-            const index = items.indexOf(nextHidden);
-            const needIndex = next ? index + 1 : index - 1;
-            menu.scrollTo({
-                left: next
-                    ? nextHidden.offsetLeft + nextHidden.clientWidth
-                    : nextHidden.offsetLeft - nextHidden.clientWidth,
-                behavior: 'smooth',
-            });
-            nextHidden.classList.add('active');
-            if (!items[needIndex]) {
-                if (next) {
-                    container.classList.remove('p-right-5');
-                    container.classList.add('p-left-5');
-                } else {
-                    container.classList.remove('p-left-5');
-                    container.classList.add('p-right-5');
-                }
-                const nextButton = document.querySelector(
-                    `.sf-menu-scroll.${nextClass}`,
-                );
-                if (nextButton) {
-                    nextButton.classList.remove('hidden');
-                }
-                button.classList.add('hidden');
-            }
-        }
+    if (nextHidden) {
+        menu.scrollTo({
+            left: nextHidden.offsetLeft,
+            behavior: 'smooth',
+        });
+        nextHidden.classList.add('active');
+        // Ensure button state updates after smooth scroll completes.
+        requestAnimationFrame(updateMenuScrollButtons);
+        setTimeout(updateMenuScrollButtons, 250);
+    } else if (!next) {
+        // Nothing left to the start: snap to beginning.
+        menu.scrollTo({ left: 0, behavior: 'smooth' });
+        requestAnimationFrame(updateMenuScrollButtons);
+        setTimeout(updateMenuScrollButtons, 250);
+    } else {
+        // Nothing more to the right: snap to end.
+        const maxScroll = menu.scrollWidth - menu.clientWidth;
+        menu.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        requestAnimationFrame(updateMenuScrollButtons);
+        setTimeout(updateMenuScrollButtons, 250);
     }
 };
+
+function initMenuScrollButtons() {
+    const menu = document.getElementById('top_menu');
+    if (!menu) return;
+    const rerender = () => requestAnimationFrame(updateMenuScrollButtons);
+    menu.addEventListener('scroll', rerender, { passive: true });
+    window.addEventListener('resize', rerender);
+    updateMenuScrollButtons();
+}
 
 function setResize(container, isExpanded) {
     if (isExpanded) {

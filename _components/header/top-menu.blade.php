@@ -14,7 +14,7 @@
         </div>
         @endforeach
     </div>
-    <button onclick="menuScroll(this, true)" class="sf-menu-scroll right absolute" type="button">
+    <button onclick="menuScroll(this, true)" class="sf-menu-scroll right absolute hidden" type="button">
         <i class="sf-icon">chevron_right</i>
     </button>
 </div>
